@@ -1,0 +1,10 @@
+.filter {
+    display: flex !important;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+
+    .text {
+        flex-basis: 60%;
+    }
+}

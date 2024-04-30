@@ -1,0 +1,20 @@
+export enum Position {
+    Simple,
+    Marksman,
+    GrenadeLauncher,
+    Medic,
+    Negev,
+    Hamal,
+    Sniper,
+    Translator,
+    ShootingInstructor,
+    KravMagaInstructor,
+    DroneOperator,
+    PlatoonCommanderComms,
+    CompanyCommanderComms,
+    ClassCommander,
+    Sergant,
+    PlatoonCommander,
+    CompanyDeputy,
+    CompanyCommander
+}

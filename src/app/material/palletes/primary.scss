@@ -1,0 +1,31 @@
+@import './theme.scss';
+
+$olive-green-palette: (
+  50: #f8fde7,
+  100: #edf8c4,
+  200: #e1f59d,
+  300: #d5f075,
+  400: #cceb56,
+  500: #c4e834,
+  600: #b8d52d,
+  700: #a8be23,
+  800: #99a719,
+  900: #808000,
+  contrast: (
+    50: $black-87-opacity,
+    100: $black-87-opacity,
+    200: $black-87-opacity,
+    300: $black-87-opacity,
+    400: $black-87-opacity,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    A100: $black-87-opacity,
+    A200: $black-87-opacity,
+    A300: $black-87-opacity,
+    A400: $black-87-opacity,
+    A700: white
+  )
+);

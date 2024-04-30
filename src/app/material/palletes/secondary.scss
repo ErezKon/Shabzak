@@ -1,0 +1,31 @@
+@import './theme.scss';
+
+$brown-palette: (
+  50: #f9fcec,
+  100: #f2f7cf,
+  200: #eaf1b1,
+  300: #e3eb96,
+  400: #dfe784,
+  500: #dbe275,
+  600: #d9d26d,
+  700: #d4bd62,
+  800: #cea957,
+  900: #c28845,
+  contrast: (
+    50: $black-87-opacity,
+    100: $black-87-opacity,
+    200: $black-87-opacity,
+    300: $black-87-opacity,
+    400: $black-87-opacity,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    A100: $black-87-opacity,
+    A200: $black-87-opacity,
+    A300: $black-87-opacity,
+    A400: $black-87-opacity,
+    A700: white
+  )
+);

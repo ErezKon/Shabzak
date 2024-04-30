@@ -2,6 +2,10 @@
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
 @use '@angular/material' as mat;
+@import '../src/app/material/palletes/primary.scss';
+@import '../src/app/material/palletes/secondary.scss';
+//@use '/src/app//material/palletes/all' as themes;
+//@import '/src/app//material/palletes/secondary.scss';
 // Plus imports for other components in your app.
 
 // Include the common styles for Angular Material. We include this here so that you only
@@ -9,11 +13,12 @@
 // Be sure that you only ever include this mixin once!
 @include mat.core();
 
+
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$Shabzak-primary: mat.define-palette(mat.$indigo-palette);
-$Shabzak-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+$Shabzak-primary: mat.define-palette($olive-green-palette, 900);
+$Shabzak-accent: mat.define-palette($brown-palette, 900);
 
 // The warn palette is optional (defaults to red).
 $Shabzak-warn: mat.define-palette(mat.$red-palette);
@@ -35,7 +40,85 @@ $Shabzak-theme: mat.define-light-theme((
 // that you are using.
 @include mat.all-component-themes($Shabzak-theme);
 
+$primary: mat.get-theme-color($Shabzak-theme, primary, default);
+
 /* You can add global styles to this file, and also import other style files */
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+.mat-toolbar {
+  &.rtl {
+    flex-direction: row-reverse;
+  }
+}
+
+.mdc-list-item--activated {
+  text-decoration: underline;
+  text-decoration-color: $primary;
+}
+
+table {
+  direction: rtl;
+  th, td {
+    text-align: right !important;
+
+    &.actions-cell {
+      text-align: left !important;
+    }
+  }
+
+  &.zebra {
+
+    thead {
+      tr {
+        background-color: mat.get-theme-color($Shabzak-theme, primary, 800);
+        color: white;
+      }
+    }
+
+    tbody{
+      tr {
+        &:nth-child(2n + 1) {
+          background-color: #d5d5d5;
+        }
+        &:hover {
+          background-color: mat.get-theme-color($Shabzak-theme, primary, 50);
+        }
+      }
+    }
+  }
+}
+
+.mdc-dialog__actions {
+  flex-direction: row-reverse !important;
+  justify-content: space-between !important;
+}
+
+.mat-mdc-input-element {
+  direction: rtl !important;
+}
+
+.mat-mdc-select {
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+.mat-accordion {
+  direction: rtl !important;
+}
+
+.mat-mdc-floating-label {
+  right: 0 !important;
+}
+
+.action-icon {
+  cursor: pointer;
+}
+
+.floating-button {
+  position: fixed;
+  left: 10px;
+  bottom: 10px;
+}

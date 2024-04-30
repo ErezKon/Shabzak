@@ -1,0 +1,26 @@
+@import '../../../../styles.scss';
+
+.dialog-title {
+    background-color: $primary;
+    color: white;
+    text-align: center;
+}
+
+.soldier-details { 
+    display: flex;
+    flex-direction: row-reverse;
+    flex-wrap: wrap;
+    justify-content: space-around;
+
+    .full {
+        flex-basis: 100%;
+    }
+
+    .name{ 
+        flex-basis: 50%;
+    }
+
+    .small-col {
+        flex-basis: 20%;
+    }
+}
