@@ -81,7 +81,7 @@ export class SoldiersContainerComponent extends BaseComponent{
     });
   }
 
-  onDeleteSoldier(soldierId) {
-    this.store.dispatch(soldierActions.del)
+  onDeleteSoldier(soldierId: number) {
+    this.store.dispatch(soldierActions.deleteSoldier({soldierId: soldierId}));
   }
 }
