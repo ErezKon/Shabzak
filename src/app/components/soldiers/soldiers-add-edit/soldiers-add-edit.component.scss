@@ -27,9 +27,9 @@
 
 @media screen and (max-width: 767px) {
     .name {
-        flex-basis: 100%;
+        flex-basis: 100% !important;
     }
-    
+
     .phone {
         flex-basis: 100%;
     }
@@ -39,6 +39,6 @@
     }
 
     .small-col {
-        flex-basis: 50%;
+        flex-basis: 50% !important;
     }
 }
