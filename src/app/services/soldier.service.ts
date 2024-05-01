@@ -23,13 +23,13 @@ export class SoldierService {
   }
   
   addSoldier(soldier: Soldier): Observable<Soldier> {
-    return this.http.post<Soldier>(`${this.serverURL}/AddSoldier`, {soldier: soldier});
+    return this.http.post<Soldier>(`${this.serverURL}/AddSoldier`, soldier);
   }
   
   updateSoldier(soldier: Soldier): Observable<Soldier> {
     //return this.http.post<Soldier>(`${this.serverURL}/UpdateSoldier`, {soldier: soldier}, {headers: new HttpHeaders({'Content-Type': 'application/json'})});
 
-    return this.http.post<Soldier>(`${this.serverURL}/UpdateSoldier`, {soldier: soldier});
+    return this.http.post<Soldier>(`${this.serverURL}/UpdateSoldier`,soldier);
   }
   
   deleteSoldier(soldier: Soldier): Observable<Soldier> {

@@ -57,7 +57,7 @@ export class SoldiersAddEditComponent extends BaseComponent{
         this.positions.setValue(initialValues);
       }
       this.addSub(this.positions.valueChanges.subscribe(val => {
-        data.positions = val;
+        data.positions = val.map((v: string) => Position[v as keyof typeof Position]);
       }));
       
     }

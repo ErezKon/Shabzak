@@ -76,7 +76,7 @@ export class SoldiersContainerComponent extends BaseComponent{
 
     dialogRef.afterClosed().subscribe(result => {
       if(result) {
-        this.store.dispatch(soldierActions.addSoldier({soldier:result}));
+        this.store.dispatch(soldierActions.addSoldier({soldier: {...result, vacations: []}}));
       }
     });
   }
