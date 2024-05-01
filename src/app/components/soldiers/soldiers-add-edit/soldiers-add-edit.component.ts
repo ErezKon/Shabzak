@@ -55,10 +55,10 @@ export class SoldiersAddEditComponent extends BaseComponent{
           }
         }
         this.positions.setValue(initialValues);
-        this.addSub(this.positions.valueChanges.subscribe(val => {
-          data.positions = val;
-        }));
       }
+      this.addSub(this.positions.valueChanges.subscribe(val => {
+        data.positions = val;
+      }));
       
     }
 
