@@ -6,17 +6,18 @@
             <input matInput [(ngModel)]="data.name" required>
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field class="phone">
             <mat-label>טלפון</mat-label>
             <input matInput [(ngModel)]="data.phone" required>
         </mat-form-field>
         
         <div class="full"></div>
 
-        <mat-form-field>
+        <mat-form-field class="personal-number">
             <mat-label>מספר אישי</mat-label>
             <input matInput [(ngModel)]="data.personalNumber" required>
         </mat-form-field>
+        
         <mat-form-field class="small-col">
             <mat-label>מחלקה</mat-label>
             <input matInput [(ngModel)]="data.platoon" required>

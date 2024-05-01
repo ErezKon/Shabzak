@@ -24,3 +24,21 @@
         flex-basis: 20%;
     }
 }
+
+@media screen and (max-width: 767px) {
+    .name {
+        flex-basis: 100%;
+    }
+    
+    .phone {
+        flex-basis: 100%;
+    }
+
+    .personal-number {
+        flex-basis: 100%;
+    }
+
+    .small-col {
+        flex-basis: 50%;
+    }
+}
