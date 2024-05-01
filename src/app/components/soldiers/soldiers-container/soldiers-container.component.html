@@ -2,7 +2,8 @@
     <app-soldiers-filter (filterSoldiers)="onFilterSoldiers($event)"></app-soldiers-filter>
     <app-soldiers 
         [soldiers$]="soldiers$"
-        (editSoldier)="onEditSoldier($event)"></app-soldiers>
+        (editSoldier)="onEditSoldier($event)"
+        (deleteSoldier)="onDeleteSoldier($event)"></app-soldiers>
 
         <div class="floating-button">
             <button mat-mini-fab color="primary" (click)="onAddSoldier()">

@@ -1,37 +1,37 @@
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8 zebra">
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8 zebra" matSort  (matSortChange)="sortData($event)">
     <!-- Name Column -->
     <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef> שם </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> שם </th>
       <td mat-cell *matCellDef="let soldier"> {{soldier.name}} </td>
     </ng-container>
   
     <!-- Personal Number Column -->
     <ng-container matColumnDef="personalNumber">
-      <th mat-header-cell *matHeaderCellDef> מספר אישי </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> מספר אישי </th>
       <td mat-cell *matCellDef="let soldier"> {{soldier.personalNumber}} </td>
     </ng-container>
   
     <!-- Phone Column -->
     <ng-container matColumnDef="phone">
-      <th mat-header-cell *matHeaderCellDef> טלפון </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> טלפון </th>
       <td mat-cell *matCellDef="let soldier"> {{soldier.phone}} </td>
     </ng-container>
   
     <!-- Platoon Column -->
     <ng-container matColumnDef="platoon">
-      <th mat-header-cell *matHeaderCellDef> מחלקה </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> מחלקה </th>
       <td mat-cell *matCellDef="let soldier"> {{soldier.platoon}} </td>
     </ng-container>
   
     <!-- Company Column -->
     <ng-container matColumnDef="company">
-      <th mat-header-cell *matHeaderCellDef> פלוגה </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> פלוגה </th>
       <td mat-cell *matCellDef="let soldier"> {{soldier.company}} </td>
     </ng-container>
   
     <!-- Positions Column -->
     <ng-container matColumnDef="positions">
-      <th mat-header-cell *matHeaderCellDef> פק"לים </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> פק"לים </th>
       <td mat-cell *matCellDef="let soldier"> {{parsePositions(soldier.positions)}} </td>
     </ng-container>
   
@@ -41,6 +41,9 @@
       <td mat-cell *matCellDef="let soldier" class="actions-cell"> 
         <button mat-icon-button (click)="onEditSoldier(soldier)" class="action-icon">
             <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button (click)="onDeleteSoldier(soldier.id)" class="action-icon">
+            <mat-icon>delete</mat-icon>
         </button>
       </td>
     </ng-container>

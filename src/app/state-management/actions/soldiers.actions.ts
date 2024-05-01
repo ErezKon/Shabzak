@@ -35,3 +35,15 @@ export const addSoldierSuccess = createAction(
 export const addSoldierFailure = createAction(
     '[Soldiers] Add Soldier Failure'
 );
+
+export const deleteSoldier = createAction(
+    '[Soldiers] Delete Soldier',
+    props<{ soldierId: number }>()
+);
+export const deleteSoldierSuccess = createAction(
+    '[Soldiers] Delete Soldier Success',
+    props<{ soldierId: number }>()
+);
+export const deleteSoldierFailure = createAction(
+    '[Soldiers] Delete Soldier Failure'
+);

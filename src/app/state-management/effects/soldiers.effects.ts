@@ -64,4 +64,20 @@ export class SoldiersEffects {
         })
       ))
   ));
+
+  deleteSoldier$ = createEffect(() => this.actions$.pipe(
+    ofType(soldierActions.deleteSoldier),
+    exhaustMap((action) => this.soldiersService.deleteSoldier(action.soldierId)
+      .pipe(
+        map(res => {
+            this.snackbar.openSnackBar('החייל הוסר בהצלחה');
+            return soldierActions.deleteSoldierSuccess({soldierId:res});
+        }),
+        catchError(err => {
+            console.error(err);
+            this.snackbar.openSnackBar('שגיאה בהסרת חייל');
+            return of(soldierActions.deleteSoldierFailure());
+        })
+      ))
+  ));
 }

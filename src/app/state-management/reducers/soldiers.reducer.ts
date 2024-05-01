@@ -9,6 +9,7 @@ export const soldiersReducer = createReducer(
     on(soldierActions.getSoldiers, (state) => ({ ...state, soldiers: initialSoldiersState.soldiers })),
     on(soldierActions.getSoldiersSuccess, (state, {soldiers}) => ({ ...state, soldiers: soldiers })),
     on(soldierActions.addSoldierSuccess, (state, {soldier}) => ({...state, soldiers: [...state.soldiers, soldier]})),
+    on(soldierActions.deleteSoldierSuccess, (state, {soldierId}) => ({...state, soldiers: state.soldiers.filter(s => s.id !== soldierId)})),
     on(soldierActions.updateSoldierSuccess, (state, {soldier}) => {
         const soldiers: Array<Soldier> = [];
         for (const s of state.soldiers) {

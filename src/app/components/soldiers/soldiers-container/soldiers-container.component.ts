@@ -80,4 +80,8 @@ export class SoldiersContainerComponent extends BaseComponent{
       }
     });
   }
+
+  onDeleteSoldier(soldierId) {
+    this.store.dispatch(soldierActions.del)
+  }
 }

@@ -32,7 +32,7 @@ export class SoldierService {
     return this.http.post<Soldier>(`${this.serverURL}/UpdateSoldier`,soldier);
   }
   
-  deleteSoldier(soldier: Soldier): Observable<Soldier> {
-    return this.http.post<Soldier>(`${this.serverURL}/DeleteSoldier`, soldier);
+  deleteSoldier(soldierId: number): Observable<number> {
+    return this.http.post<number>(`${this.serverURL}/DeleteSoldier`, soldierId);
   }
 }
