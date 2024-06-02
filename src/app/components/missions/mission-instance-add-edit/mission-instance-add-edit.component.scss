@@ -1,0 +1,23 @@
+@import '../../../../styles.scss';
+
+.dialog-title {
+    background-color: $primary;
+    color: white;
+    text-align: center;
+}
+
+.add-mission-instance {
+    display: flex;
+    flex-direction: row-reverse;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    .date {
+        display: flex;
+    }
+    .from {
+        display: flex;
+    }
+    .to {
+        display: flex;
+    }
+}

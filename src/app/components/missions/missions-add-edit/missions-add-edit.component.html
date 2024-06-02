@@ -1,1 +1,121 @@
-<p>missions-add-edit works!</p>
+<h2 mat-dialog-title class="dialog-title">{{title}}</h2>
+<mat-dialog-content>
+    <div class="mission-details">
+        <mat-form-field class="name">
+            <mat-label>שם המשימה</mat-label>
+            <input matInput [(ngModel)]="mission.name" required>
+        </mat-form-field>
+
+        <mat-form-field class="description">
+            <mat-label>תיאור</mat-label>
+            <input matInput [(ngModel)]="mission.description">
+        </mat-form-field>
+        
+        <!-- <div class="full"></div> -->
+
+        <mat-form-field class="duration">
+            <mat-label>משך</mat-label>
+            <input matInput type="number" [(ngModel)]="mission.duration" required>
+        </mat-form-field>
+        
+        <mat-form-field class="soldiers-required">
+            <mat-label>מספר חיילים</mat-label>
+            <input matInput type="number" [(ngModel)]="mission.soldiersRequired" required>
+        </mat-form-field>
+
+        <mat-form-field class="commanders-required">
+            <mat-label>מספר מפקדים</mat-label>
+            <input matInput type="number" [(ngModel)]="mission.commandersRequired" required>
+        </mat-form-field>
+
+        <div class="is-special full">
+            <mat-radio-group
+                [(ngModel)]="mission.isSpecial">
+                <mat-radio-button [value]="false">בט"ש</mat-radio-button>
+                <mat-radio-button [value]="true">מיוחדת</mat-radio-button>
+            </mat-radio-group>
+        </div>
+        @if(!mission.isSpecial) {
+            <mat-form-field class="mission-dates">
+                <mat-label>הכנס טווח תאריכים</mat-label>
+                <mat-date-range-input [rangePicker]="picker">
+                  <input matStartDate placeholder="תאריך התחלה" [formControl]="startDateForm">
+                  <input matEndDate placeholder="תאריך סיום" [formControl]="endDateForm">
+                </mat-date-range-input>
+                <mat-hint>DD/MM/YYYY – DD/MM/YYYY</mat-hint>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
+            </mat-form-field>
+            <mat-form-field class="start-time">
+                <mat-label>שעת התחלה</mat-label>
+                <input matInput [(ngModel)]="regularStartTime" required>
+            </mat-form-field>
+
+            <mat-form-field class="end-time">
+                <mat-label>שעת סיום</mat-label>
+                <input matInput [(ngModel)]="regularEndTime" required>
+            </mat-form-field>
+
+            @if(datesRange?.length) {
+                <div class="dates-instances">
+                    @for (date of datesRange; track date) {
+                        <div class="date-instance">
+                            <div class="date-string">
+                                {{date.toLocaleDateString('en-GB')}}
+                            </div>
+                            <div class="instance-chips">
+                                <mat-chip-set>
+                                    @for(instance of getInstances(date); track instance) {
+                                        <mat-chip [removable]="true" (removed)="onRemovedInstance(date, instance)">{{instance.from}}-{{instance.to}}
+                                            <button matChipRemove [attr.aria-label]="'remove ' + instance">
+                                                <mat-icon>cancel</mat-icon>
+                                            </button>
+                                            <mat-icon class="edit-action-icon" (click)="onEdtMissionInstance(instance)">edit</mat-icon>
+                                        </mat-chip>
+                                    }
+                                  </mat-chip-set>
+                            </div>
+                            <div class="add-instance">
+                                <button mat-mini-fab color="primary" (click)="onAddMissionInstance(date)">
+                                    <mat-icon>add</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        }
+        @else {
+            <mat-form-field color="accent">
+                <mat-label>בחר תאריך</mat-label>
+                <input matInput [matDatepicker]="picker1" [(ngModel)]="specialTime">
+                <mat-hint>DD/MM/YYYY</mat-hint>
+                <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+                <mat-datepicker #picker1></mat-datepicker>
+            </mat-form-field>
+
+            
+            <mat-form-field class="start-time">
+                <mat-label>שעת התחלה</mat-label>
+                <input matInput [(ngModel)]="mission.fromTime" required>
+            </mat-form-field>
+
+            <mat-form-field class="end-time">
+                <mat-label>שעת סיום</mat-label>
+                <input matInput [(ngModel)]="mission.toTIme" required>
+            </mat-form-field>
+        }
+        
+    
+    </div>
+    
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button (click)="onNoClick()" class="cancel">בטל</button>
+    <button mat-raised-button (click)="onOk()" cdkFocusInitial color="primary" class="accept">אשר</button>
+</mat-dialog-actions>
+
+
+<!-- Copyright 2024 Google LLC. All Rights Reserved.
+    Use of this source code is governed by an MIT-style license that
+    can be found in the LICENSE file at https://angular.io/license -->

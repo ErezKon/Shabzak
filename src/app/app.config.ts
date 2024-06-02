@@ -9,6 +9,7 @@ import { SoldiersEffects } from './state-management/effects/soldiers.effects';
 import { provideEffects } from '@ngrx/effects';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { appReducers, metaReducers } from './state-management/reducers';
+import { MissionsEffects } from './state-management/effects/missions.effects';
 
 
 export const appConfig: ApplicationConfig = {
@@ -18,5 +19,7 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(), 
     provideAnimationsAsync(), 
     provideStore(appReducers, {metaReducers}),
-    provideEffects(SoldiersEffects)]
+    provideEffects(SoldiersEffects),
+    provideEffects(MissionsEffects)
+  ]
 };

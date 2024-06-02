@@ -10,12 +10,8 @@ import { Soldier } from '../models/soldier.model';
 export class SoldierService {
 
   private serverURL: string;
-  private httpOptions: any;
   constructor(private http: HttpClient) { 
     this.serverURL = `${environment.serverURL}/Soldiers`;
-    this.httpOptions = {
-      headers: new HttpHeaders({'Content-Type': 'application/json'})
-    }
   }
 
   getSoldiers(): Observable<Array<Soldier>> {
@@ -27,8 +23,6 @@ export class SoldierService {
   }
   
   updateSoldier(soldier: Soldier): Observable<Soldier> {
-    //return this.http.post<Soldier>(`${this.serverURL}/UpdateSoldier`, {soldier: soldier}, {headers: new HttpHeaders({'Content-Type': 'application/json'})});
-
     return this.http.post<Soldier>(`${this.serverURL}/UpdateSoldier`,soldier);
   }
   

@@ -1,0 +1,27 @@
+<h2 mat-dialog-title class="dialog-title">{{title}}</h2>
+<mat-dialog-content>
+    <div class="add-mission-instance">
+        <!-- <div class="date">
+            {{data.date}}
+        </div> -->
+        <form>
+            <div class="from">
+                <mat-form-field class="from">
+                    <mat-label>משעה:</mat-label>
+                    <input matInput [(ngModel)]="data.from" name="from" required>
+                </mat-form-field>
+            </div>
+            <div class="to">
+                <mat-form-field class="to">
+                    <mat-label>עד שעה:</mat-label>
+                    <input matInput [(ngModel)]="data.to" name="to" required>
+                </mat-form-field>
+            </div>
+        </form>
+        
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button (click)="onNoClick()" class="cancel">בטל</button>
+    <button mat-raised-button [mat-dialog-close]="data" cdkFocusInitial color="primary" class="accept">אשר</button>
+</mat-dialog-actions>

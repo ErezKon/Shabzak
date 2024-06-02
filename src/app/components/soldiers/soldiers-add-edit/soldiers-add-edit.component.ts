@@ -29,7 +29,7 @@ import { BaseComponent } from '../../../utils/base-component/base-component.comp
   templateUrl: './soldiers-add-edit.component.html',
   styleUrl: './soldiers-add-edit.component.scss'
 })
-export class SoldiersAddEditComponent extends BaseComponent{
+export class SoldiersAddEditComponent extends BaseComponent {
   title: string;
   positions = new FormControl();
 

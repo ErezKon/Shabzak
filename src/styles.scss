@@ -111,6 +111,7 @@ table {
 
 .mat-mdc-floating-label {
   right: 0 !important;
+  direction: rtl !important;
 }
 
 .action-icon {
@@ -121,4 +122,16 @@ table {
   position: fixed;
   left: 10px;
   bottom: 10px;
+}
+
+.mat-mdc-chip {
+  padding-right: 10px !important;
+}
+
+.mat-mdc-dialog-content {
+  max-height: none !important;
+}
+
+.white-icon {
+  color: white !important;
 }

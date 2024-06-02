@@ -1,1 +1,13 @@
-<p>missions-container works!</p>
+<div class="missions-container">
+    <app-missions-filter ></app-missions-filter>
+    <app-missions 
+        [missions$]="missions$"
+        (editMission)="onEditMission($event)"
+        (deleteMission)="onDeleteMission($event)"></app-missions>
+
+        <div class="floating-button">
+            <button mat-mini-fab color="primary" (click)="onAddMission()">
+              <mat-icon>add</mat-icon>
+            </button>
+        </div>
+</div>

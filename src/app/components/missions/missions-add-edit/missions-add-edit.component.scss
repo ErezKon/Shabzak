@@ -1,0 +1,83 @@
+@import '../../../../styles.scss';
+
+.dialog-title {
+    background-color: $primary;
+    color: white;
+    text-align: center;
+}
+
+.mission-details {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row-reverse;
+    justify-content: space-around;
+
+    .is-special {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: space-evenly;
+        direction: rtl;
+    }
+
+    .full{
+        flex-basis: 100%;
+    }
+
+    .name {
+        flex-basis: 25%;
+    }
+    .description {
+        flex-basis: 65%;
+    }
+
+    .duration {
+        flex-basis: 30%;
+    }
+    .soldiers-required {
+        flex-basis: 30%;
+    }
+    .commanders-required {
+        flex-basis: 30%;
+    }
+
+    .dates-instances {
+        flex-basis: 100%;
+        direction: rtl;
+
+        .date-instance {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: space-around;
+            flex-basis: 100%;
+
+            padding-top: 5px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 5px;
+
+            .date-string{
+                flex-basis: 10%;
+            }
+
+            .instance-chips {
+                flex-basis: 80%;
+
+                .edit-action-icon {
+                    font-size: 15px;
+                    height: 13px;
+                    width: 15px;
+                    cursor: pointer;
+
+                    &:hover { 
+                        color: green;
+                    }
+                }
+            }
+
+            .add-instance {
+                flex-basis: 10%;
+            }
+        }
+    }
+}

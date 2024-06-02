@@ -2,10 +2,12 @@ import { routerReducer } from "@ngrx/router-store";
 import { ActionReducerMap, ActionReducer } from "@ngrx/store";
 import { AppState } from "../states/app.state";
 import { soldiersReducer } from "./soldiers.reducer";
+import { missionsReducer } from "./missions.reducer";
 
 export const appReducers: ActionReducerMap<AppState> = {
   router: routerReducer,
-  soldiers: soldiersReducer
+  soldiers: soldiersReducer,
+  missions: missionsReducer
 };
 
 export function logger(reducer: ActionReducer<any>): ActionReducer<any> {
