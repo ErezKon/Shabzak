@@ -14,6 +14,7 @@ import { MissionsFilterComponent } from '../missions-filter/missions-filter.comp
 import { MissionsComponent } from '../missions/missions.component';
 
 import * as missionActions from '../../../state-management/actions/missions.actions';
+import { ManuallyAssignContainerComponent } from '../manually-assign/manually-assign-container/manually-assign-container.component';
 
 @Component({
   selector: 'app-missions-container',
@@ -42,12 +43,26 @@ export class MissionsContainerComponent extends BaseComponent{
       width: '80vw'
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    this.addSub(dialogRef.afterClosed().subscribe(result => {
       if(result) {
         const action = missionActions.updateMission({mission:result});
         this.store.dispatch(action);
       }
+    }));
+  }
+  
+  
+
+  onManuallyAssign(mission: Mission) {
+    const dialogRef = this.dialog.open(ManuallyAssignContainerComponent, {
+      data: mission,
+      width: '95vw',
+      height: '95vw'
     });
+
+    this.addSub(dialogRef.afterClosed().subscribe(result => {
+      
+    }));
   }
 
   //onFilterMissions(filter: MissionsFilter) {
@@ -71,11 +86,11 @@ export class MissionsContainerComponent extends BaseComponent{
       height: '95vh'
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    this.addSub(dialogRef.afterClosed().subscribe(result => {
       if(result) {
-        this.store.dispatch(missionActions.addMission({mission: {...result, vacations: []}}));
+        this.store.dispatch(missionActions.addMission({mission: result}));
       }
-    });
+    }));
   }
 
   onDeleteMission(missionId: number) {

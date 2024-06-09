@@ -1,3 +1,4 @@
+import { KeyValue } from "@angular/common";
 import { Position } from "../models/position.enum";
 
 export const translatePosition = (position: Position): string => {
@@ -39,5 +40,18 @@ export const translatePosition = (position: Position): string => {
         case Position.CompanyCommander:
             return 'מ"פ';
     }
+};
 
-}
+export const getPositionsKeyValue = (): Array<KeyValue<string, string>>=> {
+    const ret = new Array<KeyValue<string, string>>();
+    const stringKeys = Object
+        .values(Position)
+        .filter((v) => isNaN(Number(v)))
+        .map(val => {
+            ret.push({
+                key: val.toString(),
+                value: translatePosition(Position[val as keyof typeof Position])
+            } as KeyValue<string, string>)
+        })
+    return ret;
+};

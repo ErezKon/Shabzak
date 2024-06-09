@@ -1,0 +1,31 @@
+:host {
+    flex: 1 1 auto;
+}
+
+.soldiers-select {
+    height: 100%;
+
+    .soldiers-filter {
+        display: flex;
+        flex-direction: row-reverse;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+    .soldiers-list {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        align-content: flex-end;
+        max-height: calc(100% - 78px);
+        overflow-y: auto; 
+        overflow-x: hidden;
+    
+        .soldier {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            padding: 5px;
+        }
+    }
+}

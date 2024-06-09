@@ -16,6 +16,10 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MissionInstanceAddEditComponent } from '../mission-instance-add-edit/mission-instance-add-edit.component';
 import { AddMissionInstance } from '../../../models/add-mission-instance.model';
+import { getPositionsKeyValue } from '../../../utils/position.translator';
+import { KeyValue } from '@angular/common';
+import { Position } from '../../../models/position.enum';
+import { MissionPosition } from '../../../models/mission-position.model';
 
 @Component({
   selector: 'app-missions-add-edit',
@@ -34,6 +38,7 @@ import { AddMissionInstance } from '../../../models/add-mission-instance.model';
     MatRadioModule,
     MatChipsModule,
     MatIconModule,
+    MatButtonModule,
     ReactiveFormsModule,
     BaseComponent
   ],
@@ -52,6 +57,7 @@ export class MissionsAddEditComponent extends BaseComponent {
 
   startDateForm = new FormControl(new Date());
   endDateForm = new FormControl(new Date());
+  positionForms = new Array<FormControl>();
 
   datesRange: Array<Date> = [];
   datesInstances = new Map<string, Array<AddMissionInstance>>();
@@ -60,10 +66,19 @@ export class MissionsAddEditComponent extends BaseComponent {
 
   mission!: Partial<Mission>;
 
+  positionOptions: Array<KeyValue<string, string>>;
+
   constructor(public dialogRef: MatDialogRef<MissionsAddEditComponent>,
     public dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: Partial<Mission>) {
       super();
+      let date = new Date();
+      date.setDate(date.getDate() - 1);
+      this.startDateForm.setValue(date);
+      this.endDateForm.setValue(date);
+
+      this.positionOptions = getPositionsKeyValue();
+
       this.title = data?.id ? 'עריכת משימה' : 'הוספת משימה';
       if(!data?.id) {
         data.isSpecial = false;
@@ -72,8 +87,8 @@ export class MissionsAddEditComponent extends BaseComponent {
           const inst: AddMissionInstance = {
             id: instance.id,
             date: instance.fromTime.split(' ')[0],
-            from: this.getTimeString(new Date(instance.fromTime)),
-            to: this.getTimeString(new Date(instance.toTime)),
+            from: this.getTimeString(instance.fromTime),
+            to: this.getTimeString(instance.toTime),
             soldiers: instance.soldierMissions ?? []
           }
           const key = inst.date;
@@ -84,6 +99,9 @@ export class MissionsAddEditComponent extends BaseComponent {
             this.datesRange.push(new Date(inst.date.split('/').reverse().join('/')));
             this.datesInstances.set(key, [inst]);
           }
+        }
+        for (const pos of data?.positions ?? []) {
+          this.addPosition(pos);
         }
       }
       this.startDateForm.valueChanges.subscribe(startDate => {
@@ -102,15 +120,23 @@ export class MissionsAddEditComponent extends BaseComponent {
           if(this.startDate) {
             this.datesRange = getDates(this.startDate, this.endDate);
             this.autoCreateInstances();
-
           }
         }
       });
 
       this.mission = {
         ...this.data,
-        missionInstances: (this.data?.missionInstances ?? []).map(mi => { return {...mi}})
+        missionInstances: (this.data?.missionInstances ?? []).map(mi => { return {...mi}}),
+        positions: [...(data.positions ?? [])]
       }
+  }
+
+  private addPosition(pos: MissionPosition) {
+    const posForm = new FormControl(Position[pos.position]);
+      this.addSub(posForm.valueChanges.subscribe(val => {
+        pos.position = Position[val as keyof typeof Position]
+      }))
+    this.positionForms.push(posForm);
   }
 
   onOk() {
@@ -121,7 +147,10 @@ export class MissionsAddEditComponent extends BaseComponent {
 
     }
     console.log(JSON.stringify(this.mission));
-    this.dialogRef.close(this.mission);
+    this.dialogRef.close({
+      ...this.mission,
+      soldiers: []
+    });
   }
 
   
@@ -145,12 +174,13 @@ export class MissionsAddEditComponent extends BaseComponent {
     let lastTime = this.regularStartTime;
     let finalEndTime = this.regularEndTime.split(':').map(t => +t)[0];
     let index = 0;
+    this.mission.missionInstances = [];
     for (const date of this.datesRange) {
       const key = date.toLocaleDateString('en-GB');
       const instances = new Array<AddMissionInstance>();
       let time = lastTime;
       let keepCreating = true;
-      let id = 1;
+      let id = 0;
       while(keepCreating) {
         const spl = time.split(":").map(s => +s);
         const endTime = spl[0] + this.mission.duration;
@@ -162,6 +192,7 @@ export class MissionsAddEditComponent extends BaseComponent {
             to: `${this.formatNumber(finalEndTime,2)}:${this.formatNumber(spl[1], 2)}`
           }
           instances.push(instance);
+          this.mission.missionInstances.push(this.convertMissionInstancetoBEModel(instance));
           break;
         }
         if(endTime < 24) {
@@ -172,6 +203,7 @@ export class MissionsAddEditComponent extends BaseComponent {
             to: `${this.formatNumber(endTime,2)}:${this.formatNumber(spl[1], 2)}`
           }
           instances.push(instance);
+          this.mission.missionInstances.push(this.convertMissionInstancetoBEModel(instance));
           time = `${this.formatNumber(endTime,2)}:${this.formatNumber(spl[1], 2)}`;
         } else {
           const instance: AddMissionInstance = {
@@ -181,6 +213,7 @@ export class MissionsAddEditComponent extends BaseComponent {
             to: `${this.formatNumber(endTime % 24,2)}:${this.formatNumber(spl[1], 2)}`
           }
           instances.push(instance);
+          this.mission.missionInstances.push(this.convertMissionInstancetoBEModel(instance));
           id++;
           lastTime = `${this.formatNumber(endTime % 24,2)}:${this.formatNumber(spl[1], 2)}`;
           keepCreating = false;
@@ -209,7 +242,7 @@ export class MissionsAddEditComponent extends BaseComponent {
     const dialogRef = this.dialog.open(MissionInstanceAddEditComponent, {
       data: instance,
       width: '30vw',
-      height: '45vh'
+      height: '35vh'
     });
 
     dialogRef.afterClosed().subscribe((result: AddMissionInstance) => {
@@ -241,7 +274,7 @@ export class MissionsAddEditComponent extends BaseComponent {
         date: date.toLocaleDateString('en-GB')
       },
       width: '30vw',
-      height: '45vh'
+      height: '30vh'
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -251,7 +284,40 @@ export class MissionsAddEditComponent extends BaseComponent {
     });
   }
 
-  private getTimeString(date: Date): string {
-    return `${this.formatNumber(date.getHours(), 2)}:${this.formatNumber(date.getMinutes(), 2)}`;
+  onAddPosition() {
+    if(!this.mission?.positions) {
+      this.mission.positions = [];
+    }
+    const position: MissionPosition = {
+      id: 0,
+      position: 0,
+      count: 0
+    }
+    this.mission.positions.push(position);
+    this.addPosition(position);
+  }
+
+  private getTimeString(date: string): string {
+    const spl = date.split(' ')[1].split(':');
+    return `${this.formatNumber(+spl[0], 2)}:${this.formatNumber(+spl[1], 2)}`;
+  }
+
+  private convertMissionInstancetoBEModel(instance: AddMissionInstance): MissionInstance {
+    const ret: MissionInstance = {
+      id: instance.id,
+      fromTime: `${instance.date} ${instance.from}`,
+      toTime: `${instance.date} ${instance.to}`,
+      soldierMissions: instance.soldiers ?? []
+    };
+
+    const fromHour = +(instance.from.split(':')[0]);
+    const toHour = +(instance.to.split(':')[0]);
+
+    let date = new Date(instance.date.split('/').reverse().join('/'));
+    if(toHour < fromHour) {
+      date = new Date(date.setDate(date.getDate() + 1));
+      ret.toTime = `${date.toLocaleDateString('en-GB')} ${instance.to}`
+    }
+    return ret;
   }
 }

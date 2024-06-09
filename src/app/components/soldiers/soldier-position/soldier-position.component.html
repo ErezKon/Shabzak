@@ -1,0 +1,8 @@
+<div class="soldier-position">
+    @if(isSpecial) {
+        <mat-icon [svgIcon]="iconName" [matTooltip]="tooltip"></mat-icon>
+    }
+    @else {
+        <mat-icon [fontIcon]="iconName" [matTooltip]="tooltip"></mat-icon>
+    }
+</div>

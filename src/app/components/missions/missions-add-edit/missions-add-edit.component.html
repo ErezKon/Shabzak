@@ -28,6 +28,35 @@
             <input matInput type="number" [(ngModel)]="mission.commandersRequired" required>
         </mat-form-field>
 
+        <div class="positions full">
+            <h2 class="positions-title">תפקידים</h2>
+            <div class="position-container">
+                @for (pos of mission.positions ?? []; track $index) {
+                    <div class="position">
+                        <div class="position-select">
+                            <mat-form-field>
+                                <mat-label>תפקיד</mat-label>
+                                <mat-select [formControl]="positionForms[$index]">
+                                @for (position of positionOptions; track $index) {
+                                    <mat-option [value]="position.key">{{position.value}}</mat-option>
+                                }
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="position-count">
+                            <mat-form-field>
+                                <mat-label>כמות</mat-label>
+                                <input matInput [(ngModel)]="(mission?.positions ?? [])[$index].count">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="add-position">
+                <button mat-raised-button color="primary" (click)="onAddPosition()">הוסף</button>
+            </div>
+        </div>
+
         <div class="is-special full">
             <mat-radio-group
                 [(ngModel)]="mission.isSpecial">

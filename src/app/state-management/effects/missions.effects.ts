@@ -80,4 +80,32 @@ export class MissionsEffects {
         })
       ))
   ));
+
+  getMissionInstances$ = createEffect(() => this.actions$.pipe(
+    ofType(missionActions.getMissionInstances),
+    exhaustMap((action) => this.missionsService.getMissionInstances(action.missionId)
+      .pipe(
+        map(res => {
+            return missionActions.getMissionInstancesSuccess({missionInstances:res});
+        }),
+        catchError(err => {
+            console.error(err);
+            return of(missionActions.getMissionInstancesFailure());
+        })
+      ))
+  ));
+
+  getAvalableSoldiers$ = createEffect(() => this.actions$.pipe(
+    ofType(missionActions.getAvailableSoldiers),
+    exhaustMap((action) => this.missionsService.getAvalableSoldiers(action.missionInstanceId, action.soldiersPool)
+      .pipe(
+        map(res => {
+            return missionActions.getAvailableSoldiersSuccess({availableSoldiers:res});
+        }),
+        catchError(err => {
+            console.error(err);
+            return of(missionActions.getAvailableSoldiersFailure());
+        })
+      ))
+  ));
 }

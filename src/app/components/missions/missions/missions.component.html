@@ -51,12 +51,18 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef>  </th>
       <td mat-cell *matCellDef="let mission" class="actions-cell"> 
+        <button mat-icon-button (click)="onManuallyAssign(mission)" class="action-icon">
+            <mat-icon>group_add</mat-icon>
+        </button>
         <button mat-icon-button (click)="onEditMission(mission)" class="action-icon">
             <mat-icon>edit</mat-icon>
         </button>
         <button mat-icon-button (click)="onDeleteMission(mission.id)" class="action-icon">
             <mat-icon>delete</mat-icon>
         </button>
+        <span class="material-symbols-outlined">
+          
+          </span>
       </td>
     </ng-container>
   

@@ -1,0 +1,9 @@
+<div class="instance-view">
+    @for (instance of missionInstances; track $index) {
+        <div class="instance separator-down" 
+        [ngClass]="{'selected': selectedIndex === $index}"
+        (click)="onInstanceSelect(instance, $index)">
+            {{instance.fromTime}} - {{instance.toTime}}
+        </div>
+    }
+</div>

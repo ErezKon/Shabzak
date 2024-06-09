@@ -8,3 +8,14 @@ export const selectMissions = createSelector(
   selectMissionsState,
   (state: MissionsState) => state.missions
 );
+
+export const selectMissionInstances = createSelector(
+  selectMissionsState,
+  (state: MissionsState) => state.missionInstances
+);
+
+export const selectAvalableSoldiers = createSelector(
+  selectMissionsState,
+  (state: MissionsState) => state.availableSoldiers
+);
+

@@ -1,0 +1,40 @@
+.selection-summary-container {
+    display: flex;
+    flex-direction: row-reverse;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 10px;
+
+    .instance {
+        display: flex;
+        gap: 10px;
+        text-decoration: underline;
+    }
+
+    .positions {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row-reverse;
+        gap: 10px;
+        .position {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            flex-direction: row-reverse;
+            .title {
+                display: flex;
+                flex-wrap: wrap;
+                flex-direction: row-reverse;
+                gap: 10px;
+                font-weight: bold;
+            }
+            .count {
+                display: flex;
+                flex-wrap: wrap;
+                flex-direction: row-reverse;
+                gap: 10px;
+
+            }
+        }
+    }
+}

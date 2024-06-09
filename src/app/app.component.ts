@@ -40,6 +40,22 @@ export class AppComponent {
 
   constructor(private router: Router, iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
     iconRegistry.addSvgIcon('bat-logo', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/9213-logo-no-text.svg'));
+    iconRegistry.addSvgIcon('simple', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/simple.svg'));
+    iconRegistry.addSvgIcon('grenade', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/grenade.svg'));
+    iconRegistry.addSvgIcon('negev', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/negev.svg'));
+    iconRegistry.addSvgIcon('hamal', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/hamal.svg'));
+    iconRegistry.addSvgIcon('sniper', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/sniper.svg'));
+    iconRegistry.addSvgIcon('translator', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/translator.svg'));
+    iconRegistry.addSvgIcon('skull', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/skull.svg'));
+    iconRegistry.addSvgIcon('fist', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/fist.svg'));
+    iconRegistry.addSvgIcon('drone', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/drone.svg'));
+    iconRegistry.addSvgIcon('platoon-radio', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/platoon-radio.svg'));
+    iconRegistry.addSvgIcon('deputy-radio', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/deputy-radio.svg'));
+    iconRegistry.addSvgIcon('lieutenant-1', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/lieutenant-1.svg'));
+    iconRegistry.addSvgIcon('lieutenant-2', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/lieutenant-2.svg'));
+    iconRegistry.addSvgIcon('captain', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/captain.svg'));
+    iconRegistry.addSvgIcon('sergeant', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/sergeant.svg'));
+    iconRegistry.addSvgIcon('staff-sergeant', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/staff-sergeant.svg'));
     // iconRegistry.addSvgIcon(
     //   'bat-logo',
     //   'src/assets/icons/9213-logo-no-text.svg'

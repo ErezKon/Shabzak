@@ -20,5 +20,9 @@ export const missionsReducer = createReducer(
             }
         }
         return {...state, missions: missions};
-    })
+    }),
+    on(missionActions.getMissionInstances, (state) => ({ ...state, missionInstances: initialMissionsState.missionInstances })),
+    on(missionActions.getMissionInstancesSuccess, (state, {missionInstances}) => ({ ...state, missionInstances: missionInstances })),
+    on(missionActions.getAvailableSoldiers, (state) => ({ ...state, availableSoldiers: initialMissionsState.availableSoldiers })),
+    on(missionActions.getAvailableSoldiersSuccess, (state, {availableSoldiers}) => ({ ...state, availableSoldiers: availableSoldiers })),
 );

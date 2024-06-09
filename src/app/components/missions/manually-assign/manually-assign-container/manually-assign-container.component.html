@@ -1,0 +1,21 @@
+<h2 mat-dialog-title class="dialog-title">שיבוץ ידני</h2>
+<mat-dialog-content>
+    <div class="manually-assign separator-down">
+        <div class="selection">
+            <app-instance-view [missionInstances]="data.missionInstances" (instanceSelect)="onInstanceSelect($event)"></app-instance-view>
+            <app-soldiers-select [soldiers]="(soldiers$ | async) ?? []" (selectedSoldiersChanged)="onSoldiersSelected($event)"></app-soldiers-select>
+            <app-available-soldiers [availableSoldiers]="(availableSoldiers$ | async) ?? []" (availableSoldiersSelected)="onAvailableSoldiersSelected($event)"></app-available-soldiers>
+        </div>
+        <div class="selection-summary">
+            <app-selection-summary 
+                [positions]="data?.positions" 
+                [soldiers]="selectedAvailableSoldiers"
+                [instance]="selectedInstance">
+            </app-selection-summary>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button (click)="onNoClick()" class="cancel">בטל</button>
+    <button mat-raised-button (click)="onOk()" cdkFocusInitial color="primary" class="accept">אשר</button>
+</mat-dialog-actions>

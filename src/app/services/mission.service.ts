@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { Mission } from '../models/mission.model';
+import { MissionInstance } from '../models/mission-instance.model';
+import { GetAvailableSoldiers } from '../models/get-available-soldier.model';
 
 @Injectable({
   providedIn: 'root'
@@ -30,5 +32,13 @@ export class MissionService {
   
   deleteMission(missionId: number): Observable<number> {
     return this.http.post<number>(`${this.serverURL}/DeleteMission?missionId=${missionId}`, {});
+  }
+  
+  getMissionInstances(missionId: number): Observable<Array<MissionInstance>> {
+    return this.http.post<Array<MissionInstance>>(`${this.serverURL}/GetMissionInstances?missionId=${missionId}`, {});
+  }
+  
+  getAvalableSoldiers(missionInstanceId: number, soldiersPool?: Array<number>): Observable<Array<GetAvailableSoldiers>> {
+    return this.http.post<Array<GetAvailableSoldiers>>(`${this.serverURL}/GetAvailableSoldiers`, {missionInstanceId, soldiersPool});
   }
 }

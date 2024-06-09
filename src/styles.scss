@@ -42,6 +42,8 @@ $Shabzak-theme: mat.define-light-theme((
 
 $primary: mat.get-theme-color($Shabzak-theme, primary, default);
 
+$separator: #8d8d8d;
+
 /* You can add global styles to this file, and also import other style files */
 
 html, body { height: 100%; }
@@ -134,4 +136,9 @@ table {
 
 .white-icon {
   color: white !important;
+}
+
+.separator-down {
+  border-bottom: 1px solid $separator;
+;
 }

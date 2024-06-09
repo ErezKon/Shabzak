@@ -1,0 +1,18 @@
+<div class="selection-summary-container">
+    <div class="instance">
+        {{instance?.fromTime}} - {{instance?.toTime}} 
+    </div>
+    —
+    <div class="positions">
+        @for (pos of positions ?? []; track $index) {
+            <div class="position">
+                <div class="title">
+                    :{{getPositionTitle(pos)}}
+                </div>
+                <div class="count">
+                    {{getPositionCount(pos)}}
+                </div>
+            </div>
+        }
+    </div>
+</div>

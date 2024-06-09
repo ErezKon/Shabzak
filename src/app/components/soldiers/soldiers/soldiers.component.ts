@@ -5,7 +5,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { Position } from '../../../models/position.enum';
-import { translatePosition } from '../../../utils/position.tranbslator';
+import { translatePosition } from '../../../utils/position.translator';
 import { Observable } from 'rxjs';
 import { BaseComponent } from '../../../utils/base-component/base-component.component';
 import { MatSort, MatSortModule, Sort } from '@angular/material/sort';

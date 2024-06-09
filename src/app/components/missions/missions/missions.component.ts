@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 import { Mission } from '../../../models/mission.model';
 import { Position } from '../../../models/position.enum';
 import { BaseComponent } from '../../../utils/base-component/base-component.component';
-import { translatePosition } from '../../../utils/position.tranbslator';
+import { translatePosition } from '../../../utils/position.translator';
 import { MissionPosition } from '../../../models/mission-position.model';
 
 @Component({
@@ -22,6 +22,8 @@ export class MissionsComponent extends BaseComponent implements OnInit{
   @Input() missions$!: Observable<Array<Mission>>;
 
   @Output() editMission = new EventEmitter<Mission>();
+
+  @Output() manuallyAssign = new EventEmitter<Mission>();
 
   @Output() deleteMission = new EventEmitter<number>();
 
@@ -49,6 +51,10 @@ export class MissionsComponent extends BaseComponent implements OnInit{
 
   onDeleteMission(missionId: number) {
     this.deleteMission.emit(missionId);
+  }
+
+  onManuallyAssign(mission: Mission) {
+    this.manuallyAssign.emit(mission);
   }
 
   parsePositions(positions: Array<MissionPosition>): string {

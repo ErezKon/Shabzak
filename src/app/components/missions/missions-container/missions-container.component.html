@@ -3,6 +3,7 @@
     <app-missions 
         [missions$]="missions$"
         (editMission)="onEditMission($event)"
+        (manuallyAssign)="onManuallyAssign($event)"
         (deleteMission)="onDeleteMission($event)"></app-missions>
 
         <div class="floating-button">

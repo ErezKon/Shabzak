@@ -1,0 +1,27 @@
+@import '../../../../../styles.scss';
+
+.dialog-title {
+    background-color: $primary;
+    color: white;
+    text-align: center;
+}
+
+.manually-assign {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+
+    .selection {
+        display: flex;
+        flex-direction: row-reverse;
+        flex-wrap: nowrap;
+        height: 75vh;
+    }
+
+    .selection-summary {
+        display: flex;
+        flex-direction: row-reverse;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+}
