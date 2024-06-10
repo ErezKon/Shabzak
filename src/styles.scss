@@ -140,5 +140,12 @@ table {
 
 .separator-down {
   border-bottom: 1px solid $separator;
-;
+}
+
+.no-max-width {
+  max-width: none !important;
+}
+
+.no-content-bottom-pad {
+  
 }

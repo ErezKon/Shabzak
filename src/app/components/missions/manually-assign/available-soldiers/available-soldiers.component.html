@@ -3,6 +3,9 @@
         <div class="name">
             שם החייל
         </div>
+        <div class="positions">
+            פק"לים
+        </div>
         <div class="rest-before">
             מנוחה לפני
         </div>
@@ -15,11 +18,11 @@
             <div class="soldier separator-down" [ngClass]="{'unavailable': soldier.restTimeBefore === 0, 'selected': soldiersDic.has(soldier.soldier.id)}" (click)="onSoldierSelected(soldier.soldier)">
                 <div class="name">
                     {{soldier.soldier.name}}
-                    <div class="positions">
-                        @for (position of soldier.soldier.positions; track $index) {
-                            <app-soldier-position [position]="position"></app-soldier-position>
-                        }
-                    </div>
+                </div>
+                <div class="positions">
+                    @for (position of soldier.soldier.positions; track $index) {
+                        <app-soldier-position [position]="position"></app-soldier-position>
+                    }
                 </div>
                 <div class="rest-before">
                     @if(soldier.restTimeBefore || soldier.restTimeBefore === 0) {

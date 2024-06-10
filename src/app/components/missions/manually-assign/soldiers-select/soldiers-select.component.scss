@@ -3,7 +3,9 @@
 }
 
 .soldiers-select {
-    height: 100%;
+    max-height: calc(100vh - 66px - 60px - 85px) !important;    
+    height: calc(100vh - 66px - 60px - 85px) !important;
+    overflow-y: auto;
 
     .soldiers-filter {
         display: flex;

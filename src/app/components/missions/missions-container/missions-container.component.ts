@@ -56,8 +56,9 @@ export class MissionsContainerComponent extends BaseComponent{
   onManuallyAssign(mission: Mission) {
     const dialogRef = this.dialog.open(ManuallyAssignContainerComponent, {
       data: mission,
-      width: '95vw',
-      height: '95vw'
+      width: '100vw',
+      height: '97vh',
+      panelClass: 'no-max-width'
     });
 
     this.addSub(dialogRef.afterClosed().subscribe(result => {

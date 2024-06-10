@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -54,6 +54,9 @@ export class MissionsAddEditComponent extends BaseComponent {
   startDate?: Date;
   endDate?: Date;
 
+  startTimeForm = new FormControl('14:00', [Validators.required]);
+  endTimeForm = new FormControl('14:00', [Validators.required]);
+
 
   startDateForm = new FormControl(new Date());
   endDateForm = new FormControl(new Date());
@@ -79,9 +82,22 @@ export class MissionsAddEditComponent extends BaseComponent {
 
       this.positionOptions = getPositionsKeyValue();
 
+      this.addSub(this.startTimeForm.valueChanges.subscribe(val => {
+        if(val) {
+          this.mission.fromTime = val;
+        }
+      }));
+      this.addSub(this.endTimeForm.valueChanges.subscribe(val => {
+        if(val) {
+          this.mission.toTIme = val;
+        }
+      }));
+
       this.title = data?.id ? 'עריכת משימה' : 'הוספת משימה';
       if(!data?.id) {
         data.isSpecial = false;
+        data.fromTime = this.startTimeForm.value ?? '';
+        data.toTIme = this.endTimeForm.value ?? '';
       } else {
         for (const instance of data?.missionInstances ?? []) {
           const inst: AddMissionInstance = {
@@ -171,8 +187,8 @@ export class MissionsAddEditComponent extends BaseComponent {
     if(!this.mission?.duration) {
       return;
     }
-    let lastTime = this.regularStartTime;
-    let finalEndTime = this.regularEndTime.split(':').map(t => +t)[0];
+    let lastTime = this.startTimeForm.value ?? '';
+    let finalEndTime = this.endTimeForm.value?.split(':')?.map(t => +t)[0] ?? 0;
     let index = 0;
     this.mission.missionInstances = [];
     for (const date of this.datesRange) {

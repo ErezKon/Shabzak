@@ -1,9 +1,10 @@
 .selection-summary-container {
     display: flex;
     flex-direction: row-reverse;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     justify-content: flex-start;
     gap: 10px;
+    padding: 20px;
 
     .instance {
         display: flex;

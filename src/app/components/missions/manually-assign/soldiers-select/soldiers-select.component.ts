@@ -39,8 +39,18 @@ export class SoldiersSelectComponent extends BaseComponent implements OnChanges 
     }));
 
     this.addSub(this.platoonFilterControl.valueChanges.subscribe(val => {
+      if(!val || val.length === 0) {
+        this.filteredSoldiers = this.soldiers;
+        this.emitSoldiers();
+        return;
+      }
+      const filtered = [];
       for (const soldier of this.filteredSoldiers ?? []) {
         this.soldierSelected[soldier.id] = val?.indexOf(soldier.platoon) !== -1;
+        if(this.soldierSelected[soldier.id]) {
+          filtered.push(soldier);
+        }
+        this.filteredSoldiers = filtered;
         this.emitSoldiers();
       }
     }))
