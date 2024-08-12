@@ -3,11 +3,13 @@ import { ActionReducerMap, ActionReducer } from "@ngrx/store";
 import { AppState } from "../states/app.state";
 import { soldiersReducer } from "./soldiers.reducer";
 import { missionsReducer } from "./missions.reducer";
+import { metadataReducer } from "./metadata.reducer";
 
 export const appReducers: ActionReducerMap<AppState> = {
   router: routerReducer,
   soldiers: soldiersReducer,
-  missions: missionsReducer
+  missions: missionsReducer,
+  metadata: metadataReducer
 };
 
 export function logger(reducer: ActionReducer<any>): ActionReducer<any> {
