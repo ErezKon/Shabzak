@@ -12,11 +12,26 @@
     flex-direction: row-reverse;
     justify-content: space-around;
 
-    .is-special {
+    .options {
         display: flex;
-        flex-wrap: nowrap;
+        flex-wrap: wrap;
+        flex-direction: row-reverse;
+        flex-basis: 100%;
         justify-content: space-evenly;
-        direction: rtl;
+
+        .is-special {
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: space-evenly;
+            direction: rtl;
+        }
+        
+        .required-instances {
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: space-evenly;
+            direction: rtl;
+        }
     }
 
     .full{

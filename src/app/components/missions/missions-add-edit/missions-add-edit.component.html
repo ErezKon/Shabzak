@@ -3,7 +3,10 @@
     <div class="mission-details">
         <mat-form-field class="name">
             <mat-label>שם המשימה</mat-label>
-            <input matInput [(ngModel)]="mission.name" required>
+            <input matInput [formControl]="nameForm" required>
+            @if (nameForm.hasError('required')) {
+                <mat-error class="mat-error-rtl">שדה חובה</mat-error>
+            }
         </mat-form-field>
 
         <mat-form-field class="description">
@@ -12,20 +15,39 @@
         </mat-form-field>
         
         <!-- <div class="full"></div> -->
-
-        <mat-form-field class="duration">
-            <mat-label>משך</mat-label>
-            <input matInput type="number" [(ngModel)]="mission.duration" required>
-        </mat-form-field>
+        @if (mission.requiredInstances) {
+            <mat-form-field class="duration">
+                <mat-label>משך</mat-label>
+                <input matInput type="number" [formControl]="durationForm" min="1" required>
+                @if (durationForm.hasError('required')) {
+                    <mat-error class="mat-error-rtl">שדה חובה</mat-error>
+                }
+                @if (durationForm.hasError('min')) {
+                    <mat-error class="mat-error-rtl">הערך חייב להיות גדול מ-0</mat-error>
+                }
+            </mat-form-field>
+        }
         
         <mat-form-field class="soldiers-required">
             <mat-label>מספר חיילים</mat-label>
-            <input matInput type="number" [(ngModel)]="mission.soldiersRequired" required>
+            <input matInput type="number" [formControl]="soldiersRequiredForm" min="1" required>
+            @if (durationForm.hasError('required')) {
+                <mat-error class="mat-error-rtl">שדה חובה</mat-error>
+            }
+            @if (durationForm.hasError('min')) {
+                <mat-error class="mat-error-rtl">הערך חייב להיות גדול מ-0</mat-error>
+            }
         </mat-form-field>
 
         <mat-form-field class="commanders-required">
             <mat-label>מספר מפקדים</mat-label>
-            <input matInput type="number" [(ngModel)]="mission.commandersRequired" required>
+            <input matInput type="number" [formControl]="commandersRequiredForm" min="1" required>
+            @if (durationForm.hasError('required')) {
+                <mat-error class="mat-error-rtl">שדה חובה</mat-error>
+            }
+            @if (durationForm.hasError('min')) {
+                <mat-error class="mat-error-rtl">הערך חייב להיות גדול מ-0</mat-error>
+            }
         </mat-form-field>
 
         <div class="positions full">
@@ -46,7 +68,7 @@
                         <div class="position-count">
                             <mat-form-field>
                                 <mat-label>כמות</mat-label>
-                                <input matInput [(ngModel)]="(mission?.positions ?? [])[$index].count">
+                                <input matInput type="number" [formControl]="positionCountForms[$index]" min="1" required>
                             </mat-form-field>
                         </div>
                     </div>
@@ -57,13 +79,23 @@
             </div>
         </div>
 
-        <div class="is-special full">
-            <mat-radio-group
-                [(ngModel)]="mission.isSpecial">
-                <mat-radio-button [value]="false">בט"ש</mat-radio-button>
-                <mat-radio-button [value]="true">מיוחדת</mat-radio-button>
-            </mat-radio-group>
+        <div class="options">
+            <div class="is-special">
+                <mat-radio-group
+                    [(ngModel)]="mission.isSpecial">
+                    <mat-radio-button [value]="false">בט"ש</mat-radio-button>
+                    <mat-radio-button [value]="true">מיוחדת</mat-radio-button>
+                </mat-radio-group>
+            </div>
+            <div class="required-instances">
+                <mat-radio-group
+                    [(ngModel)]="mission.requiredInstances">
+                    <mat-radio-button [value]="false">לא לחלק</mat-radio-button>
+                    <mat-radio-button [value]="true">לחלק</mat-radio-button>
+                </mat-radio-group>
+            </div>
         </div>
+        
         @if(!mission.isSpecial) {
             <mat-form-field class="mission-dates">
                 <mat-label>הכנס טווח תאריכים</mat-label>
@@ -82,10 +114,10 @@
 
             <mat-form-field class="end-time">
                 <mat-label>שעת סיום</mat-label>
-                <input matInput  [formControl]="endTimeForm" required>
+                <input matInput [formControl]="endTimeForm" required>
             </mat-form-field>
 
-            @if(datesRange?.length) {
+            @if(datesRange.length && mission.requiredInstances) {
                 <div class="dates-instances">
                     @for (date of datesRange; track date) {
                         <div class="date-instance">
@@ -131,7 +163,7 @@
 
             <mat-form-field class="end-time">
                 <mat-label>שעת סיום</mat-label>
-                <input matInput [(ngModel)]="mission.toTIme" required>
+                <input matInput [(ngModel)]="mission.toTime" required>
             </mat-form-field>
         }
         
@@ -141,7 +173,7 @@
 </mat-dialog-content>
 <mat-dialog-actions>
     <button mat-button (click)="onNoClick()" class="cancel">בטל</button>
-    <button mat-raised-button (click)="onOk()" cdkFocusInitial color="primary" class="accept">אשר</button>
+    <button mat-raised-button (click)="onOk()" cdkFocusInitial color="primary" class="accept" [disabled]="!isValid()">אשר</button>
 </mat-dialog-actions>
 
 

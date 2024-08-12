@@ -15,7 +15,7 @@
     </div>
     <div class="soldiers">
         @for (soldier of availableSoldiers; track $index) {
-            <div class="soldier separator-down" [ngClass]="{'unavailable': soldier.restTimeBefore === 0, 'selected': soldiersDic.has(soldier.soldier.id)}" (click)="onSoldierSelected(soldier.soldier)">
+            <div class="soldier separator-down" [ngClass]="{'unavailable': !soldier.isAssignedForQueriedInstance && soldier.restTimeBefore === 0, 'selected': soldiersDic.has(soldier.soldier.id)}" (click)="onSoldierSelected(soldier.soldier)">
                 <div class="name">
                     {{soldier.soldier.name}}
                 </div>

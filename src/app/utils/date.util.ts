@@ -5,7 +5,7 @@ export const addDays = (date: Date, days: number): Date => {
 
 export const getDates = (startDate: Date, stopDate: Date):Array<Date> => {
     var dateArray = new Array<Date>();
-    var currentDate = startDate;
+    var currentDate = new Date(startDate);
     while (currentDate <= stopDate) {
         dateArray.push(new Date (currentDate));
         currentDate = addDays(currentDate, 1);

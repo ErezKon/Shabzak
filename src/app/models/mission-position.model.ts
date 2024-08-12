@@ -5,3 +5,7 @@ export interface MissionPosition {
     position: Position;
     count: number;
 }
+
+export interface AssignedMissionPosition extends MissionPosition {
+    assigned: number;
+}

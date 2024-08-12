@@ -9,8 +9,9 @@ export interface Mission {
     soldiersRequired: number;
     commandersRequired: number;
     fromTime?: string;
-    toTIme?: string;
+    toTime?: string;
     isSpecial: boolean;
+    requiredInstances: boolean;
 
     missionInstances: Array<MissionInstance>;
     positions: Array<MissionPosition>;

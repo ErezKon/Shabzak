@@ -34,7 +34,10 @@
                 flex-wrap: wrap;
                 flex-direction: row-reverse;
                 gap: 10px;
-
+            }
+            
+            &.negative {
+                color: red;
             }
         }
     }

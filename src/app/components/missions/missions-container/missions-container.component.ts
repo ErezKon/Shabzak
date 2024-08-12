@@ -62,7 +62,9 @@ export class MissionsContainerComponent extends BaseComponent{
     });
 
     this.addSub(dialogRef.afterClosed().subscribe(result => {
-      
+      if(result) {
+        this.store.dispatch(missionActions.assignSoldiersToMissionInstance({soldiers:result}));
+      }
     }));
   }
 

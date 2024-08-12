@@ -23,12 +23,12 @@ export class MissionsEffects {
     exhaustMap(() => this.missionsService.getMissions()
       .pipe(
         map(res => {
-            return missionActions.getMissionsSuccess({ missions: res as Array<Mission> });
+          return missionActions.getMissionsSuccess({ missions: res as Array<Mission> });
         }),
         catchError(err => {
-            console.error(err);
-            this.snackbar.openSnackBar('שגיאה בקבלת המשימות');
-            return of(missionActions.getMissionsFailure());
+          console.error(err);
+          this.snackbar.openSnackBar('שגיאה בקבלת המשימות');
+          return of(missionActions.getMissionsFailure());
         })
       ))
   ));
@@ -38,13 +38,13 @@ export class MissionsEffects {
     exhaustMap((action) => this.missionsService.addMission(action.mission)
       .pipe(
         map(res => {
-            this.snackbar.openSnackBar('המשימה נוספה בהצלחה');
-            return missionActions.addMissionSuccess({ mission: res });
+          this.snackbar.openSnackBar('המשימה נוספה בהצלחה');
+          return missionActions.addMissionSuccess({ mission: res });
         }),
         catchError(err => {
-            console.error(err);
-            this.snackbar.openSnackBar('שגיאה בהוספת משימה');
-            return of(missionActions.addMissionFailure());
+          console.error(err);
+          this.snackbar.openSnackBar('שגיאה בהוספת משימה');
+          return of(missionActions.addMissionFailure());
         })
       ))
   ));
@@ -54,13 +54,13 @@ export class MissionsEffects {
     exhaustMap((action) => this.missionsService.updateMission(action.mission)
       .pipe(
         map(res => {
-            this.snackbar.openSnackBar('המשימה עודכנה בהצלחה');
-            return missionActions.updateMissionSuccess({ mission: res });
+          this.snackbar.openSnackBar('המשימה עודכנה בהצלחה');
+          return missionActions.updateMissionSuccess({ mission: res });
         }),
         catchError(err => {
-            console.error(err);
-            this.snackbar.openSnackBar('שגיאה בעדכון משימה');
-            return of(missionActions.updateMissionFailure());
+          console.error(err);
+          this.snackbar.openSnackBar('שגיאה בעדכון משימה');
+          return of(missionActions.updateMissionFailure());
         })
       ))
   ));
@@ -70,13 +70,13 @@ export class MissionsEffects {
     exhaustMap((action) => this.missionsService.deleteMission(action.missionId)
       .pipe(
         map(res => {
-            this.snackbar.openSnackBar('המשימה הוסרה בהצלחה');
-            return missionActions.deleteMissionSuccess({missionId:res});
+          this.snackbar.openSnackBar('המשימה הוסרה בהצלחה');
+          return missionActions.deleteMissionSuccess({ missionId: res });
         }),
         catchError(err => {
-            console.error(err);
-            this.snackbar.openSnackBar('שגיאה בהסרת משימה');
-            return of(missionActions.deleteMissionFailure());
+          console.error(err);
+          this.snackbar.openSnackBar('שגיאה בהסרת משימה');
+          return of(missionActions.deleteMissionFailure());
         })
       ))
   ));
@@ -86,11 +86,11 @@ export class MissionsEffects {
     exhaustMap((action) => this.missionsService.getMissionInstances(action.missionId)
       .pipe(
         map(res => {
-            return missionActions.getMissionInstancesSuccess({missionInstances:res});
+          return missionActions.getMissionInstancesSuccess({ missionInstances: res });
         }),
         catchError(err => {
-            console.error(err);
-            return of(missionActions.getMissionInstancesFailure());
+          console.error(err);
+          return of(missionActions.getMissionInstancesFailure());
         })
       ))
   ));
@@ -100,11 +100,26 @@ export class MissionsEffects {
     exhaustMap((action) => this.missionsService.getAvalableSoldiers(action.missionInstanceId, action.soldiersPool)
       .pipe(
         map(res => {
-            return missionActions.getAvailableSoldiersSuccess({availableSoldiers:res});
+          return missionActions.getAvailableSoldiersSuccess({ availableSoldiers: res });
         }),
         catchError(err => {
-            console.error(err);
-            return of(missionActions.getAvailableSoldiersFailure());
+          console.error(err);
+          return of(missionActions.getAvailableSoldiersFailure());
+        })
+      ))
+  ));
+
+  assignSoldiersToMissionInstance$ = createEffect(() => this.actions$.pipe(
+    ofType(missionActions.assignSoldiersToMissionInstance),
+    exhaustMap((action) => this.missionsService.assignSoldiersToMissionInstance(action.soldiers)
+      .pipe(
+        map(res => {
+          this.snackbar.openSnackBar('החיילים שובצו בהצלחה.');
+          return missionActions.assignSoldiersToMissionInstanceSuccess();
+        }),
+        catchError(err => {
+          console.error(err);
+          return of(missionActions.assignSoldiersToMissionInstanceFailure());
         })
       ))
   ));

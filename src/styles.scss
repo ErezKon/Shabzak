@@ -149,3 +149,9 @@ table {
 .no-content-bottom-pad {
   
 }
+
+mat-error {
+  &.mat-error-rtl {
+    text-align: right;
+  }
+}

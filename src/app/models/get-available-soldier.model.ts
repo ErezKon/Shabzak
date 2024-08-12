@@ -4,4 +4,5 @@ export interface GetAvailableSoldiers {
     soldier: Soldier;
     restTimeBefore?: number;
     restTimeAfter?: number;
+    isAssignedForQueriedInstance: boolean;
 }

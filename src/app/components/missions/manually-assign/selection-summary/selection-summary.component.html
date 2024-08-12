@@ -5,12 +5,12 @@
     —
     <div class="positions">
         @for (pos of positions ?? []; track $index) {
-            <div class="position">
+            <div class="position" [ngClass]="{'negative': pos.count - pos.assigned < 0}">
                 <div class="title">
                     :{{getPositionTitle(pos)}}
                 </div>
                 <div class="count">
-                    {{getPositionCount(pos)}}
+                    {{pos.count - pos.assigned}}
                 </div>
             </div>
         }

@@ -2,6 +2,7 @@ import { createAction, props } from "@ngrx/store";
 import { Mission } from "../../models/mission.model";
 import { MissionInstance } from "../../models/mission-instance.model";
 import { GetAvailableSoldiers } from "../../models/get-available-soldier.model";
+import { SoldierMission } from "../../models/soldier-mission.model";
 
 export const getMissions = createAction(
     '[Missions] Get Missions'
@@ -72,4 +73,15 @@ export const getAvailableSoldiersSuccess = createAction(
 );
 export const getAvailableSoldiersFailure = createAction(
     '[Missions] Get Available Soldiers Failure'
+);
+
+export const assignSoldiersToMissionInstance = createAction(
+    '[Missions] Assign Soldiers To Mission Instance',
+    props<{ soldiers: Array<SoldierMission> }>()
+);
+export const assignSoldiersToMissionInstanceSuccess = createAction(
+    '[Missions] Assign Soldiers To Mission Instance Success'
+);
+export const assignSoldiersToMissionInstanceFailure = createAction(
+    '[Missions] Assign Soldiers To Mission Instance Failure'
 );
