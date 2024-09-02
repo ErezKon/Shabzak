@@ -6,10 +6,11 @@ import { SoldierMission } from "../../models/soldier-mission.model";
 import { AssignmentsPerSoldier } from "../../models/metadata/assignments-per-soldier.model";
 import { HoursPerSoldier } from "../../models/metadata/hours-per-soldier.model";
 import { AssignmentBreakdownPerSoldier } from "../../models/metadata/assignment-breakdown-per-soldier.model";
+import { SoldierMetadataType } from "../../models/metadata/soldier-metadata-type.enum";
 
 export const getAssignmentsPerSoldiers = createAction(
     '[Metadata] Get Assignments Per Soldier',
-    props<{ range: {from: Date, to: Date} }>()
+    props<{ range: {from?: Date, to: Date, soldierType?: SoldierMetadataType} }>()
 );
 export const getAssignmentsPerSoldiersSuccess = createAction(
     '[Metadata] Get Assignments Per Soldier Success',
@@ -21,7 +22,7 @@ export const getAssignmentsPerSoldiersFailure = createAction(
 
 export const getHoursPerSoldiers = createAction(
     '[Metadata] Get Hours Per Soldier',
-    props<{ range: {from: Date, to: Date} }>()
+    props<{ range: {from?: Date, to: Date, soldierType?: SoldierMetadataType} }>()
 );
 export const getHoursPerSoldiersSuccess = createAction(
     '[Metadata] Get Hours Per Soldier Success',
@@ -33,7 +34,7 @@ export const getHoursPerSoldiersFailure = createAction(
 
 export const getAssignmentsBreakdownPerSoldiers = createAction(
     '[Metadata] Get Assignments Breakdown Per Soldier',
-    props<{ range: {from: Date, to: Date} }>()
+    props<{ range: {from?: Date, to: Date, soldierType?: SoldierMetadataType} }>()
 );
 export const getAssignmentsBreakdownPerSoldiersSuccess = createAction(
     '[Metadata] Get Assignments Breakdown Per Soldier Success',

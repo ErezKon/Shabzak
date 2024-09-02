@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { MaterialModule } from './material/material/material.module';
 import { MatToolbar, MatToolbarModule } from '@angular/material/toolbar';
@@ -7,11 +7,13 @@ import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { CommonModule } from '@angular/common';
 import { MatListItem, MatNavList } from '@angular/material/list';
 import { DomSanitizer } from '@angular/platform-browser';
+import { WindowSizeService } from './services/window-size.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, CommonModule, RouterModule, MatToolbarModule, MatIconModule, MatSidenavModule, MatNavList, MatListItem],
+  providers: [WindowSizeService],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -29,6 +31,11 @@ export class AppComponent {
       name: 'משימות',
       url: '/missions',
       selected: false
+    },
+    {
+      name: 'צדק',
+      url: '/justice',
+      selected: false
     }
   ];
 
@@ -38,7 +45,7 @@ export class AppComponent {
     // }
   }
 
-  constructor(private router: Router, iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
+  constructor(private router: Router, iconRegistry: MatIconRegistry, sanitizer: DomSanitizer, public windowSizeService: WindowSizeService) {
     iconRegistry.addSvgIcon('bat-logo', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/9213-logo-no-text.svg'));
     iconRegistry.addSvgIcon('simple', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/simple.svg'));
     iconRegistry.addSvgIcon('grenade', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/grenade.svg'));
@@ -72,5 +79,13 @@ export class AppComponent {
 
   toggleNav() {
     this.sidenavOpened = !this.sidenavOpened;
+  }
+  
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    const width = event.target.innerWidth;
+    const height = event.target.innerHeight;
+
+    this.windowSizeService.changeSize(height, width);
   }
 }

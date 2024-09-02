@@ -23,6 +23,8 @@ export class MissionsComponent extends BaseComponent implements OnInit{
 
   @Output() editMission = new EventEmitter<Mission>();
 
+  @Output() duplicateMission = new EventEmitter<Mission>();
+
   @Output() manuallyAssign = new EventEmitter<Mission>();
 
   @Output() deleteMission = new EventEmitter<number>();
@@ -47,6 +49,10 @@ export class MissionsComponent extends BaseComponent implements OnInit{
 
   onEditMission(mission: Mission) {
     this.editMission.emit({...mission});
+  }
+
+  onDuplicateMission(mission: Mission) {
+    this.duplicateMission.emit({...mission});
   }
 
   onDeleteMission(missionId: number) {

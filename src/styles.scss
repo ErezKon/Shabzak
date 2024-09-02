@@ -130,8 +130,23 @@ table {
   padding-right: 10px !important;
 }
 
-.mat-mdc-dialog-content {
-  max-height: none !important;
+// .mat-mdc-dialog-content {
+//   max-height: none !important;
+// }
+
+.lg-modal {
+  &.cdk-overlay-pane.mat-mdc-dialog-panel {
+    max-width: none !important;
+  }
+  .mat-mdc-dialog-content {
+    max-height: calc(95vh - 64px - 49px) !important;
+  }
+}
+
+.no-body-scroll {
+  .mat-mdc-dialog-content {
+    overflow: hidden;
+  }
 }
 
 .white-icon {

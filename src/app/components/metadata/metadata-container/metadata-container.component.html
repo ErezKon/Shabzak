@@ -1,0 +1,38 @@
+<div class="metadata-container">
+    <div class="selection-row">
+        <div class="chart-selection">
+            <mat-form-field>
+                <mat-label>בחר סוג גרף</mat-label>
+                <mat-select [(value)]="selectedChart" (selectionChange)="onSelectChange($event)">
+                    <mat-option value="assPerSoldier">משימות פר חייל</mat-option>
+                    <mat-option value="hourPerSoldier">שעות פר חייל</mat-option>
+                    <mat-option value="breakdownPerSoldier">פירוק משימות פר חייל</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="soldier-selection">
+            <mat-form-field>
+                <mat-label>בחר סוג חיילים</mat-label>
+                <mat-select [(value)]="selectedSoldierType" (selectionChange)="onSelectChange($event)">
+                    @for (option of soldierTypeOptions; track $index) {
+                        <mat-option [value]="option.value">{{option.label}}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+    
+    @if (selectedChart === 'assPerSoldier') {
+        <div class="bar-chart" >
+            <app-bar-chart [xAxisLabel]="'חייל'" [yAxisLabel]="'משימות'" [showLegend]="showLegend" [data]="assignmentsPerSoldier$ | async"></app-bar-chart>
+        </div>
+    } @else if (selectedChart === 'hourPerSoldier') {
+        <div class="bar-chart" >
+            <app-bar-chart [xAxisLabel]="'חייל'" [yAxisLabel]="'שעות'" [showLegend]="showLegend" [data]="hoursPerSoldier$ | async"></app-bar-chart>
+        </div>
+    } @else {
+        <div class="grouped-bar-chart">
+            <app-grouped-bar-chart [xAxisLabel]="'משימות פר חייל'" [yAxisLabel]="'משימות'" [showLegend]="showLegend"  [data]="assignmentsBreakdownPerSoldier$ | async"></app-grouped-bar-chart>
+        </div>
+    }
+</div>

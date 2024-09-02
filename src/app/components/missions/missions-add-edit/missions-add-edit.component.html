@@ -31,22 +31,22 @@
         <mat-form-field class="soldiers-required">
             <mat-label>מספר חיילים</mat-label>
             <input matInput type="number" [formControl]="soldiersRequiredForm" min="1" required>
-            @if (durationForm.hasError('required')) {
+            @if (soldiersRequiredForm.hasError('required')) {
                 <mat-error class="mat-error-rtl">שדה חובה</mat-error>
             }
-            @if (durationForm.hasError('min')) {
+            @if (soldiersRequiredForm.hasError('min')) {
                 <mat-error class="mat-error-rtl">הערך חייב להיות גדול מ-0</mat-error>
             }
         </mat-form-field>
 
         <mat-form-field class="commanders-required">
             <mat-label>מספר מפקדים</mat-label>
-            <input matInput type="number" [formControl]="commandersRequiredForm" min="1" required>
-            @if (durationForm.hasError('required')) {
+            <input matInput type="number" [formControl]="commandersRequiredForm" min="0" required>
+            @if (commandersRequiredForm.hasError('required')) {
                 <mat-error class="mat-error-rtl">שדה חובה</mat-error>
             }
-            @if (durationForm.hasError('min')) {
-                <mat-error class="mat-error-rtl">הערך חייב להיות גדול מ-0</mat-error>
+            @if (commandersRequiredForm.hasError('min')) {
+                <mat-error class="mat-error-rtl">הערך חייב להיות גדול או שווה ל-0</mat-error>
             }
         </mat-form-field>
 

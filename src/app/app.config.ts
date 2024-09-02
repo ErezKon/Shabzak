@@ -10,6 +10,7 @@ import { provideEffects } from '@ngrx/effects';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { appReducers, metaReducers } from './state-management/reducers';
 import { MissionsEffects } from './state-management/effects/missions.effects';
+import { MetadataEffects } from './state-management/effects/metadata.effects';
 
 
 export const appConfig: ApplicationConfig = {
@@ -20,6 +21,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(), 
     provideStore(appReducers, {metaReducers}),
     provideEffects(SoldiersEffects),
-    provideEffects(MissionsEffects)
+    provideEffects(MissionsEffects),
+    provideEffects(MetadataEffects)
   ]
 };

@@ -1,0 +1,21 @@
+.metadata-container {
+
+    .selection-row {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: space-evenly;
+
+        .chart-selection {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+
+        .soldier-selection {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+    }
+    
+}

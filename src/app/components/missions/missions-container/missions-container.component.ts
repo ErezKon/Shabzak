@@ -15,6 +15,7 @@ import { MissionsComponent } from '../missions/missions.component';
 
 import * as missionActions from '../../../state-management/actions/missions.actions';
 import { ManuallyAssignContainerComponent } from '../manually-assign/manually-assign-container/manually-assign-container.component';
+import { MissionAddEditMode } from '../missions-add-edit/mission-add-edit-mode.enum';
 
 @Component({
   selector: 'app-missions-container',
@@ -39,8 +40,13 @@ export class MissionsContainerComponent extends BaseComponent{
 
   onEditMission(mission: Mission) {
     const dialogRef = this.dialog.open(MissionsAddEditComponent, {
-      data: mission,
-      width: '80vw'
+      data: {
+        mission: mission,
+        mode: MissionAddEditMode.Edit
+      },
+      width: '95vw',
+      height: '95vh',
+      panelClass: ['lg-modal', 'no-body-scroll']
     });
 
     this.addSub(dialogRef.afterClosed().subscribe(result => {
@@ -56,9 +62,9 @@ export class MissionsContainerComponent extends BaseComponent{
   onManuallyAssign(mission: Mission) {
     const dialogRef = this.dialog.open(ManuallyAssignContainerComponent, {
       data: mission,
-      width: '100vw',
+      width: '98vw',
       height: '97vh',
-      panelClass: 'no-max-width'
+      panelClass: ['lg-modal', 'no-body-scroll']
     });
 
     this.addSub(dialogRef.afterClosed().subscribe(result => {
@@ -84,9 +90,50 @@ export class MissionsContainerComponent extends BaseComponent{
 
   onAddMission() {
     const dialogRef = this.dialog.open(MissionsAddEditComponent, {
-      data: {},
+      data: {
+        mission: {},
+        mode: MissionAddEditMode.Add
+      },
       width: '95vw',
-      height: '95vh'
+      height: '95vh',
+      panelClass: ['lg-modal', 'no-body-scroll']
+    });
+
+    this.addSub(dialogRef.afterClosed().subscribe(result => {
+      if(result) {
+        this.store.dispatch(missionActions.addMission({mission: result}));
+      }
+    }));
+  }
+
+  onDuplicateMission(mission: Mission) {
+    const dialogRef = this.dialog.open(MissionsAddEditComponent, {
+      data: {
+        mission: {
+          ...mission,
+          id: 0,
+          missionInstances: mission?.missionInstances?.map(mi => 
+            {
+              return {
+                ...mi,
+                id: 0
+              }
+            }
+          )  ?? [],
+          positions: mission?.positions?.map(p => 
+            {
+              return {
+                ...p,
+                id: 0
+              }
+            }
+          )  ?? []
+        },
+        mode: MissionAddEditMode.Clone
+      },
+      width: '95vw',
+      height: '95vh',
+      panelClass: ['lg-modal', 'no-body-scroll']
     });
 
     this.addSub(dialogRef.afterClosed().subscribe(result => {

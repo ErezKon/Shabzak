@@ -23,6 +23,8 @@ import { MissionPosition } from '../../../models/mission-position.model';
 import { ConfirmationModule } from '../../../utils/confirmation/module/confirmation/confirmation.module';
 import { ConfirmationService } from '../../../utils/confirmation/service/confirmation.service';
 import { ConfirmationDialogResult } from '../../../utils/confirmation/models/dialog-result.model';
+import { AddEditMissionModel } from './mission-add-edit-data.model';
+import { MissionAddEditMode } from './mission-add-edit-mode.enum';
 
 @Component({
   selector: 'app-missions-add-edit',
@@ -80,12 +82,12 @@ export class MissionsAddEditComponent extends BaseComponent {
 
   positionOptions: Array<KeyValue<string, string>>;
 
-  private readonly defaultStartEndTime = '14:00';
+  private readonly defaultStartEndTime = '06:00';
 
   constructor(public dialogRef: MatDialogRef<MissionsAddEditComponent>,
     public dialog: MatDialog,
     public confirmationService: ConfirmationService,
-    @Inject(MAT_DIALOG_DATA) public data: Partial<Mission>) {
+    @Inject(MAT_DIALOG_DATA) public data: AddEditMissionModel) {
       super();
       let date = new Date();
       date.setDate(date.getDate() - 1);
@@ -94,25 +96,36 @@ export class MissionsAddEditComponent extends BaseComponent {
 
       this.positionOptions = getPositionsKeyValue();
 
-      this.title = data?.id ? 'עריכת משימה' : 'הוספת משימה';
-      if(!data?.id) {
-        data.isSpecial = false;
-        data.requiredInstances = true;
+      switch(data.mode){
+        case MissionAddEditMode.Add:
+          this.title = 'הוספת משימה';
+          break;
+        case MissionAddEditMode.Edit:
+          this.title = 'עריכת משימה';
+          break;
+        case MissionAddEditMode.Clone:
+          this.title = 'שכפול משימה';
+          break;
+      }
+
+      if(data.mode === MissionAddEditMode.Add) {
+        data.mission.isSpecial = false;
+        data.mission.requiredInstances = true;
         this.nameForm = new FormControl<string>('', [Validators.required]);
-        this.durationForm = new FormControl('', [Validators.required, Validators.min(1)]);
-        this.soldiersRequiredForm = new FormControl('', [Validators.required, Validators.min(1)]);
-        this.commandersRequiredForm = new FormControl('', [Validators.required, Validators.min(1)]);
+        this.durationForm = new FormControl(1, [Validators.required, Validators.min(1)]);
+        this.soldiersRequiredForm = new FormControl(0, [Validators.required, Validators.min(1)]);
+        this.commandersRequiredForm = new FormControl(0, [Validators.required, Validators.min(0)]);
         this.startTimeForm = new FormControl(this.defaultStartEndTime, [Validators.required]);
         this.endTimeForm = new FormControl(this.defaultStartEndTime, [Validators.required]);
       } else {
-        this.nameForm = new FormControl(data.name, [Validators.required]);
-        this.durationForm = new FormControl(data.duration, [Validators.required, Validators.min(1)]);
-        this.soldiersRequiredForm = new FormControl(data.soldiersRequired, [Validators.required, Validators.min(1)]);
-        this.commandersRequiredForm = new FormControl(data.commandersRequired, [Validators.required, Validators.min(1)]);
-        this.startTimeForm = new FormControl(data.fromTime, [Validators.required]);
-        this.endTimeForm = new FormControl(data.toTime, [Validators.required]);
+        this.nameForm = new FormControl(data.mission.name, [Validators.required]);
+        this.durationForm = new FormControl(data.mission.duration, [Validators.required, Validators.min(1)]);
+        this.soldiersRequiredForm = new FormControl(data.mission.soldiersRequired, [Validators.required, Validators.min(1)]);
+        this.commandersRequiredForm = new FormControl(data.mission.commandersRequired, [Validators.required, Validators.min(0)]);
+        this.startTimeForm = new FormControl(data.mission.fromTime, [Validators.required]);
+        this.endTimeForm = new FormControl(data.mission.toTime, [Validators.required]);
 
-        for (const instance of data?.missionInstances ?? []) {
+        for (const instance of data.mission?.missionInstances ?? []) {
           const inst: AddMissionInstance = {
             id: instance.id,
             date: instance.fromTime.split(' ')[0],
@@ -129,7 +142,7 @@ export class MissionsAddEditComponent extends BaseComponent {
             this.datesInstances.set(key, [inst]);
           }
         }
-        for (const pos of data?.positions ?? []) {
+        for (const pos of data.mission?.positions ?? []) {
           this.addPosition({...pos});
         }
       }
@@ -178,9 +191,9 @@ export class MissionsAddEditComponent extends BaseComponent {
       }));
 
       this.mission = {
-        ...this.data,
-        missionInstances: (this.data?.missionInstances ?? []).map(mi => { return {...mi}}),
-        positions: this.data.positions?.map(p => { return {...p}}) ?? []
+        ...this.data.mission,
+        missionInstances: (this.data.mission?.missionInstances ?? []).map(mi => { return {...mi}}),
+        positions: this.data.mission.positions?.map(p => { return {...p}}) ?? []
       }
   }
 
@@ -267,7 +280,11 @@ export class MissionsAddEditComponent extends BaseComponent {
       return;
     }
     let lastTime = this.startTimeForm.value ?? '';
-    let finalEndTime = this.endTimeForm.value?.split(':')?.map((t: string) => +t)[0] ?? 0;
+    const finalEndTime = this.endTimeForm.value?.split(':')?.map((t: string) => +t)[0] ?? 0;
+    const finalEndTimeMinutes = this.endTimeForm.value?.split(':')?.map((t: string) => +t)[1] ?? 0;
+    const finalInstanceEndTime = this.datesRange[this.datesRange.length - 1];
+    finalInstanceEndTime.setHours(finalEndTime);
+    finalInstanceEndTime.setMinutes(finalEndTimeMinutes);
     let index = 0;
     this.mission.missionInstances = [];
     let id = 0;
@@ -275,6 +292,16 @@ export class MissionsAddEditComponent extends BaseComponent {
       const key = date.toLocaleDateString('en-GB');
       const instances = new Array<AddMissionInstance>();
       let time = lastTime;
+      const lastInstanceEndTimeHours = lastTime.split(':')[0];
+      const lastInstanceEndTimeMinutes = lastTime.split(':')[1];
+      const keyRearrange = key.split('/').reverse().join('-');
+      const instanceEndTime = new Date(keyRearrange);
+      instanceEndTime.setHours(lastInstanceEndTimeHours);
+      instanceEndTime.setMinutes(lastInstanceEndTimeMinutes);
+      if(instanceEndTime >= finalInstanceEndTime ) {
+        break;
+      }
+
       let keepCreating = true;
       while(keepCreating) {
         const spl = time.split(":").map((s: string) => +s);
@@ -418,7 +445,7 @@ export class MissionsAddEditComponent extends BaseComponent {
     const toHour = +(instance.to.split(':')[0]);
 
     let date = new Date(instance.date.split('/').reverse().join('/'));
-    if(toHour < fromHour) {
+    if(toHour <= fromHour) {
       date = new Date(date.setDate(date.getDate() + 1));
       ret.toTime = `${date.toLocaleDateString('en-GB')} ${instance.to}`
     }

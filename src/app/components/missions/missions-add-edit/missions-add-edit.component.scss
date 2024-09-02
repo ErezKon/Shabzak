@@ -57,9 +57,11 @@
 
     .dates-instances {
         flex-basis: 100%;
-        direction: rtl;
-
+        max-height: calc(95vh - 64px - 50px - 468px);
+        overflow: auto;
+        
         .date-instance {
+            direction: rtl;
             display: flex;
             flex-direction: row;
             flex-wrap: nowrap;

@@ -7,6 +7,7 @@ import * as metadataActions from '../actions/metadata.actions';
 import { exhaustMap, map, catchError, of } from 'rxjs';
 import { SnackbarService } from '../../services/snackbar.service';
 import { MetadataService } from '../../services/metadata.service';
+import { SoldierMetadataType } from '../../models/metadata/soldier-metadata-type.enum';
 
 @Injectable()
 export class MetadataEffects {
@@ -19,7 +20,7 @@ export class MetadataEffects {
 
   getAssignmentsPerSoldiers$ = createEffect(() => this.actions$.pipe(
     ofType(metadataActions.getAssignmentsPerSoldiers),
-    exhaustMap((action) => this.metadataService.getAssignmentsPerSoldiers(action.range.from, action.range.to)
+    exhaustMap((action) => this.metadataService.getAssignmentsPerSoldiers(action.range.from, action.range.to, action.range.soldierType ?? SoldierMetadataType.All)
       .pipe(
         map(res => {
           return metadataActions.getAssignmentsPerSoldiersSuccess({ assignmentsPerSoldier: res });
@@ -34,7 +35,7 @@ export class MetadataEffects {
 
   getHoursPerSoldiers$ = createEffect(() => this.actions$.pipe(
     ofType(metadataActions.getHoursPerSoldiers),
-    exhaustMap((action) => this.metadataService.getHoursPerSoldiers(action.range.from, action.range.to)
+    exhaustMap((action) => this.metadataService.getHoursPerSoldiers(action.range.from, action.range.to, action.range.soldierType ?? SoldierMetadataType.All)
       .pipe(
         map(res => {
           return metadataActions.getHoursPerSoldiersSuccess({ hoursPerSoldier: res });
@@ -49,7 +50,7 @@ export class MetadataEffects {
 
   updateMission$ = createEffect(() => this.actions$.pipe(
     ofType(metadataActions.getAssignmentsBreakdownPerSoldiers),
-    exhaustMap((action) => this.metadataService.getAssignmentsBreakdownPerSoldiers(action.range.from, action.range.to)
+    exhaustMap((action) => this.metadataService.getAssignmentsBreakdownPerSoldiers(action.range.from, action.range.to, action.range.soldierType ?? SoldierMetadataType.All)
       .pipe(
         map(res => {
           return metadataActions.getAssignmentsBreakdownPerSoldiersSuccess({ assignmentsBreakdownPerSoldier: res });

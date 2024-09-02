@@ -1,10 +1,11 @@
 <div class="missions-container">
-    <app-missions-filter ></app-missions-filter>
+    <!-- <app-missions-filter ></app-missions-filter> -->
     <app-missions 
         [missions$]="missions$"
         (editMission)="onEditMission($event)"
         (manuallyAssign)="onManuallyAssign($event)"
-        (deleteMission)="onDeleteMission($event)"></app-missions>
+        (deleteMission)="onDeleteMission($event)"
+        (duplicateMission)="onDuplicateMission($event)"></app-missions>
 
         <div class="floating-button">
             <button mat-mini-fab color="primary" (click)="onAddMission()">
