@@ -62,9 +62,6 @@ export class AssignmentsContainerComponent extends BaseComponent{
 
   private loadAssignmentsByDayModel(missions: Array<Mission>, filter: AssignmentsFilter) {
     const allDates = Array.from(new Set(missions.flatMap(m => m.missionInstances.map(mi => this.parseStrToDate(mi.fromTime)))));
-
-    // const maxDate=new Date(Math.max.apply(null, allDates));
-    // const minDate=new Date(Math.min.apply(null, allDates));
     const tempMap = new Map<string, Map<string, Array<Assignment>>>();
 
     const maxDate = allDates?.reduce(function (a, b) { return a > b ? a : b; });
@@ -91,9 +88,6 @@ export class AssignmentsContainerComponent extends BaseComponent{
               const assignmentArray = missionMap.get(mission.name);
               assignmentArray?.push(assignment);
             }
-            // const sortedMap = new Map([...missionMap.entries()].sort((m1,m2) => m1[1][0].positionsCount - m2[1][0].positionsCount));
-            // tempMap.set(datePart, sortedMap);
-            // console.log(this.assignmentsByDayByMission);
           }
         }
       }
@@ -112,11 +106,6 @@ export class AssignmentsContainerComponent extends BaseComponent{
       });
       this.assignmentsByDayByMission?.set(day, assignmentsByMissions.sort((a1,a2) => a1.missionPositions - a2.missionPositions));
     });
-    // for (const assByMission of this.assignmentsByDayByMission) {
-    //   for (const item of assByMission) {
-        
-    //   }
-    // }
     console.log(this.assignmentsByDayByMission);
   }
 
@@ -138,7 +127,7 @@ export class AssignmentsContainerComponent extends BaseComponent{
           position: sm.missionPosition.position
         } as AssignmentSoldier
       }) ?? [],
-      multiplePositions: positions > 1,//this.hasMultiplePositions(missionInstance),
+      multiplePositions: positions > 1,
       positionsCount: positions
     };
     return ret;
@@ -150,24 +139,9 @@ export class AssignmentsContainerComponent extends BaseComponent{
     }
     const positions = new Set<Position>();
     for (const pos of missionInstance.soldierMissions) {
-      //if(!positions.has(pos.missionPosition.position)) {
-        positions.add(pos.missionPosition.position);
-      //}
+      positions.add(pos.missionPosition.position);
     }
     return positions.size;
-  }
-
-  private hasMultiplePositions(missionInstance: MissionInstance) {
-    if(!missionInstance.soldierMissions?.length) {
-      return false;
-    }
-    const firstPos = missionInstance.soldierMissions[0].missionPosition.position;
-    for (const pos of missionInstance.soldierMissions) {
-      if(pos.missionPosition.position !== firstPos) {
-        return true;
-      }
-    }
-    return false;
   }
 
   private parseStrToDate(dateStr: string): Date {
@@ -187,6 +161,6 @@ export class AssignmentsContainerComponent extends BaseComponent{
   onModeSelected(mode: AssignmentMode) {
     this.filter.showMode = mode;
     this.filter$.next(this.filter);
-    
   }
+
 }

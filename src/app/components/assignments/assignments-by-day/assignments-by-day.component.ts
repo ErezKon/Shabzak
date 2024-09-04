@@ -5,13 +5,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { TooltipModule } from '@swimlane/ngx-charts';
 import { translatePosition } from '../../../utils/position.translator';
-import { ArraySortPipe } from '../../../utils/array-sort.pipe';
 import { AssignmentByMission } from '../models/assignment-by-mission.model';
 
 @Component({
   selector: 'app-assignments-by-day',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, TooltipModule, ArraySortPipe],
+  imports: [CommonModule, MatButtonModule, MatIconModule, TooltipModule],
   templateUrl: './assignments-by-day.component.html',
   styleUrl: './assignments-by-day.component.scss'
 })
