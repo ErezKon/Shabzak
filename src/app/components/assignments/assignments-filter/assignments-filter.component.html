@@ -1,0 +1,20 @@
+<div class="assignment-filter">
+    <mat-form-field class="mission-dates">
+        <mat-label>הכנס טווח תאריכים</mat-label>
+        <mat-date-range-input [rangePicker]="picker">
+          <input matStartDate placeholder="תאריך התחלה" [formControl]="startDateForm">
+          <input matEndDate placeholder="תאריך סיום" [formControl]="endDateForm">
+        </mat-date-range-input>
+        <mat-hint>DD/MM/YYYY – DD/MM/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field>
+    <mat-form-field class="assignments-mode">
+        <mat-label>בחר צורת הצגה</mat-label>
+        <mat-select [formControl]="showAssignmentMode">
+        @for (mode of showAssignmentModeOptions; track $index) {
+            <mat-option [value]="mode.value">{{mode.text}}</mat-option>
+        }
+        </mat-select>
+    </mat-form-field>
+</div>

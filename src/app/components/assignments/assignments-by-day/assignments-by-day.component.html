@@ -1,0 +1,54 @@
+@if(assignmentsByDayByMission) {
+    <div class="assignments-by-day">
+        <div class="day-selection">
+            <div class="prev">
+                <button mat-icon-button (click)="showPreviousDay()" matTooltip="הקודם">
+                    <mat-icon>arrow_forward_ios</mat-icon>
+                </button>
+            </div>
+            <h2 class="day">
+                {{displayDate}}
+            </h2>
+            <div class="next">
+                <button mat-icon-button (click)="showNextDay()" matTooltip="הבא">
+                    <mat-icon>arrow_back_ios</mat-icon>
+                </button>
+            </div>
+        </div>
+        <div class="missions-breakdown">
+            @for (missionAssignments of assignmentsByMission; track $index) {
+                <div class="assignments-by-mission">
+                    <div class="mission">
+                        {{missionAssignments.missionName}}
+                    </div>
+                    @for (assignments of missionAssignments.assignments; track $index) {
+                        <div class="assignment">
+                            
+                            <div class="time">
+                                {{assignments.startTime}}-{{assignments.endTime}}
+                            </div>
+                            @for (soldier of assignments.soldiers; track $index) {
+                                <div class="soldier-container">
+                                    @if(assignments.multiplePositions) {
+                                        <div class="position">
+                                            {{translatePosition(soldier.position)}}
+                                        </div> 
+                                    }
+                                    <div class="soldier">
+                                        {{soldier.soldierName}}
+                                    </div>
+                                    
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+                
+            }
+        </div>
+    </div>
+} @else {
+    <div class="no-assignments">
+        שיבוץ משימות לא קיים
+    </div>
+}

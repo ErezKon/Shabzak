@@ -33,6 +33,11 @@ export class AppComponent {
       selected: false
     },
     {
+      name: 'שבצ"ק',
+      url: '/assignments',
+      selected: false
+    },
+    {
       name: 'צדק',
       url: '/justice',
       selected: false

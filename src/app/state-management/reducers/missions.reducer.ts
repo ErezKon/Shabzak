@@ -6,7 +6,7 @@ import { Mission } from "../../models/mission.model";
 
 export const missionsReducer = createReducer(
     initialMissionsState,
-    on(missionActions.getMissions, (state) => ({ ...state, missions: initialMissionsState.missions })),
+    //on(missionActions.getMissions, (state) => ({ ...state, missions: initialMissionsState.missions })),
     on(missionActions.getMissionsSuccess, (state, {missions}) => ({ ...state, missions: missions })),
     on(missionActions.addMissionSuccess, (state, {mission}) => ({...state, missions: [...state.missions, mission]})),
     on(missionActions.deleteMissionSuccess, (state, {missionId}) => ({...state, missions: state.missions.filter(s => s.id !== missionId)})),

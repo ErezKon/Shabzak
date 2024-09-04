@@ -1,0 +1,79 @@
+@import '../../../../styles.scss';
+
+.assignments-by-day {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: center;
+    align-items: center;
+
+    .day-selection {
+        display: flex;
+        flex-direction: row-reverse;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+
+    .missions-breakdown {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row-reverse;
+        justify-content: space-around;
+        width: 100%;
+
+        .assignments-by-mission {
+            box-shadow: 0px 0px 6px 3px #a1a1a1;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+
+            .mission {
+                display: flex;
+                flex-direction: row-reverse;
+                justify-content: center;
+                padding: 5px;
+                background-color: #d7d7d7;
+                border-bottom: 1px solid $separator;
+                border-radius: 5px;
+            }
+            .assignment {
+                display: flex;
+                flex-direction: row-reverse;
+                justify-content: space-between;
+                border-bottom: 1px solid $separator;
+                .time {
+                    flex-direction: column;
+                    justify-content: center;
+                    padding-left: 5px;
+                    padding-right: 5px;
+                    border-left: 1px solid $separator;
+                    border-right: 1px solid $separator
+                }
+                .soldier-container {
+                    padding-left: 5px;
+                    border-left: 1px solid $separator;
+                    flex: 1 1 0px;
+                    display: flex;
+                    flex-direction: column;
+                    .soldier {
+                        //padding-left: 5px;
+                        display: flex;
+                        flex-direction: row-reverse;
+                        justify-content: center;
+                        text-align: center;
+                    }
+                    .position {
+                        //flex-basis: 100%;
+                        display: flex;
+                        flex-direction: row-reverse;    
+                        border-bottom: 1px dashed $separator;
+                        justify-content: center;
+                    
+                    }
+                }
+            }
+        }
+    }
+}
