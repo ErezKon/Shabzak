@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Store, select } from '@ngrx/store';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Mission } from '../../../models/mission.model';
-import { selectMissions } from '../../../state-management/selectors/missions.selector';
+import { selectLoading, selectMissions } from '../../../state-management/selectors/missions.selector';
 import { AppState } from '../../../state-management/states/app.state';
 import { MissionsAddEditComponent } from '../missions-add-edit/missions-add-edit.component';
 import { BaseComponent } from '../../../utils/base-component/base-component.component';
@@ -16,16 +16,18 @@ import { MissionsComponent } from '../missions/missions.component';
 import * as missionActions from '../../../state-management/actions/missions.actions';
 import { ManuallyAssignContainerComponent } from '../manually-assign/manually-assign-container/manually-assign-container.component';
 import { MissionAddEditMode } from '../missions-add-edit/mission-add-edit-mode.enum';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-missions-container',
   standalone: true,
-  imports: [CommonModule, MissionsComponent, MissionsFilterComponent, MatIconModule, MatButtonModule, BaseComponent],
+  imports: [CommonModule, MissionsComponent, MissionsFilterComponent, MatIconModule, MatButtonModule, MatProgressSpinnerModule, BaseComponent],
   templateUrl: './missions-container.component.html',
   styleUrl: './missions-container.component.scss'
 })
 export class MissionsContainerComponent extends BaseComponent{
   missions$ = new BehaviorSubject<Array<Mission>>([]);
+  loading$: Observable<boolean>;
   allMissions: Array<Mission> = [];
 
   constructor(private store: Store<AppState>, public dialog: MatDialog) {
@@ -36,6 +38,7 @@ export class MissionsContainerComponent extends BaseComponent{
       this.missions$.next(missions);
       this.allMissions = missions;
     }));
+    this.loading$ = store.pipe(select(selectLoading));
   }
 
   onEditMission(mission: Mission) {

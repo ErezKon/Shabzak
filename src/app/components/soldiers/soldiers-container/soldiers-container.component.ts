@@ -48,7 +48,12 @@ export class SoldiersContainerComponent extends BaseComponent{
 
     dialogRef.afterClosed().subscribe(result => {
       if(result) {
-        const action = soldierActions.updateSoldier({soldier:result});
+        const action = soldierActions.updateSoldier({soldier:
+          {
+            ...result,
+            missions: []
+          }
+        });
         this.store.dispatch(action);
       }
     });
