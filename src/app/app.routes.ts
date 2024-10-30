@@ -2,10 +2,15 @@ import { Routes } from '@angular/router';
 import { SoldiersContainerComponent } from './components/soldiers/soldiers-container/soldiers-container.component';
 import { MissionsContainerComponent } from './components/missions/missions-container/missions-container.component';
 import { MetadataContainerComponent } from './components/metadata/metadata-container/metadata-container.component';
+import { LoginComponent } from './components/user/login/login.component';
 
 export const routes: Routes = [
-    
-    {
+  {
+    path: 'login',
+    component: LoginComponent,
+    children: []
+  },
+  {
     path: 'soldiers',
     component: SoldiersContainerComponent,
     children: []

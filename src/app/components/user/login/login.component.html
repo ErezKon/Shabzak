@@ -1,0 +1,17 @@
+<div class="login">
+    <div class="username">
+        <mat-form-field class="small-col">
+            <mat-label>שם משתמש</mat-label>
+            <input matInput [(ngModel)]="username" required>
+        </mat-form-field>
+    </div>
+    <div class="password">
+        <mat-form-field class="small-col">
+            <mat-label>סיסמא</mat-label>
+            <input matInput [(ngModel)]="password" required>
+        </mat-form-field>
+    </div>
+    <div class="actions">
+        <button mat-raised-button cdkFocusInitial color="primary" class="accept">התחבר</button>
+    </div>
+</div>

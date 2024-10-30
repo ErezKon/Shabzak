@@ -16,6 +16,8 @@ import { SoldiersFilter } from '../soldiers-filter/soldiers-filter.model';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { BaseComponent } from '../../../utils/base-component/base-component.component';
+import { UserService } from '../../../services/user.service';
+import { log } from 'console';
 
 @Component({
   selector: 'app-soldiers-container',
@@ -30,7 +32,7 @@ export class SoldiersContainerComponent extends BaseComponent{
   soldiers$ = new BehaviorSubject<Array<Soldier>>([]);
   allSoldiers: Array<Soldier> = [];
 
-  constructor(private store: Store<AppState>, public dialog: MatDialog) {
+  constructor(private store: Store<AppState>, public dialog: MatDialog, private userService: UserService) {
     super();
     this.store.dispatch(soldierActions.getSoldiers());
     this.addSub(this.store.pipe(select(selectSoldiers))
@@ -83,5 +85,12 @@ export class SoldiersContainerComponent extends BaseComponent{
 
   onDeleteSoldier(soldierId: number) {
     this.store.dispatch(soldierActions.deleteSoldier({soldierId: soldierId}));
+  }
+
+  createUser() {
+    this.userService.login('asd','jjhsad7HSa')
+    .subscribe(val => {
+      console.log(val);
+    });
   }
 }

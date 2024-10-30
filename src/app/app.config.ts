@@ -11,6 +11,7 @@ import { provideHttpClient, withFetch } from '@angular/common/http';
 import { appReducers, metaReducers } from './state-management/reducers';
 import { MissionsEffects } from './state-management/effects/missions.effects';
 import { MetadataEffects } from './state-management/effects/metadata.effects';
+import { UserEffects } from './state-management/effects/user.effects';
 
 
 export const appConfig: ApplicationConfig = {
@@ -22,6 +23,7 @@ export const appConfig: ApplicationConfig = {
     provideStore(appReducers, {metaReducers}),
     provideEffects(SoldiersEffects),
     provideEffects(MissionsEffects),
-    provideEffects(MetadataEffects)
+    provideEffects(MetadataEffects),
+    provideEffects(UserEffects)
   ]
 };
