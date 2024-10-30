@@ -1,17 +1,14 @@
 <div class="soldiers-container">
-    <app-soldiers-filter (filterSoldiers)="onFilterSoldiers($event)"></app-soldiers-filter>
-    <app-soldiers 
-        [soldiers$]="soldiers$"
-        (editSoldier)="onEditSoldier($event)"
-        (deleteSoldier)="onDeleteSoldier($event)"></app-soldiers>
+  <app-soldiers-filter (filterSoldiers)="onFilterSoldiers($event)"></app-soldiers-filter>
+  <app-soldiers 
+    [soldiers$]="soldiers$"
+    (editSoldier)="onEditSoldier($event)"
+    (deleteSoldier)="onDeleteSoldier($event)">
+  </app-soldiers>
 
-        <div class="floating-button">
-            <button mat-mini-fab color="primary" (click)="onAddSoldier()">
-              <mat-icon>add</mat-icon>
-            </button>
-        </div>
-
-        <div class="create-user">
-          <button mat-raised-button (click)="createUser()">Create User</button>
-        </div>
+  <div class="floating-button">
+    <button mat-mini-fab color="primary" (click)="onAddSoldier()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
 </div>
