@@ -250,6 +250,19 @@ export class MissionsAddEditComponent extends BaseComponent {
         }
       ]
     }
+    if(this.mission.isSpecial) {
+      const startDateSpl = `${(this.specialTime ?? new Date()).toLocaleDateString('en-GB')}`.split('/').reverse();
+      const startTimeSpl = this.mission.fromTime?.split(':') ?? ['00', '00'];
+      const startDate = new Date(+startDateSpl[0], (+startDateSpl[1] - 1), +startDateSpl[2], +startTimeSpl[0], +startTimeSpl[1]);
+      this.mission.missionInstances = [
+        {
+          id: 0,
+          fromTime: `${startDate.toLocaleString('en-GB').replace(',', '')}`,
+          toTime: `${this.mission.toTime}`,
+          soldierMissions: []
+        }
+      ]
+    }
     if(!this.mission.fromTime) {
       this.mission.fromTime = this.startTimeForm.value;
     }

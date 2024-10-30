@@ -14,6 +14,11 @@ export const selectMissionInstances = createSelector(
   (state: MissionsState) => state.missionInstances
 );
 
+export const selectLoading = createSelector(
+  selectMissionsState,
+  (state: MissionsState) => state.loading
+);
+
 export const selectAvalableSoldiers = createSelector(
   selectMissionsState,
   (state: MissionsState) => state.availableSoldiers

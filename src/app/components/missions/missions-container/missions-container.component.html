@@ -1,15 +1,22 @@
 <div class="missions-container">
-    <!-- <app-missions-filter ></app-missions-filter> -->
+  <!-- <app-missions-filter ></app-missions-filter> -->
+  @if(loading$ | async) {
+    <div class="spinner-container">
+      <mat-spinner></mat-spinner>
+    </div>
+  } @else {
     <app-missions 
-        [missions$]="missions$"
-        (editMission)="onEditMission($event)"
-        (manuallyAssign)="onManuallyAssign($event)"
-        (deleteMission)="onDeleteMission($event)"
-        (duplicateMission)="onDuplicateMission($event)"></app-missions>
+      [missions$]="missions$"
+      (editMission)="onEditMission($event)"
+      (manuallyAssign)="onManuallyAssign($event)"
+      (deleteMission)="onDeleteMission($event)"
+      (duplicateMission)="onDuplicateMission($event)">
+    </app-missions>
+  }
 
-        <div class="floating-button">
-            <button mat-mini-fab color="primary" (click)="onAddMission()">
-              <mat-icon>add</mat-icon>
-            </button>
-        </div>
+  <div class="floating-button">
+    <button mat-mini-fab color="primary" (click)="onAddMission()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
 </div>

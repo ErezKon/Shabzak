@@ -6,8 +6,18 @@ import { Mission } from "../../models/mission.model";
 
 export const missionsReducer = createReducer(
     initialMissionsState,
-    on(missionActions.getMissions, (state) => ({ ...state, missions: initialMissionsState.missions })),
-    on(missionActions.getMissionsSuccess, (state, {missions}) => ({ ...state, missions: missions })),
+    on(missionActions.getMissions, (state) => { 
+        if(state.missions?.length > 0) {
+            return {...state};
+        }
+        return {
+            ...state, 
+            missions: initialMissionsState.missions,
+            loading: true
+        };
+    }),
+    on(missionActions.getMissionsSuccess, (state, {missions}) => ({ ...state, missions: missions, loading: false })),
+    on(missionActions.getMissionInstancesFailure, (state) => ({ ...state, loading: false })),
     on(missionActions.addMissionSuccess, (state, {mission}) => ({...state, missions: [...state.missions, mission]})),
     on(missionActions.deleteMissionSuccess, (state, {missionId}) => ({...state, missions: state.missions.filter(s => s.id !== missionId)})),
     on(missionActions.updateMissionSuccess, (state, {mission}) => {
