@@ -12,6 +12,8 @@ import { appReducers, metaReducers } from './state-management/reducers';
 import { MissionsEffects } from './state-management/effects/missions.effects';
 import { MetadataEffects } from './state-management/effects/metadata.effects';
 import { UserEffects } from './state-management/effects/user.effects';
+import { CustomSerializer } from './state-management/custom-router-serializer';
+import { provideRouterStore } from '@ngrx/router-store';
 
 
 export const appConfig: ApplicationConfig = {
@@ -21,6 +23,9 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(), 
     provideAnimationsAsync(), 
     provideStore(appReducers, {metaReducers}),
+    provideRouterStore({
+      serializer: CustomSerializer
+    }),
     provideEffects(SoldiersEffects),
     provideEffects(MissionsEffects),
     provideEffects(MetadataEffects),

@@ -6,16 +6,19 @@ import { BaseComponent } from '../../../../utils/base-component/base-component.c
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { SoldierPositionComponent } from '../../../soldiers/soldier-position/soldier-position.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-soldiers-select',
   standalone: true,
-  imports: [BaseComponent, MatCheckboxModule, FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, ReactiveFormsModule],
+  imports: [BaseComponent, CommonModule, MatCheckboxModule, FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, SoldierPositionComponent, ReactiveFormsModule],
   templateUrl: './soldiers-select.component.html',
   styleUrl: './soldiers-select.component.scss'
 })
 export class SoldiersSelectComponent extends BaseComponent implements OnChanges {
   @Input() soldiers?: Array<Soldier>;
+  @Input() showPositions: boolean = false;
   @Output() selectedSoldiersChanged = new EventEmitter<Array<number>>;
 
   filteredSoldiers?: Array<Soldier>;

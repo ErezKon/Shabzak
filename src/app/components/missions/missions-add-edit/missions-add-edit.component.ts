@@ -25,6 +25,8 @@ import { ConfirmationService } from '../../../utils/confirmation/service/confirm
 import { ConfirmationDialogResult } from '../../../utils/confirmation/models/dialog-result.model';
 import { AddEditMissionModel } from './mission-add-edit-data.model';
 import { MissionAddEditMode } from './mission-add-edit-mode.enum';
+import { formatNumber } from '../../../utils/number.utils';
+import { defaultStartEndTime } from '../missions-container/missions-container.component';
 
 @Component({
   selector: 'app-missions-add-edit',
@@ -37,14 +39,12 @@ import { MissionAddEditMode } from './mission-add-edit-mode.enum';
     MatDialogTitle,
     MatDialogContent,
     MatDialogActions,
-    MatDialogClose,
     MatSelectModule,
     MatDatepickerModule,
     MatRadioModule,
     MatChipsModule,
     MatIconModule,
     ReactiveFormsModule,
-    BaseComponent,
     ConfirmationModule
   ],
   providers: [provideNativeDateAdapter(), {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}, ConfirmationService],
@@ -82,8 +82,6 @@ export class MissionsAddEditComponent extends BaseComponent {
 
   positionOptions: Array<KeyValue<string, string>>;
 
-  private readonly defaultStartEndTime = '06:00';
-
   constructor(public dialogRef: MatDialogRef<MissionsAddEditComponent>,
     public dialog: MatDialog,
     public confirmationService: ConfirmationService,
@@ -115,8 +113,8 @@ export class MissionsAddEditComponent extends BaseComponent {
         this.durationForm = new FormControl(1, [Validators.required, Validators.min(1)]);
         this.soldiersRequiredForm = new FormControl(0, [Validators.required, Validators.min(1)]);
         this.commandersRequiredForm = new FormControl(0, [Validators.required, Validators.min(0)]);
-        this.startTimeForm = new FormControl(this.defaultStartEndTime, [Validators.required]);
-        this.endTimeForm = new FormControl(this.defaultStartEndTime, [Validators.required]);
+        this.startTimeForm = new FormControl(defaultStartEndTime, [Validators.required]);
+        this.endTimeForm = new FormControl(defaultStartEndTime, [Validators.required]);
       } else {
         this.nameForm = new FormControl(data.mission.name, [Validators.required]);
         this.durationForm = new FormControl(data.mission.duration, [Validators.required, Validators.min(1)]);
@@ -244,8 +242,9 @@ export class MissionsAddEditComponent extends BaseComponent {
       this.mission.missionInstances = [
         {
           id: 0,
-          fromTime: `${(this.startDateForm?.value ?? new Date()).toLocaleDateString('en-GB')} ${this.startTimeForm.value ?? this.defaultStartEndTime}`,
-          toTime: `${(this.endDateForm?.value ?? new Date()).toLocaleDateString('en-GB')} ${this.endTimeForm.value ?? this.defaultStartEndTime}`,
+          fromTime: `${(this.startDateForm?.value ?? new Date()).toLocaleDateString('en-GB')} ${this.startTimeForm.value ?? defaultStartEndTime}`,
+          toTime: `${(this.endDateForm?.value ?? new Date()).toLocaleDateString('en-GB')} ${this.endTimeForm.value ?? defaultStartEndTime}`,
+          isFilled: false,
           soldierMissions: []
         }
       ]
@@ -259,6 +258,7 @@ export class MissionsAddEditComponent extends BaseComponent {
           id: 0,
           fromTime: `${startDate.toLocaleString('en-GB').replace(',', '')}`,
           toTime: `${this.mission.toTime}`,
+          isFilled: false,
           soldierMissions: []
         }
       ]
@@ -323,8 +323,8 @@ export class MissionsAddEditComponent extends BaseComponent {
           const instance: AddMissionInstance = {
             id: ++id,
             date: key,
-            from: `${this.formatNumber(spl[0], 2)}:${this.formatNumber(spl[1], 2)}`,
-            to: `${this.formatNumber(finalEndTime,2)}:${this.formatNumber(spl[1], 2)}`
+            from: `${formatNumber(spl[0], 2)}:${formatNumber(spl[1], 2)}`,
+            to: `${formatNumber(finalEndTime,2)}:${formatNumber(spl[1], 2)}`
           }
           instances.push(instance);
           this.mission.missionInstances.push(this.convertMissionInstancetoBEModel(instance));
@@ -334,35 +334,28 @@ export class MissionsAddEditComponent extends BaseComponent {
           const instance: AddMissionInstance = {
             id: ++id,
             date: key,
-            from: `${this.formatNumber(spl[0], 2)}:${this.formatNumber(spl[1], 2)}`,
-            to: `${this.formatNumber(endTime,2)}:${this.formatNumber(spl[1], 2)}`
+            from: `${formatNumber(spl[0], 2)}:${formatNumber(spl[1], 2)}`,
+            to: `${formatNumber(endTime,2)}:${formatNumber(spl[1], 2)}`
           }
           instances.push(instance);
           this.mission.missionInstances.push(this.convertMissionInstancetoBEModel(instance));
-          time = `${this.formatNumber(endTime,2)}:${this.formatNumber(spl[1], 2)}`;
+          time = `${formatNumber(endTime,2)}:${formatNumber(spl[1], 2)}`;
         } else {
           const instance: AddMissionInstance = {
             id: ++id,
             date: key,
-            from: `${this.formatNumber(spl[0], 2)}:${this.formatNumber(spl[1], 2)}`,
-            to: `${this.formatNumber(endTime % 24,2)}:${this.formatNumber(spl[1], 2)}`
+            from: `${formatNumber(spl[0], 2)}:${formatNumber(spl[1], 2)}`,
+            to: `${formatNumber(endTime % 24,2)}:${formatNumber(spl[1], 2)}`
           }
           instances.push(instance);
           this.mission.missionInstances.push(this.convertMissionInstancetoBEModel(instance));
-          lastTime = `${this.formatNumber(endTime % 24,2)}:${this.formatNumber(spl[1], 2)}`;
+          lastTime = `${formatNumber(endTime % 24,2)}:${formatNumber(spl[1], 2)}`;
           keepCreating = false;
         }
       } 
       this.datesInstances.set(key, instances);
       index++;
     }
-  }
-
-  formatNumber(num: number, digits: number): string {
-    return num.toLocaleString('en-US', {
-      minimumIntegerDigits: digits,
-      useGrouping: false
-    })
   }
 
   onRemovedInstance(date: Date, instance: AddMissionInstance) {
@@ -443,7 +436,7 @@ export class MissionsAddEditComponent extends BaseComponent {
 
   private getTimeString(date: string): string {
     const spl = date.split(' ')[1].split(':');
-    return `${this.formatNumber(+spl[0], 2)}:${this.formatNumber(+spl[1], 2)}`;
+    return `${formatNumber(+spl[0], 2)}:${formatNumber(+spl[1], 2)}`;
   }
 
   private convertMissionInstancetoBEModel(instance: AddMissionInstance): MissionInstance {
@@ -451,6 +444,7 @@ export class MissionsAddEditComponent extends BaseComponent {
       id: instance.id,
       fromTime: `${instance.date} ${instance.from}`,
       toTime: `${instance.date} ${instance.to}`,
+      isFilled: false,
       soldierMissions: instance.soldiers ?? []
     };
 

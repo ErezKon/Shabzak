@@ -1,9 +1,9 @@
 <div class="assignments-container">
     <app-assignments-filter 
-    [filter$]="filter$" 
-    (startDateSelected)="onStartDateSelected($event)" 
-    (endDateSelected)="onEndDateSelected($event)"
-    (modeSelected)="onModeSelected($event)"></app-assignments-filter>
+        [filter$]="filter$" 
+        (startDateSelected)="onStartDateSelected($event)" 
+        (endDateSelected)="onEndDateSelected($event)"
+        (modeSelected)="onModeSelected($event)"></app-assignments-filter>
     @if (assignmentMode === AssignmentMode.ByDay) {
         <app-assignments-by-day [assignmentsByDayByMission]="assignmentsByDayByMission"></app-assignments-by-day>
     } @else if (assignmentMode === AssignmentMode.ByMission) {

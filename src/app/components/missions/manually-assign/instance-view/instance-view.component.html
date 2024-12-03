@@ -1,9 +1,18 @@
 <div class="instance-view">
+    @if(multiSelect) {
+        <div class="instance separator-down" 
+        (click)="onSelectAll()">
+           בחר/הסר הכל
+        </div> 
+    }
     @for (instance of missionInstances; track $index) {
         <div class="instance separator-down" 
-        [ngClass]="{'selected': selectedIndex === $index}"
-        (click)="onInstanceSelect(instance, $index)">
-            {{instance.fromTime}} - {{instance.toTime}}
+        [ngClass]="{'selected': selectedIds.has(instance.id)}"
+        (click)="onInstanceSelect(instance)">
+            {{instance.fromTime}} - {{instance.toTime}} 
+            @if(displayMissionName) {
+                 - {{instanceToMissionDic?.get(instance.id)}}
+            }
         </div>
     }
 </div>

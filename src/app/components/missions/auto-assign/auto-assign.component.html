@@ -1,0 +1,50 @@
+<h2 mat-dialog-title class="dialog-title">שיבוץ משימות אוטומטי</h2>
+<mat-dialog-content>
+    <div class="auto-assign-container">
+        <div class="instances-row">
+            <div class="dates-range">
+                <mat-form-field class="mission-dates">
+                    <mat-label>הכנס טווח תאריכים</mat-label>
+                    <mat-date-range-input [rangePicker]="picker">
+                    <input matStartDate placeholder="תאריך התחלה" [formControl]="startDateForm">
+                    <input matEndDate placeholder="תאריך סיום" [formControl]="endDateForm">
+                    </mat-date-range-input>
+                    <mat-hint>DD/MM/YYYY – DD/MM/YYYY</mat-hint>
+                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-date-range-picker #picker></mat-date-range-picker>
+                </mat-form-field>
+            </div>
+            <div class="from-hour">
+                <mat-form-field>
+                    <mat-label>משעה</mat-label>
+                    <input matInput [(ngModel)]="fromHour">
+                </mat-form-field>
+            </div>
+            <div class="to-hour">
+                <mat-form-field>
+                    <mat-label>עד שעה</mat-label>
+                    <input matInput [(ngModel)]="toHour">
+                </mat-form-field>
+            </div>
+        </div>
+        @if(datesSelected) {
+            <div class="instances-select">
+                <app-missions-select 
+                    [missions]="missions$! | async"
+                    [selectAll]="true"
+                    (missionsSelected)="onMissionsSelected($event)"></app-missions-select>
+            </div>
+            <div class="soldiers-select">
+                <app-soldiers-select 
+                    [soldiers]="(soldiers$ | async) ?? []" 
+                    [showPositions]="true"
+                    (selectedSoldiersChanged)="onSoldiersSelected($event)">
+                </app-soldiers-select>
+            </div>
+        }
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button (click)="onCancelClick()" class="cancel">בטל</button>
+    <button mat-raised-button (click)="onOk()" cdkFocusInitial color="primary" class="accept">אשר</button>
+</mat-dialog-actions>

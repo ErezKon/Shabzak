@@ -4,6 +4,9 @@ import { MissionsContainerComponent } from './components/missions/missions-conta
 import { MetadataContainerComponent } from './components/metadata/metadata-container/metadata-container.component';
 import { AssignmentsContainerComponent } from './components/assignments/assignments-container/assignments-container.component';
 import { LoginComponent } from './components/user/login/login.component';
+import { loggedInGuard } from './guards/logged-in.guard';
+import { PersonalPageComponent } from './components/user/personal-page/personal-page.component';
+import { adminGuard } from './guards/admin.guard';
 
 export const routes: Routes = [
   {
@@ -14,27 +17,37 @@ export const routes: Routes = [
   {
     path: 'soldiers',
     component: SoldiersContainerComponent,
-    children: []
+    children: [],
+    canActivate: [adminGuard()]
   },
   {
     path: 'missions',
     component: MissionsContainerComponent,
-    children: []
+    children: [],
+    canActivate: [adminGuard()]
   },
   {
     path: 'assignments',
     component: AssignmentsContainerComponent,
-    children: []
+    children: [],
+    canActivate: [loggedInGuard()]
   },
   {
     path: 'justice',
     component: MetadataContainerComponent,
-    children: []
+    children: [],
+    canActivate: [adminGuard()]
   },
   {
-    path: '', redirectTo: '/soldiers', pathMatch: 'full'
+    path: 'personal-page',
+    component: PersonalPageComponent,
+    children: [],
+    canActivate: [loggedInGuard()]
   },
   {
-    path: '**', redirectTo: '/soldiers', pathMatch: 'full'
+    path: '', redirectTo: '/login', pathMatch: 'full'
+  },
+  {
+    path: '**', redirectTo: '/login', pathMatch: 'full'
   }
 ];

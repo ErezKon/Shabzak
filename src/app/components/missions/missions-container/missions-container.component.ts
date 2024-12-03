@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Store, select } from '@ngrx/store';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Mission } from '../../../models/mission.model';
-import { selectLoading, selectMissions } from '../../../state-management/selectors/missions.selector';
+import { selectAutoAssigning, selectLoading, selectMissions } from '../../../state-management/selectors/missions.selector';
 import { AppState } from '../../../state-management/states/app.state';
 import { MissionsAddEditComponent } from '../missions-add-edit/missions-add-edit.component';
 import { BaseComponent } from '../../../utils/base-component/base-component.component';
@@ -17,17 +17,27 @@ import * as missionActions from '../../../state-management/actions/missions.acti
 import { ManuallyAssignContainerComponent } from '../manually-assign/manually-assign-container/manually-assign-container.component';
 import { MissionAddEditMode } from '../missions-add-edit/mission-add-edit-mode.enum';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltip } from '@angular/material/tooltip';
+import { AutoAssignComponent } from '../auto-assign/auto-assign.component';
+import { AutoAssignCandidatesComponent } from '../auto-assign-candidates/auto-assign-candidates.component';
 
 @Component({
   selector: 'app-missions-container',
   standalone: true,
-  imports: [CommonModule, MissionsComponent, MissionsFilterComponent, MatIconModule, MatButtonModule, MatProgressSpinnerModule, BaseComponent],
+  imports: [
+    CommonModule, 
+    MissionsComponent, 
+    MatIconModule, 
+    MatButtonModule, 
+    MatProgressSpinnerModule
+    ],
   templateUrl: './missions-container.component.html',
   styleUrl: './missions-container.component.scss'
 })
 export class MissionsContainerComponent extends BaseComponent{
   missions$ = new BehaviorSubject<Array<Mission>>([]);
   loading$: Observable<boolean>;
+  autoAssigning$: Observable<boolean>;
   allMissions: Array<Mission> = [];
 
   constructor(private store: Store<AppState>, public dialog: MatDialog) {
@@ -39,6 +49,7 @@ export class MissionsContainerComponent extends BaseComponent{
       this.allMissions = missions;
     }));
     this.loading$ = store.pipe(select(selectLoading));
+    this.autoAssigning$ = store.pipe(select(selectAutoAssigning));
   }
 
   onEditMission(mission: Mission) {
@@ -149,4 +160,46 @@ export class MissionsContainerComponent extends BaseComponent{
   onDeleteMission(missionId: number) {
     this.store.dispatch(missionActions.deleteMission({missionId: missionId}));
   }
+
+  onAutoAssign() {
+    const dialogRef = this.dialog.open(AutoAssignComponent, {
+      width: '95vw',
+      height: '95vh',
+      panelClass: ['lg-modal']
+    });
+
+    this.addSub(dialogRef.afterClosed().subscribe(result => {
+      if(result) {
+        this.store.dispatch(missionActions.autoAssign({
+          from: result.from,
+          to: result.to,
+          soldiers: result.soldiers,
+          missions: result.missions
+        }));
+        this.openShowCandidates();
+      }
+    }));
+  }
+
+  openShowCandidates() {
+    const dialogRef = this.dialog.open(AutoAssignCandidatesComponent, {
+      width: '95vw',
+      height: '95vh',
+      panelClass: ['lg-modal', 'no-body-scroll']
+    });
+
+    this.addSub(dialogRef.afterClosed().subscribe(result => {
+      if(result?.candidateId) {
+        this.store.dispatch(missionActions.acceptAutoAssignCandidate({guid: result.candidateId}));
+      }
+    }));
+  }
+
+  onShowCandidates() {
+    this.store.dispatch(missionActions.getAllCandidates());
+    this.openShowCandidates();
+  }
 }
+
+
+export const defaultStartEndTime = '06:00';

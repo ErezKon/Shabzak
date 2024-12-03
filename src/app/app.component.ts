@@ -1,13 +1,20 @@
-import { Component, HostListener } from '@angular/core';
-import { Router, RouterModule, RouterOutlet } from '@angular/router';
-import { MaterialModule } from './material/material/material.module';
-import { MatToolbar, MatToolbarModule } from '@angular/material/toolbar';
-import { MatIcon, MatIconModule, MatIconRegistry } from '@angular/material/icon';
-import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
-import { CommonModule } from '@angular/common';
+import { Component, HostListener, Inject } from '@angular/core';
+import { RouterModule, RouterOutlet } from '@angular/router';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { MatListItem, MatNavList } from '@angular/material/list';
 import { DomSanitizer } from '@angular/platform-browser';
 import { WindowSizeService } from './services/window-size.service';
+import { UserRole } from './models/user-role.enum';
+import { map, Observable } from 'rxjs';
+import { select, Store } from '@ngrx/store';
+import { AppState } from './state-management/states/app.state';
+import { selectUser } from './state-management/selectors/user.selector';
+
+import { selectUrl } from './state-management/selectors/router.selector';
+
 
 @Component({
   selector: 'app-root',
@@ -21,36 +28,50 @@ export class AppComponent {
   title = 'שבצ"ק';
   sidenavOpened: boolean = true;
 
+  userRole$: Observable<number>;
+
   sidenavLinks = [
+    {
+      name: 'דף אישי',
+      url: '/personal-page',
+      role: UserRole.Regular,
+      selected: true
+    },
     {
       name: 'חיילים',
       url: '/soldiers',
-      selected: true
+      role: UserRole.Admin,
+      selected: false
     },
     {
       name: 'משימות',
       url: '/missions',
+      role: UserRole.Admin,
       selected: false
     },
     {
       name: 'שבצ"ק',
       url: '/assignments',
+      role: UserRole.Regular,
       selected: false
     },
     {
       name: 'צדק',
       url: '/justice',
+      role: UserRole.Admin,
       selected: false
     }
   ];
 
   ngOnInit(): void {
-    // if (window.innerWidth <= 767) {
-    //   this.sidenavOpened = false;
-    // }
   }
 
-  constructor(private router: Router, iconRegistry: MatIconRegistry, sanitizer: DomSanitizer, public windowSizeService: WindowSizeService) {
+  constructor(
+      iconRegistry: MatIconRegistry, 
+      sanitizer: DomSanitizer, 
+      public windowSizeService: WindowSizeService, 
+      store: Store<AppState>,
+      @Inject(DOCUMENT) private document: Document) {
     iconRegistry.addSvgIcon('bat-logo', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/9213-logo-no-text.svg'));
     iconRegistry.addSvgIcon('simple', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/simple.svg'));
     iconRegistry.addSvgIcon('grenade', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/grenade.svg'));
@@ -68,10 +89,24 @@ export class AppComponent {
     iconRegistry.addSvgIcon('captain', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/captain.svg'));
     iconRegistry.addSvgIcon('sergeant', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/sergeant.svg'));
     iconRegistry.addSvgIcon('staff-sergeant', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/staff-sergeant.svg'));
-    // iconRegistry.addSvgIcon(
-    //   'bat-logo',
-    //   'src/assets/icons/9213-logo-no-text.svg'
-    // );
+    iconRegistry.addSvgIcon('wand', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/wand.svg'));
+
+    this.userRole$ = store.pipe(select(selectUser))
+    .pipe(map(user => {
+      if(!user || !user.enabled || !user.activated) {
+        return -1;
+      }
+      return user.role;
+    }));
+
+    store.pipe(select(selectUrl))
+    .subscribe(url => {
+      if(url) {
+        for (const sidenav of this.sidenavLinks) {
+          sidenav.selected = sidenav.url === url;
+        }
+      }
+    });
   }
 
   onSelectLink(link: any) {

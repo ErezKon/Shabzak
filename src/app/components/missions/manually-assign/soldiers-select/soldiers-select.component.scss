@@ -3,8 +3,8 @@
 }
 
 .soldiers-select {
-    max-height: calc(100vh - 66px - 60px - 85px) !important;    
-    height: calc(100vh - 66px - 60px - 85px) !important;
+    max-height: calc(100vh - 66px - 60px - 111px) !important;    
+    height: calc(100vh - 66px - 60px - 111px) !important;
     overflow-y: auto;
 
     .soldiers-filter {
@@ -28,6 +28,37 @@
             justify-content: space-between;
             flex-wrap: wrap;
             padding: 5px;
+
+            .soldier-checkbox {
+                display: flex;
+                flex:10%;
+                justify-content: flex-end;
+            }
+
+            .soldier-name {
+                display: flex;
+                flex:50%;
+                justify-content: flex-end;
+            }
+
+            .soldier-positions {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: flex-start;
+                flex:20%;
+                justify-content: flex-end;
+            }
+
+            .soldier-platoon {
+                display: flex;
+                flex:40%;
+                justify-content: flex-start;
+
+                &.with-positions {
+                    flex:20% !important;
+                }
+            }
         }
     }
 }

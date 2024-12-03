@@ -1,0 +1,12 @@
+<div class="rank-breakdown">
+    @for (rb of data | keyvalue; track $index) {
+        <div class="breakdown">
+            <div class="rank-title">
+                {{rb.key}}
+            </div>
+            <div class="rank-score">
+                {{rb.value}}
+            </div>
+        </div>
+    }
+</div>

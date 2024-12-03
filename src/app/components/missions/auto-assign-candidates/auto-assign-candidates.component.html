@@ -1,0 +1,167 @@
+<h2 mat-dialog-title class="dialog-title">הצגת הצעות שיבוץ</h2>
+<mat-dialog-content>
+    @if(loading$ | async) {
+        <div class="spinner-container">
+        <mat-spinner></mat-spinner>
+        </div>
+    } @else {
+        <div class="show-candidates-container">
+            <div class="candidates-ids">
+                <div class="candidate-select">
+                    <mat-form-field>
+                        <mat-label>בחר הצעה</mat-label>
+                        <mat-select [(value)]="selectedCandidate">
+                          @for (can of candidatesIds$ | async; track can) {
+                            <mat-option [value]="can.value" (onSelectionChange)="candidateIdSelected(can.value)">{{can.text}}</mat-option>
+                          }
+                        </mat-select>
+                      </mat-form-field>
+                </div>
+            </div>
+            <div class="candidate">
+                @if(((selectedCandidate$ | async)?.totalInstancesCount ?? 0) - ((selectedCandidate$ | async)?.validInstancesCount ?? 0) > 0) {
+                    <div class="faulty-instances">
+                        <mat-accordion>
+                            <mat-expansion-panel>
+                              <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                  שיבוצים תקולים
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    {{((selectedCandidate$ | async)?.totalInstancesCount ?? 0) - ((selectedCandidate$ | async)?.validInstancesCount ?? 0)}}
+                                </mat-panel-description>
+                              </mat-expansion-panel-header>
+                              <div class="instances">
+                                @for (candidate of (selectedCandidate$ | async)?.faultyInstances | keyvalue; track $index) {
+                                    <div class="instance-mission">
+                                        <h2>{{candidate.key}}</h2>
+                                        <div class="instance-candidates">
+                                            @for (can of candidate.value; track $index) {
+                                                <div class="instance-candidate">
+                                                    <div class="candidate-data">
+                                                        <div class="from">
+                                                            {{can.fromTime}}
+                                                        </div>
+                                                        <div class="to">
+                                                            {{can.toTime}}
+                                                        </div>
+                                                    </div>
+                                                    <div class="assigned-soldiers">
+                                                        <h2>חיילים ששובצו</h2>
+                                                        <div class="soldiers">
+                                                            @for (assignedSoldier of can.soldierMissions; track $index) {
+                                                                <div class="assigned-soldier">
+                                                                    <div class="soldier">
+                                                                        {{assignedSoldier.soldier.name}}
+                                                                    </div>
+                                                                    <div class="position">
+                                                                        <app-soldier-position [position]="assignedSoldier.missionPosition.position"></app-soldier-position>
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                    <h2>מועמדים לשיבוץ</h2>
+                                                    <div class="candidates">
+                                                        @for (c of can.candidates; track $index) {
+                                                            <div class="candidate-breakdown">
+                                                                <div class="soldier">
+                                                                    <div class="title">
+                                                                        שם החייל
+                                                                    </div>
+                                                                    <div class="value">
+                                                                        {{c.soldier.name}}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="missions-assigned">
+                                                                    <div class="title">
+                                                                        משימות ששובץ עד כה
+                                                                    </div>
+                                                                    <div class="value">
+                                                                        {{c.missionsAssignedTo ?? 0}}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="rank" (click)="onRankClick(c.rankBreakdown)">
+                                                                    <div class="title">
+                                                                        ציון
+                                                                    </div>
+                                                                    <div class="value">
+                                                                        {{c.rank}}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+
+                                }
+                              </div>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                    </div>
+                }
+                @if(((selectedCandidate$ | async)?.validInstancesCount ?? 0) > 0) {
+                    <div class="valid-instances">
+                        <mat-accordion>
+                            <mat-expansion-panel>
+                              <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                  שיבוצים מוצלחים
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    {{(selectedCandidate$ | async)?.validInstancesCount}}
+                                </mat-panel-description>
+                              </mat-expansion-panel-header>
+                              
+                              <div class="instances">
+                                @for (candidate of (selectedCandidate$ | async)?.validInstances| keyvalue; track $index) {
+                                    <div class="instance-mission">
+                                        <h2>{{candidate.key}}</h2>
+                                        <div class="instance-candidates">
+                                            @for (can of candidate.value; track $index) {
+                                                <div class="instance-candidate">
+                                                    <div class="candidate-data">
+                                                        <div class="from">
+                                                            {{can.fromTime}}
+                                                        </div>
+                                                        <div class="to">
+                                                            {{can.toTime}}
+                                                        </div>
+                                                    </div>
+                                                    <div class="assigned-soldiers">
+                                                        <div class="soldiers">
+                                                            @for (assignedSoldier of can.soldierMissions; track $index) {
+                                                                <div class="assigned-soldier">
+                                                                    <div class="soldier">
+                                                                        {{assignedSoldier.soldier.name}}
+                                                                    </div>
+                                                                    <div class="position">
+                                                                        <app-soldier-position [position]="assignedSoldier.missionPosition.position"></app-soldier-position>
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                        
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                              </div>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button (click)="onNoClick()" class="cancel">בטל</button>
+    <button mat-raised-button (click)="onOk()" cdkFocusInitial color="primary" class="accept">אשר</button>
+</mat-dialog-actions>
+    

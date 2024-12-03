@@ -1,9 +1,6 @@
-@import '../../../../../styles.scss';
-
-.dialog-title {
-    background-color: $primary;
-    color: white;
-    text-align: center;
+.instance-view {
+    max-height: calc(100vh - 66px - 60px - 85px) !important;    
+    height: calc(100vh - 66px - 60px - 85px) !important;
 }
 .manually-assign-content {
     // height: calc(100% - 66px - 60px);

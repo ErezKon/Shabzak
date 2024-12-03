@@ -24,3 +24,18 @@ export const selectAvalableSoldiers = createSelector(
   (state: MissionsState) => state.availableSoldiers
 );
 
+export const selectAutoAssigning = createSelector(
+  selectMissionsState,
+  (state: MissionsState) => state.autoAssigning
+);
+
+export const selectCandidateAssignments = createSelector(
+  selectMissionsState,
+  (state: MissionsState) => state.candidateAssignments
+);
+
+export const selectCandidatesIds = createSelector(
+  selectMissionsState,
+  (state: MissionsState) => state.candidatesIds
+);
+

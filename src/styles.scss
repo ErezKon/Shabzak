@@ -170,3 +170,23 @@ mat-error {
     text-align: right;
   }
 }
+
+.dialog-title {
+    background-color: $primary;
+    color: white !important;
+    text-align: center;
+}
+
+.faulty-instances {
+  .mat-expansion-panel-body {
+    max-height: calc(95vh - 64px - 80px - 126px) !important;
+    overflow: auto !important;
+  }
+}
+
+.valid-instances {
+  .mat-expansion-panel-body {
+    max-height: calc(95vh - 64px - 80px - 175px) !important;
+    overflow: auto !important;
+  }
+}

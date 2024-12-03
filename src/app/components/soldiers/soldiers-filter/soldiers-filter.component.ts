@@ -17,8 +17,7 @@ import { Subscription } from 'rxjs';
     ReactiveFormsModule, 
     MatFormFieldModule,
     MatInputModule,
-    FormsModule,
-    BaseComponent
+    FormsModule
   ],
   templateUrl: './soldiers-filter.component.html',
   styleUrl: './soldiers-filter.component.scss'

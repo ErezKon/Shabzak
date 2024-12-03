@@ -4,8 +4,10 @@
 }
 
 .instance-view {
-    max-height: calc(100vh - 66px - 60px - 85px) !important;    
-    height: calc(100vh - 66px - 60px - 85px) !important;
+    // max-height: calc(100vh - 66px - 60px - 85px) !important;    
+    // height: calc(100vh - 66px - 60px - 85px) !important;
+    height: 100%;
+    max-height: 100%;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -15,6 +17,12 @@
     justify-content: flex-start;
 
     .instance {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+
         padding: 7px;
         align-self: stretch;
         cursor: pointer;

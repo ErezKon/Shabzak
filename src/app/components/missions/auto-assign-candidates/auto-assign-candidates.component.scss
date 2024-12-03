@@ -1,0 +1,149 @@
+@import '../../../../styles.scss';
+
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+}
+
+.show-candidates-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    .candidates-ids {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        flex: 100%;
+        justify-content: center;
+    }
+
+    .candidate {
+        display: flex;
+        flex: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+
+        .faulty-instances {
+            display: flex;
+            flex: 100%;
+
+            mat-accordion {
+                width: 100%;
+            }
+        }
+        .valid-instances {
+            display: flex;
+            flex: 100%;
+
+            mat-accordion {
+                width: 100%;
+            }
+
+            .instance-candidate {
+                flex: 50% !important;
+                box-shadow: 0px 0 4px 1px $separator inset;
+            }
+        }
+    }
+}
+
+.instance-candidates {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    .instance-candidate {
+        display: flex;
+        flex-wrap: wrap;
+        flex: 100%;
+        justify-content: space-evenly;
+
+        .assigned-soldiers {
+            display: flex;
+            flex: 100%;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+
+            h2 {
+                display: flex;
+                flex: 100%;
+                flex-direction: row;
+                justify-content: center;
+            }
+
+            .soldiers {
+                display: flex;
+                flex: 100%;
+                flex-direction: row;
+                justify-content: center;
+
+                .assigned-soldier {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: center;
+                    flex: 1 1 auto;
+                }
+            }
+        }
+
+        .candidate-data {
+            display: flex;
+            flex-direction: row;
+            flex: 100%;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+            font-size: 20px;
+            font-weight: bold;
+
+            div {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+        }
+
+        .candidates {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            flex: 100%;
+
+            .candidate-breakdown {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+                flex: 20%;
+                justify-content: space-between;
+                box-shadow: 0px 0 4px 1px $separator inset;
+                padding: 5px;
+
+                .soldier, .missions-assigned, .rank, .rank-breakdown {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+
+                    .title {
+                        font-weight: bold;
+                    }
+                }
+
+                .soldier {
+                    flex: 40%
+                }
+
+                .missions-assigned {
+                    flex: 40%;
+                }
+
+                .rank {
+                    flex: 20%;
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+}

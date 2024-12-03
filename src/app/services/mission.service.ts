@@ -6,6 +6,8 @@ import { Mission } from '../models/mission.model';
 import { MissionInstance } from '../models/mission-instance.model';
 import { GetAvailableSoldiers } from '../models/get-available-soldier.model';
 import { SoldierMission } from '../models/soldier-mission.model';
+import { toServerString } from '../utils/date.util';
+import { AssignmentValidation } from '../models/auto-assign/assignment-validation.model';
 
 @Injectable({
   providedIn: 'root'
@@ -73,5 +75,36 @@ export class MissionService {
     })
     console.log(JSON.stringify(data));
     return this.http.post<void>(`${this.serverURL}/AssignSoldiersToMissionInstance`, data);
+  }
+  
+  
+  getMissionInstancesInRange(from: Date, to: Date, fullDay: boolean = true, unassignedOnly: boolean = true): Observable<Array<MissionInstance>> {
+    return this.http.post<Array<MissionInstance>>(`${this.serverURL}/GetMissionInstancesInRange`, {
+      from: toServerString(from), 
+      to: toServerString(to), 
+      fullDay, 
+      unassignedOnly
+    });
+  }
+
+  autoAssign(from: Date, to: Date, soldiers: number[], missions: number[]): Observable<AssignmentValidation> {
+    return this.http.post<AssignmentValidation>(`${this.serverURL}/AutoAssign`, {
+      startDate: toServerString(from), 
+      endDate: toServerString(to), 
+      soldiers,
+      missions
+    });
+  }
+
+  getAllCandidates(): Observable<Array<string>> {
+    return this.http.get<Array<string>>(`${this.serverURL}/GetAllCandidates`);
+  }
+
+  getCandidate(guid: string): Observable<AssignmentValidation> {
+    return this.http.post<AssignmentValidation>(`${this.serverURL}/GetCandidate?guid=${guid}`, {});
+  }
+
+  acceptAutoAssignCandidate(id: string): Observable<Array<Mission>> {
+    return this.http.post<Array<Mission>>(`${this.serverURL}/AcceptAssignCandidate?candidateId=${id}`, {});
   }
 }

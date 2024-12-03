@@ -128,7 +128,8 @@ export class AssignmentsContainerComponent extends BaseComponent{
         } as AssignmentSoldier
       }) ?? [],
       multiplePositions: positions > 1,
-      positionsCount: positions
+      positionsCount: positions,
+      isAssignmentFilled: missionInstance.isFilled
     };
     return ret;
   }

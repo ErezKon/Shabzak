@@ -1,0 +1,27 @@
+.auto-assign-container {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row-reverse;
+    justify-content: space-around;
+
+    .instances-row {
+        display: flex;
+        flex: 100%;
+        flex-direction: row-reverse;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+    }
+    // .dates-range {
+    // }
+
+    .instances-select {
+        flex: 20%;
+        height: calc(100vh - 66px - 60px - 120px) !important;
+        max-height: calc(100vh - 66px - 60px - 120px) !important;
+    }
+
+    .soldiers-select {
+        flex: 80%;
+    }
+
+}

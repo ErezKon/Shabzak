@@ -1,0 +1,23 @@
+<div class="missions-select-container">
+    <h1>בחר משימות</h1>
+    @if(missions?.length) {
+        <div class="mission">
+            <mat-checkbox
+                color="primary"
+                [(ngModel)]="selectAll"
+                (change)="onSelectAll($event)">
+                בחר הכל
+            </mat-checkbox>
+        </div>
+        @for (mission of missions; track $index) {
+            <div class="mission">
+                <mat-checkbox
+                    color="primary"
+                    [checked]="selectedMissionsIds.has(mission.id)"
+                    (change)="onMissionSelected(mission)">
+                    {{mission.name}}
+                </mat-checkbox>
+            </div>
+        }
+    }
+</div>

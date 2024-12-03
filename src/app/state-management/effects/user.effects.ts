@@ -1,19 +1,22 @@
-import { Injectable } from "@angular/core";
-import { UserService } from "../../services/user.service";
-import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { Store } from "@ngrx/store";
-import { AppState } from "../states/app.state";
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
+import { UserService } from '../../services/user.service';
+import { AppState } from '../states/app.state';
 
 import * as userActions from '../actions/user.actions';
-import { exhaustMap, map, catchError, of } from "rxjs";
-import { User } from "../../models/user.model";
-import { SnackbarService } from "../../services/snackbar.service";
+import { exhaustMap, map, catchError, of } from 'rxjs';
+import { SnackbarService } from '../../services/snackbar.service';
+import { addDays } from '../../utils/date.util';
+import { encryptAES } from '../../utils/aes';
 
 @Injectable()
 export class UserEffects {
 
   constructor(private actions$: Actions,
     private usersService: UserService,
+    private router: Router,
     private snackbar: SnackbarService,
     private store: Store<AppState>) {
   }
@@ -24,6 +27,11 @@ export class UserEffects {
       .pipe(
         map(res => {
             if(res.success && res.value) {
+                this.usersService.setLoggeduser(res.value);
+                const json = JSON.stringify({...res.value, valid: addDays(new Date(), 7)});
+                const userJson = encryptAES(json);
+                localStorage.setItem('user', userJson);
+                this.router.navigateByUrl('personal-page');
                 return userActions.loginSuccess({ user: res.value });
             }
             if(res.errorMessage) {

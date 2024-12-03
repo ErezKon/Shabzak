@@ -1,6 +1,11 @@
 <div class="missions-container">
   <!-- <app-missions-filter ></app-missions-filter> -->
-  @if(loading$ | async) {
+   <div class="mission-action-bar">
+    <button mat-raised-button color="primary" (click)="onAddMission()">הוסף משימה</button>
+    <button mat-raised-button color="primary" (click)="onAutoAssign()">שיבוץ אוטומטי</button>
+    <button mat-raised-button color="primary" (click)="onShowCandidates()">הצג הצעות שיבוץ</button>
+   </div>
+  @if((loading$ | async) || (autoAssigning$ | async)) {
     <div class="spinner-container">
       <mat-spinner></mat-spinner>
     </div>
@@ -14,9 +19,13 @@
     </app-missions>
   }
 
-  <div class="floating-button">
-    <button mat-mini-fab color="primary" (click)="onAddMission()">
+  <!-- <div class="floating-button">
+    <button mat-mini-fab color="primary" (click)="onAutoAssign()" matTooltip="שיבוץ אוטומטי">
+      <mat-icon svgIcon="wand"></mat-icon>
+    </button>
+
+    <button mat-mini-fab color="primary" (click)="onAddMission()" matTooltip="הוסף משימה">
       <mat-icon>add</mat-icon>
     </button>
-  </div>
+  </div> -->
 </div>

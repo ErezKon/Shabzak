@@ -35,4 +35,17 @@ export const missionsReducer = createReducer(
     on(missionActions.getMissionInstancesSuccess, (state, {missionInstances}) => ({ ...state, missionInstances: missionInstances })),
     on(missionActions.getAvailableSoldiers, (state) => ({ ...state, availableSoldiers: initialMissionsState.availableSoldiers })),
     on(missionActions.getAvailableSoldiersSuccess, (state, {availableSoldiers}) => ({ ...state, availableSoldiers: availableSoldiers })),
+    on(missionActions.getMissionInstancesInRange, (state) => ({ ...state, missionInstances: initialMissionsState.missionInstances })),
+    on(missionActions.getMissionInstancesInRangeSuccess, (state, {missionInstances}) => ({ ...state, missionInstances: missionInstances })),
+    on(missionActions.autoAssign, (state) => ({ ...state, candidateAssignments: initialMissionsState.candidateAssignments, autoAssigning: true })),
+    on(missionActions.autoAssignSuccess, (state, {candidate}) => ({
+         ...state, 
+         candidateAssignments: candidate, 
+         autoAssigning: false,  
+         candidatesIds: [candidate.id]
+    })),
+    on(missionActions.autoAssignFailure, (state) => ({ ...state, autoAssigning: false })),
+    on(missionActions.getAllCandidatesSuccess, (state, {candidates}) => ({ ...state, candidatesIds: candidates })),
+    on(missionActions.getCandidateSuccess, (state, {candidate}) => ({ ...state, candidateAssignments: candidate, candidatesIds: [candidate.id] })),
+    on(missionActions.acceptAutoAssignCandidateSuccess, (state, {missions}) => ({ ...state, missions: missions})),
 );

@@ -3,6 +3,7 @@ import { Mission } from "../../models/mission.model";
 import { MissionInstance } from "../../models/mission-instance.model";
 import { GetAvailableSoldiers } from "../../models/get-available-soldier.model";
 import { SoldierMission } from "../../models/soldier-mission.model";
+import { AssignmentValidation } from "../../models/auto-assign/assignment-validation.model";
 
 export const getMissions = createAction(
     '[Missions] Get Missions'
@@ -84,4 +85,64 @@ export const assignSoldiersToMissionInstanceSuccess = createAction(
 );
 export const assignSoldiersToMissionInstanceFailure = createAction(
     '[Missions] Assign Soldiers To Mission Instance Failure'
+);
+
+export const getMissionInstancesInRange = createAction(
+    '[Missions] Get Mission Instances In Range',
+    props<{ from: Date, to: Date, fullDay?: boolean, unassignedOnly?: boolean }>()
+);
+export const getMissionInstancesInRangeSuccess = createAction(
+    '[Missions] Get Mission Instances In Range Success',
+    props<{ missionInstances: Array<MissionInstance> }>()
+);
+export const getMissionInstancesInRangeFailure = createAction(
+    '[Missions] Get Mission Instances In Range Failure'
+);
+
+export const autoAssign = createAction(
+    '[Missions] Auto Assign',
+    props<{ from: Date, to: Date, soldiers?: Array<number>, missions?: Array<number> }>()
+);
+export const autoAssignSuccess = createAction(
+    '[Missions] Auto Assign Success',
+    props<{ candidate: AssignmentValidation }>()
+);
+export const autoAssignFailure = createAction(
+    '[Missions] Auto Assign Failure'
+);
+
+export const getAllCandidates = createAction(
+    '[Missions] Get All Candidates'
+);
+export const getAllCandidatesSuccess = createAction(
+    '[Missions] Get All Candidates Success',
+    props<{ candidates: Array<string> }>()
+);
+export const getAllCandidatesFailure = createAction(
+    '[Missions] Get All Candidates Failure'
+);
+
+export const getCandidate = createAction(
+    '[Missions] Get Candidate',
+    props<{ guid: string }>()
+);
+export const getCandidateSuccess = createAction(
+    '[Missions] Get Candidate Success',
+    props<{ candidate: AssignmentValidation }>()
+);
+export const getCandidateFailure = createAction(
+    '[Missions] Get Candidate Failure'
+);
+
+
+export const acceptAutoAssignCandidate = createAction(
+    '[Missions] Accept Auto Assign Candidate',
+    props<{ guid: string }>()
+);
+export const acceptAutoAssignCandidateSuccess = createAction(
+    '[Missions] Accept Auto Assign Candidate Success',
+    props<{ missions: Array<Mission> }>()
+);
+export const acceptAutoAssignCandidateFailure = createAction(
+    '[Missions] Accept Auto Assign Candidate Failure'
 );

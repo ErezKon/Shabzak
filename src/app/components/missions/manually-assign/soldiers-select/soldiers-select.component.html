@@ -27,13 +27,22 @@
         </div>
         @for (soldier of filteredSoldiers; track $index) {
             <div class="soldier separator-down">
-                <mat-checkbox
-                    class="example-margin"
-                    color="primary"
-                    [(ngModel)]="soldierSelected[soldier.id]">
-                </mat-checkbox>
+                <div class="soldier-checkbox">
+                    <mat-checkbox
+                        class="example-margin"
+                        color="primary"
+                        [(ngModel)]="soldierSelected[soldier.id]">
+                    </mat-checkbox>
+                </div>
                 <div class="soldier-name">{{soldier.name}}</div>
-                <div class="soldier-platoon">{{soldier.platoon}}</div>
+                @if(showPositions) {
+                    <div class="soldier-positions">
+                        @for (position of soldier.positions; track $index) {
+                            <app-soldier-position [position]="position"></app-soldier-position>
+                        }
+                    </div>
+                }
+                <div class="soldier-platoon" [ngClass]="{'with-positions': showPositions}">{{soldier.platoon}}</div>
             </div>
         }
     </div>

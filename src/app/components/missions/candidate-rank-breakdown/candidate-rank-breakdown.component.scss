@@ -1,0 +1,13 @@
+.rank-breakdown {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+
+    .breakdown {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        padding: 15px;
+    }
+}

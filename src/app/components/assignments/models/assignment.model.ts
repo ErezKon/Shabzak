@@ -10,4 +10,5 @@ export interface Assignment {
     soldiers: AssignmentSoldier[];
     multiplePositions: boolean;
     positionsCount: number;
+    isAssignmentFilled: boolean;
 }

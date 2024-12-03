@@ -123,4 +123,74 @@ export class MissionsEffects {
         })
       ))
   ));
+
+  getMissionInstancesInRange$ = createEffect(() => this.actions$.pipe(
+    ofType(missionActions.getMissionInstancesInRange),
+    exhaustMap((action) => this.missionsService.getMissionInstancesInRange(action.from, action.to, action.fullDay, action.unassignedOnly)
+      .pipe(
+        map(res => {
+          return missionActions.getMissionInstancesInRangeSuccess({ missionInstances: res });
+        }),
+        catchError(err => {
+          console.error(err);
+          return of(missionActions.getMissionInstancesInRangeFailure());
+        })
+      ))
+  ));
+
+  autoAssign$ = createEffect(() => this.actions$.pipe(
+    ofType(missionActions.autoAssign),
+    exhaustMap((action) => this.missionsService.autoAssign(action.from, action.to, action.soldiers ?? [], action.missions ?? [])
+      .pipe(
+        map(res => {
+          return missionActions.autoAssignSuccess({ candidate: res });
+        }),
+        catchError(err => {
+          console.error(err);
+          return of(missionActions.autoAssignFailure());
+        })
+      ))
+  ));
+
+  acceptAutoAssignCandidate$ = createEffect(() => this.actions$.pipe(
+    ofType(missionActions.acceptAutoAssignCandidate),
+    exhaustMap((action) => this.missionsService.acceptAutoAssignCandidate(action.guid)
+      .pipe(
+        map(res => {
+          return missionActions.acceptAutoAssignCandidateSuccess({ missions: res });
+        }),
+        catchError(err => {
+          console.error(err);
+          return of(missionActions.acceptAutoAssignCandidateFailure());
+        })
+      ))
+  ));
+
+  getAllCandidates$ = createEffect(() => this.actions$.pipe(
+    ofType(missionActions.getAllCandidates),
+    exhaustMap(() => this.missionsService.getAllCandidates()
+      .pipe(
+        map(res => {
+          return missionActions.getAllCandidatesSuccess({ candidates: res });
+        }),
+        catchError(err => {
+          console.error(err);
+          return of(missionActions.getCandidateFailure());
+        })
+      ))
+  ));
+
+  getCandidate$ = createEffect(() => this.actions$.pipe(
+    ofType(missionActions.getCandidate),
+    exhaustMap((action) => this.missionsService.getCandidate(action.guid)
+      .pipe(
+        map(res => {
+          return missionActions.getCandidateSuccess({ candidate: res });
+        }),
+        catchError(err => {
+          console.error(err);
+          return of(missionActions.getCandidateFailure());
+        })
+      ))
+  ));
 }

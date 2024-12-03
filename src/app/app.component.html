@@ -10,7 +10,17 @@
 <mat-sidenav-container>
   <mat-sidenav #sidenav mode="side" [(opened)]="sidenavOpened" position="end">
     <mat-nav-list >
-      <a mat-list-item *ngFor="let link of sidenavLinks" [routerLink]="link.url" [activated]="link.selected" (click)="onSelectLink(link)">{{ link.name }}</a>
+      @for (link of sidenavLinks; track $index) {
+        @if(((userRole$ | async) ?? -1) >= link.role) {
+          <a 
+            mat-list-item 
+            [routerLink]="link.url" 
+            [activated]="link.selected" 
+            (click)="onSelectLink(link)">
+              {{ link.name }}
+          </a>
+        }
+      }
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content class="content">
