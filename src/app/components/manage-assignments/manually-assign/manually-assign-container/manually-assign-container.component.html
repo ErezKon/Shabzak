@@ -1,0 +1,19 @@
+<h2 mat-dialog-title class="dialog-title">שיבוץ ידני</h2>
+<mat-dialog-content class="manually-assign-content">
+    <app-manually-assign 
+        [missionInstances]="data.missionInstances ?? []"
+        [soldiers]="(soldiers$ | async) ?? []"
+        [availableSoldiers]="(availableSoldiers$ | async) ?? []">
+    </app-manually-assign>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button (click)="onNoClick()" class="cancel">בטל</button>
+    <div class="errors">
+        @for (error of errors; track $index) {
+            <div class="error">
+                {{error}}
+            </div>
+        }
+    </div>
+    <button mat-raised-button (click)="onOk()" cdkFocusInitial color="primary" class="accept">אשר</button>
+</mat-dialog-actions>

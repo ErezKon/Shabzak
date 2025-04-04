@@ -1,0 +1,14 @@
+<div class="manage-assignments-container">
+    <div class="actions-bar">
+        <button mat-raised-button color="primary" (click)="onAutoAssign()">שיבוץ אוטומטי</button>
+        <button mat-raised-button color="primary" (click)="onShowCandidates()">הצג הצעות שיבוץ</button>
+        @if(haveIncompleteInstances) {
+            <button mat-raised-button color="primary" (click)="onShowCandidates()">תקן שיבוץ</button>
+        }
+    </div>
+    <div class="selected-management">
+        @if(selectedManagement === 'fix') {
+            <app-instance-view class="instance-view" [missionInstances]="incompleteInstances" (instanceSelect)="onInstanceSelect($event)"></app-instance-view>
+        }
+    </div>
+</div>

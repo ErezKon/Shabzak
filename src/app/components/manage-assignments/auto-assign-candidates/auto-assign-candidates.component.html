@@ -33,70 +33,71 @@
                               </mat-expansion-panel-header>
                               <div class="instances">
                                 @for (candidate of (selectedCandidate$ | async)?.faultyInstances | keyvalue; track $index) {
-                                    <div class="instance-mission">
-                                        <h2>{{candidate.key}}</h2>
-                                        <div class="instance-candidates">
-                                            @for (can of candidate.value; track $index) {
-                                                <div class="instance-candidate">
-                                                    <div class="candidate-data">
-                                                        <div class="from">
-                                                            {{can.fromTime}}
+                                    <app-tree-view [title]="candidate.key" (expandStateChanged)="onTreeExpandStateChanged($event, treeNodeExpanded, $index)">
+                                        <div class="instance-mission">
+                                            @if(safeTreeNodeExpanded(treeNodeExpanded, $index)) {
+                                                <div class="instance-candidates">
+                                                    @for (can of candidate.value; track $index) {
+                                                        <div class="instance-candidate">
+                                                            <app-tree-view 
+                                                                [title]="can.fromTime + ' -> ' + can.toTime" 
+                                                                [level]="1"
+                                                                (expandStateChanged)="onTreeExpandStateChanged($event, innerTreeNodeExpanded, $index)">
+                                                                @if(safeTreeNodeExpanded(innerTreeNodeExpanded, $index)) {
+                                                                    <div class="assigned-soldiers">
+                                                                        <h2>חיילים ששובצו</h2>
+                                                                        <div class="soldiers">
+                                                                            @for (assignedSoldier of can.soldierMissions; track $index) {
+                                                                                <div class="assigned-soldier">
+                                                                                    <div class="soldier">
+                                                                                        {{assignedSoldier.soldier.name}}
+                                                                                    </div>
+                                                                                    <div class="position">
+                                                                                        <app-soldier-position [position]="assignedSoldier.missionPosition.position"></app-soldier-position>
+                                                                                    </div>
+                                                                                </div>
+                                                                            }
+                                                                        </div>
+                                                                    </div>
+                                                                    <h2 class="candidates-title">מועמדים לשיבוץ</h2>
+                                                                    <div class="candidates">
+                                                                        @for (c of can.candidates; track $index) {
+                                                                            <div class="candidate-breakdown">
+                                                                                <div class="soldier">
+                                                                                    <div class="title">
+                                                                                        שם החייל
+                                                                                    </div>
+                                                                                    <div class="value">
+                                                                                        {{c.soldier.name}}
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="missions-assigned">
+                                                                                    <div class="title">
+                                                                                        משימות ששובץ עד כה
+                                                                                    </div>
+                                                                                    <div class="value">
+                                                                                        {{c.missionsAssignedTo ?? 0}}
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="rank" (click)="onRankClick(c.rankBreakdown)">
+                                                                                    <div class="title">
+                                                                                        ציון
+                                                                                    </div>
+                                                                                    <div class="value">
+                                                                                        {{c.rank}}
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        }
+                                                                    </div>
+                                                                }
+                                                            </app-tree-view>
                                                         </div>
-                                                        <div class="to">
-                                                            {{can.toTime}}
-                                                        </div>
-                                                    </div>
-                                                    <div class="assigned-soldiers">
-                                                        <h2>חיילים ששובצו</h2>
-                                                        <div class="soldiers">
-                                                            @for (assignedSoldier of can.soldierMissions; track $index) {
-                                                                <div class="assigned-soldier">
-                                                                    <div class="soldier">
-                                                                        {{assignedSoldier.soldier.name}}
-                                                                    </div>
-                                                                    <div class="position">
-                                                                        <app-soldier-position [position]="assignedSoldier.missionPosition.position"></app-soldier-position>
-                                                                    </div>
-                                                                </div>
-                                                            }
-                                                        </div>
-                                                    </div>
-                                                    <h2>מועמדים לשיבוץ</h2>
-                                                    <div class="candidates">
-                                                        @for (c of can.candidates; track $index) {
-                                                            <div class="candidate-breakdown">
-                                                                <div class="soldier">
-                                                                    <div class="title">
-                                                                        שם החייל
-                                                                    </div>
-                                                                    <div class="value">
-                                                                        {{c.soldier.name}}
-                                                                    </div>
-                                                                </div>
-                                                                <div class="missions-assigned">
-                                                                    <div class="title">
-                                                                        משימות ששובץ עד כה
-                                                                    </div>
-                                                                    <div class="value">
-                                                                        {{c.missionsAssignedTo ?? 0}}
-                                                                    </div>
-                                                                </div>
-                                                                <div class="rank" (click)="onRankClick(c.rankBreakdown)">
-                                                                    <div class="title">
-                                                                        ציון
-                                                                    </div>
-                                                                    <div class="value">
-                                                                        {{c.rank}}
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        }
-                                                    </div>
+                                                    }
                                                 </div>
                                             }
                                         </div>
-                                    </div>
-
+                                    </app-tree-view>
                                 }
                               </div>
                             </mat-expansion-panel>

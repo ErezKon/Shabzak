@@ -1,0 +1,10 @@
+.manage-assignments-container {
+    height: 100%;
+    
+    .actions-bar {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+    }
+}

@@ -5,6 +5,8 @@
     flex-wrap: wrap;
     flex-direction: row-reverse;
     justify-content: space-around;
+    overflow-y: auto;
+    max-height: calc(95vh - 64px - 64px);
 
     .options {
         display: flex;
@@ -51,8 +53,8 @@
 
     .dates-instances {
         flex-basis: 100%;
-        max-height: calc(95vh - 64px - 50px - 468px);
-        overflow: auto;
+        //max-height: calc(95vh - 64px - 50px - 468px);
+        //overflow: auto;
         
         .date-instance {
             direction: rtl;

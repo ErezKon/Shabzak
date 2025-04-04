@@ -7,6 +7,7 @@ import { LoginComponent } from './components/user/login/login.component';
 import { loggedInGuard } from './guards/logged-in.guard';
 import { PersonalPageComponent } from './components/user/personal-page/personal-page.component';
 import { adminGuard } from './guards/admin.guard';
+import { ManageAssignmentsContainerComponent } from './components/manage-assignments/manage-assignments-container/manage-assignments-container.component';
 
 export const routes: Routes = [
   {
@@ -43,6 +44,12 @@ export const routes: Routes = [
     component: PersonalPageComponent,
     children: [],
     canActivate: [loggedInGuard()]
+  },
+  {
+    path: 'assignments-management',
+    component: ManageAssignmentsContainerComponent,
+    children: [],
+    canActivate: [adminGuard()]
   },
   {
     path: '', redirectTo: '/login', pathMatch: 'full'

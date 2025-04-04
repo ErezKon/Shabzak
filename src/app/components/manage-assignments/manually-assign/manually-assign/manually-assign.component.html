@@ -1,0 +1,20 @@
+<div class="manually-assign separator-down">
+    <div class="selection">
+        <app-instance-view class="instance-view" [missionInstances]="missionInstances" (instanceSelect)="onInstanceSelect($event)"></app-instance-view>
+        <app-soldiers-select [soldiers]="soldiers" (selectedSoldiersChanged)="onSoldiersSelected($event)"></app-soldiers-select>
+        <app-available-soldiers 
+            [availableSoldiers]="availableSoldiers" 
+            [selectedInstanceAssignedSoldiers]="selectedInstanceAssignedSoldiers"
+            [canSelectSoldiers]="canSelectSoldiers"
+            [selectedInstance]="selectedInstance ?? defaultInstance"
+            (availableSoldiersSelected)="onAvailableSoldiersSelected($event)">
+        </app-available-soldiers>
+    </div>
+    <div class="selection-summary">
+        <app-selection-summary 
+            [positions]="assignedMisionPositions" 
+            [soldiers]="selectedAvailableSoldiers"
+            [instance]="selectedInstance">
+        </app-selection-summary>
+    </div>
+</div>

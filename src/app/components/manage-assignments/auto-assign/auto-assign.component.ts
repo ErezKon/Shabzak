@@ -21,9 +21,9 @@ import { SoldiersSelectComponent } from '../manually-assign/soldiers-select/sold
 import { Soldier } from '../../../models/soldier.model';
 import { selectSoldiers } from '../../../state-management/selectors/soldiers.selector';
 import { CommonModule } from '@angular/common';
-import { MissionsSelectComponent } from '../missions-select/missions-select.component';
+import { MissionsSelectComponent } from '../../missions/missions-select/missions-select.component';
 import { Mission } from '../../../models/mission.model';
-import { defaultStartEndTime } from '../missions-container/missions-container.component';
+import { defaultStartEndTime } from '../../missions/missions-container/missions-container.component';
 import { mergeDateTime } from '../../../utils/date.util';
 
 @Component({
@@ -38,13 +38,10 @@ import { mergeDateTime } from '../../../utils/date.util';
     MatDialogTitle,
     MatDialogContent,
     MatDialogActions,
-    MatDialogClose,
     MatDatepickerModule,
     ReactiveFormsModule,
-    InstanceViewComponent,
     MissionsSelectComponent,
-    SoldiersSelectComponent,
-    BaseComponent
+    SoldiersSelectComponent
   ],
   providers: [provideNativeDateAdapter(), {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}],
   templateUrl: './auto-assign.component.html',

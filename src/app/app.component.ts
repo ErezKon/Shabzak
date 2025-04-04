@@ -56,6 +56,12 @@ export class AppComponent {
       selected: false
     },
     {
+      name: 'ניהול שיבוץ',
+      url: '/assignments-management',
+      role: UserRole.Regular,
+      selected: false
+    },
+    {
       name: 'צדק',
       url: '/justice',
       role: UserRole.Admin,

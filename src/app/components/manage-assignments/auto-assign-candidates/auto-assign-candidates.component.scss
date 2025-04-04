@@ -59,7 +59,14 @@
         display: flex;
         flex-wrap: wrap;
         flex: 100%;
-        justify-content: space-evenly;
+        justify-content: flex-start;
+
+        .candidates-title {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            flex: 100%;
+        }
 
         .assigned-soldiers {
             display: flex;

@@ -31,6 +31,7 @@ import { SelectionSummaryComponent } from '../selection-summary/selection-summar
 import { AssignedMissionPosition, MissionPosition } from '../../../../models/mission-position.model';
 import { Position } from '../../../../models/position.enum';
 import { SoldierMission } from '../../../../models/soldier-mission.model';
+import { ManuallyAssignComponent } from '../manually-assign/manually-assign.component';
 
 @Component({
   selector: 'app-manually-assign-container',
@@ -44,19 +45,13 @@ import { SoldierMission } from '../../../../models/soldier-mission.model';
     MatDialogTitle,
     MatDialogContent,
     MatDialogActions,
-    MatDialogClose,
     MatSelectModule,
     MatDatepickerModule,
     MatRadioModule,
     MatChipsModule,
     MatIconModule,
     ReactiveFormsModule,
-    BaseComponent,
-    InstanceViewComponent,
-    SoldiersSelectComponent,
-    AvailableSoldiersComponent,
-    SelectionSummaryComponent,
-    BaseComponent
+    ManuallyAssignComponent
   ],
   templateUrl: './manually-assign-container.component.html',
   styleUrl: './manually-assign-container.component.scss'
