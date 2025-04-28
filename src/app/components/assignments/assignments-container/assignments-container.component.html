@@ -5,7 +5,10 @@
         (endDateSelected)="onEndDateSelected($event)"
         (modeSelected)="onModeSelected($event)"></app-assignments-filter>
     @if (assignmentMode === AssignmentMode.ByDay) {
-        <app-assignments-by-day [assignmentsByDayByMission]="assignmentsByDayByMission"></app-assignments-by-day>
+        <app-assignments-by-day 
+            [assignmentsByDayByMission]="assignmentsByDayByMission"
+            [canEdit]="canEdit"
+            (removeSoldierFromMissionInstance)="onRemoveSoldierFromMissionInstance($event.soldierId, $event.missionInstanceId)"></app-assignments-by-day>
     } @else if (assignmentMode === AssignmentMode.ByMission) {
         <app-assignments-by-mission></app-assignments-by-mission>
     } @else if (assignmentMode === AssignmentMode.BySoldier) {

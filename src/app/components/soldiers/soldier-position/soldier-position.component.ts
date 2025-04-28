@@ -14,6 +14,7 @@ import { translatePosition } from '../../../utils/position.translator';
 export class SoldierPositionComponent implements OnInit {
 
   @Input() position!: Position;
+  @Input() textualPosition?: string;
 
   isSpecial!: boolean;
   iconName!: string;
@@ -22,6 +23,9 @@ export class SoldierPositionComponent implements OnInit {
 
 
   ngOnInit(): void {
+    if(this.textualPosition && !this.position) {
+      this.position = Position[this.textualPosition as keyof typeof Position];
+    }
     this.tooltip = translatePosition(this.position);
     switch (this.position) {
       case Position.Simple:

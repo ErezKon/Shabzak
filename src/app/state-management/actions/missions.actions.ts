@@ -134,7 +134,6 @@ export const getCandidateFailure = createAction(
     '[Missions] Get Candidate Failure'
 );
 
-
 export const acceptAutoAssignCandidate = createAction(
     '[Missions] Accept Auto Assign Candidate',
     props<{ guid: string }>()
@@ -145,4 +144,16 @@ export const acceptAutoAssignCandidateSuccess = createAction(
 );
 export const acceptAutoAssignCandidateFailure = createAction(
     '[Missions] Accept Auto Assign Candidate Failure'
+);
+
+export const removeSoldierFromMissionInstance = createAction(
+    '[Missions] Remove Soldier From Mission Instance',
+    props<{ soldierId: number, missionInstanceId: number }>()
+);
+export const removeSoldierFromMissionInstanceSuccess = createAction(
+    '[Missions] Remove Soldier From Mission Instance Success',
+    props<{ missions: Array<Mission> }>()
+);
+export const removeSoldierFromMissionInstanceFailure = createAction(
+    '[Missions] Remove Soldier From Mission Instance Failure'
 );

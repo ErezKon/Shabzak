@@ -16,7 +16,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MissionInstanceAddEditComponent } from '../mission-instance-add-edit/mission-instance-add-edit.component';
 import { AddMissionInstance } from '../../../models/add-mission-instance.model';
-import { getPositionsKeyValue } from '../../../utils/position.translator';
+import { getPositionsStringKeyValue } from '../../../utils/position.translator';
 import { KeyValue } from '@angular/common';
 import { Position } from '../../../models/position.enum';
 import { MissionPosition } from '../../../models/mission-position.model';
@@ -92,7 +92,7 @@ export class MissionsAddEditComponent extends BaseComponent {
       this.startDateForm.setValue(date);
       this.endDateForm.setValue(date);
 
-      this.positionOptions = getPositionsKeyValue();
+      this.positionOptions = getPositionsStringKeyValue();
 
       switch(data.mode){
         case MissionAddEditMode.Add:

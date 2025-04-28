@@ -193,4 +193,18 @@ export class MissionsEffects {
         })
       ))
   ));
+
+  removeSoldierFromMissionInstance$ = createEffect(() => this.actions$.pipe(
+    ofType(missionActions.removeSoldierFromMissionInstance),
+    exhaustMap((action) => this.missionsService.removeSoldierFromMissionInstance(action.soldierId, action.missionInstanceId)
+      .pipe(
+        map(res => {
+          return missionActions.removeSoldierFromMissionInstanceSuccess({ missions: res });
+        }),
+        catchError(err => {
+          console.error(err);
+          return of(missionActions.removeSoldierFromMissionInstanceFailure());
+        })
+      ))
+  ));
 }

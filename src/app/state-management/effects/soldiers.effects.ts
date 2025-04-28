@@ -8,6 +8,7 @@ import * as soldierActions from '../actions/soldiers.actions';
 import { exhaustMap, map, catchError, of } from "rxjs";
 import { Soldier } from "../../models/soldier.model";
 import { SnackbarService } from "../../services/snackbar.service";
+import { VacationRequestStatus } from "../../models/vacation-request-stats.enum";
 
 @Injectable()
 export class SoldiersEffects {
@@ -23,12 +24,12 @@ export class SoldiersEffects {
     exhaustMap(() => this.soldiersService.getSoldiers()
       .pipe(
         map(res => {
-            return soldierActions.getSoldiersSuccess({ soldiers: res as Array<Soldier> });
+          return soldierActions.getSoldiersSuccess({ soldiers: res as Array<Soldier> });
         }),
         catchError(err => {
-            console.error(err);
-            this.snackbar.openSnackBar('שגיאה בקבלת החיילים');
-            return of(soldierActions.getSoldiersFailure());
+          console.error(err);
+          this.snackbar.openSnackBar('שגיאה בקבלת החיילים');
+          return of(soldierActions.getSoldiersFailure());
         })
       ))
   ));
@@ -38,13 +39,13 @@ export class SoldiersEffects {
     exhaustMap((action) => this.soldiersService.addSoldier(action.soldier)
       .pipe(
         map(res => {
-            this.snackbar.openSnackBar('החייל הוסף בהצלחה');
-            return soldierActions.addSoldierSuccess({ soldier: res });
+          this.snackbar.openSnackBar('החייל הוסף בהצלחה');
+          return soldierActions.addSoldierSuccess({ soldier: res });
         }),
         catchError(err => {
-            console.error(err);
-            this.snackbar.openSnackBar('שגיאה בהוספת חייל');
-            return of(soldierActions.addSoldierFailure());
+          console.error(err);
+          this.snackbar.openSnackBar('שגיאה בהוספת חייל');
+          return of(soldierActions.addSoldierFailure());
         })
       ))
   ));
@@ -54,13 +55,13 @@ export class SoldiersEffects {
     exhaustMap((action) => this.soldiersService.updateSoldier(action.soldier)
       .pipe(
         map(res => {
-            this.snackbar.openSnackBar('החייל עודכן בהצלחה');
-            return soldierActions.updateSoldierSuccess({ soldier: res });
+          this.snackbar.openSnackBar('החייל עודכן בהצלחה');
+          return soldierActions.updateSoldierSuccess({ soldier: res });
         }),
         catchError(err => {
-            console.error(err);
-            this.snackbar.openSnackBar('שגיאה בעדכון חייל');
-            return of(soldierActions.updateSoldierFailure());
+          console.error(err);
+          this.snackbar.openSnackBar('שגיאה בעדכון חייל');
+          return of(soldierActions.updateSoldierFailure());
         })
       ))
   ));
@@ -70,13 +71,46 @@ export class SoldiersEffects {
     exhaustMap((action) => this.soldiersService.deleteSoldier(action.soldierId)
       .pipe(
         map(res => {
-            this.snackbar.openSnackBar('החייל הוסר בהצלחה');
-            return soldierActions.deleteSoldierSuccess({soldierId:res});
+          this.snackbar.openSnackBar('החייל הוסר בהצלחה');
+          return soldierActions.deleteSoldierSuccess({soldierId:res});
         }),
         catchError(err => {
-            console.error(err);
-            this.snackbar.openSnackBar('שגיאה בהסרת חייל');
-            return of(soldierActions.deleteSoldierFailure());
+          console.error(err);
+          this.snackbar.openSnackBar('שגיאה בהסרת חייל');
+          return of(soldierActions.deleteSoldierFailure());
+        })
+      ))
+  ));
+
+  requestVacation$ = createEffect(() => this.actions$.pipe(
+    ofType(soldierActions.requestVacation),
+    exhaustMap((action) => this.soldiersService.requestVacation(action.soldierId, action.from, action.to)
+      .pipe(
+        map(res => {
+          this.snackbar.openSnackBar('בקשת החופש נשלחה בהצלחה');
+          return soldierActions.requestVacationSuccess({ vacation: res });
+        }),
+        catchError(err => {
+          console.error(err);
+          this.snackbar.openSnackBar('שגיאה בבקשת חופשה');
+          return of(soldierActions.requestVacationFailure());
+        })
+      ))
+  ));
+
+  respondToVacation$ = createEffect(() => this.actions$.pipe(
+    ofType(soldierActions.respondToVacation),
+    exhaustMap((action) => this.soldiersService.respondToVacationRequest(action.vacationId, action.response)
+      .pipe(
+        map(res => {
+          let message = action.response === VacationRequestStatus.Approved ? 'בקשת החופש אושרה בהצלחה' : 'בקשת החופש נדחתה בהצלחה';
+          this.snackbar.openSnackBar(message);
+          return soldierActions.respondToVacationSuccess({ vacation: res });
+        }),
+        catchError(err => {
+          console.error(err);
+          this.snackbar.openSnackBar('שגיאה במענה לבקשת חופשה');
+          return of(soldierActions.respondToVacationFailure());
         })
       ))
   ));

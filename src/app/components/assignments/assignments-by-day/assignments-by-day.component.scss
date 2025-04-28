@@ -47,6 +47,19 @@
                 &.not-filled {
                     box-shadow: 0px 0px 6px 1px inset red;
                 }
+
+                .add-soldier {
+                    text-decoration: underline;
+                    color: blue;
+                    cursor: pointer;
+                    padding-left: 15px;
+                    padding-right: 15px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex: auto;
+                }
+
                 .time {
                     flex-direction: column;
                     justify-content: center;
@@ -71,6 +84,12 @@
                         flex-direction: row-reverse;
                         justify-content: center;
                         text-align: center;
+
+                        &.editable {
+                            text-decoration: underline;
+                            color: blue;
+                            cursor: pointer;
+                        }
                     }
                     .position {
                         //flex-basis: 100%;

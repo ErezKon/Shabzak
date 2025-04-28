@@ -3,6 +3,7 @@ import { initialSoldiersState } from "../states/soldiers.state";
 
 import * as soldierActions from '../actions/soldiers.actions';
 import { Soldier } from "../../models/soldier.model";
+import { Vacation } from '../../models/vacation.model';
 
 export const soldiersReducer = createReducer(
     initialSoldiersState,
@@ -20,5 +21,18 @@ export const soldiersReducer = createReducer(
             }
         }
         return {...state, soldiers: soldiers};
-    })
+    }),
+    on(soldierActions.requestVacationSuccess, (state, {vacation}) => ({ ...state, vacations: [...state.vacations, vacation] })),
+    on(soldierActions.respondToVacationSuccess, (state, {vacation}) => {
+        let vacations = [];
+        for (const vac of state.vacations) {
+            if(vacation.id === vac.id) {
+                vacations.push(vacation);
+            } else {
+                vacations.push(vac);
+            }
+        }
+        return {...state, vacations: vacations};
+    }),
+    on(soldierActions.getVacationsSuccess, (state, {vacations}) => ({ ...state, vacations: vacations })),
 );

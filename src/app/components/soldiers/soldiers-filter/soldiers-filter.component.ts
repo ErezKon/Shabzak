@@ -7,6 +7,9 @@ import { BaseComponent } from '../../../utils/base-component/base-component.comp
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Subscription } from 'rxjs';
+import { getPositionsEnumKeyValue, getPositionsStringKeyValue } from '../../../utils/position.translator';
+import { KeyValue } from '@angular/common';
+import { Position } from '../../../models/position.enum';
 
 @Component({
   selector: 'app-soldiers-filter',
@@ -26,6 +29,7 @@ export class SoldiersFilterComponent extends BaseComponent{
 
   @Input() platoons: Array<string> = ['1', '2', '3'];
   @Input() companies: Array<string> = ['א', 'ב', 'ג'];
+  @Input() positions: Array<KeyValue<Position, string>> = getPositionsEnumKeyValue();
 
   @Output() filterSoldiers = new EventEmitter<SoldiersFilter> ();
 
@@ -33,6 +37,7 @@ export class SoldiersFilterComponent extends BaseComponent{
 
   platoonsFormControl = new FormControl();
   companyFormControl = new FormControl();
+  positionFormControl = new FormControl();
   textControl = new FormControl();
 
   panelOpenState = false;
@@ -50,6 +55,12 @@ export class SoldiersFilterComponent extends BaseComponent{
     this.addSub(
       this.companyFormControl.valueChanges.subscribe(val => {
         this.filter.company = val;
+        this.filterSoldiers.emit(this.filter);
+    })
+    );
+    this.addSub(
+      this.positionFormControl.valueChanges.subscribe(val => {
+        this.filter.positions = val;
         this.filterSoldiers.emit(this.filter);
     })
     );

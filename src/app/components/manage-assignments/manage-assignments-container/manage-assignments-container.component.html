@@ -3,12 +3,28 @@
         <button mat-raised-button color="primary" (click)="onAutoAssign()">שיבוץ אוטומטי</button>
         <button mat-raised-button color="primary" (click)="onShowCandidates()">הצג הצעות שיבוץ</button>
         @if(haveIncompleteInstances) {
-            <button mat-raised-button color="primary" (click)="onShowCandidates()">תקן שיבוץ</button>
+            <button mat-raised-button color="primary" (click)="onFixCandidates()">תקן שיבוץ</button>
         }
     </div>
     <div class="selected-management">
         @if(selectedManagement === 'fix') {
-            <app-instance-view class="instance-view" [missionInstances]="incompleteInstances" (instanceSelect)="onInstanceSelect($event)"></app-instance-view>
+            <div class="fix-assignments">
+                <div class="show-only-faulty">
+                    <mat-checkbox
+                        class="full-width"
+                        color="primary"
+                        [(ngModel)]="showOnlyFaulty">
+                        הצג רק שיבוצים תקולים
+                    </mat-checkbox>
+                </div>
+                <!-- <app-instance-view class="instance-view" 
+                    [missionInstances]="showOnlyFaulty ? incompleteInstances : allInstances" 
+                    [displayMissionName]="true"
+                    [instanceToMissionDic]="instanceToMissionNameDictionary"
+                    (instanceSelect)="onInstanceSelect($event)">
+                </app-instance-view> -->
+                <app-assignments-container [canEdit]="true"></app-assignments-container>
+            </div>
         }
     </div>
 </div>

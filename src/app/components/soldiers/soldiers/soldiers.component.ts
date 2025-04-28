@@ -29,6 +29,7 @@ export class SoldiersComponent extends BaseComponent implements OnInit{
 
   displayedColumns: string[] = ['name', 'personalNumber', 'phone', 'platoon', 'company', 'positions', 'actions'];
   dataSource: any;
+  soldiersCount!: number;
 
   constructor(private cdRef: ChangeDetectorRef) {
     super();
@@ -37,6 +38,7 @@ export class SoldiersComponent extends BaseComponent implements OnInit{
   
   ngOnInit(): void {
     this.addSub(this.soldiers$.subscribe(soldiers => {
+      this.soldiersCount = soldiers?.length ?? 0;
       this.dataSource = new MatTableDataSource(soldiers);
       this.dataSource.sort = this.sort;
       this.cdRef.detectChanges();

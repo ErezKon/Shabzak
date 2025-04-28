@@ -69,6 +69,18 @@ export class SoldiersContainerComponent extends BaseComponent{
       if(filter.company) {
         filtered = filtered.filter(s => s.company === filter.company);
       }
+      if(filter.positions) {
+        const filterPositions: Soldier[] = [];
+        for (const s of filtered) {
+          for (const pos of filter.positions) {
+            if(s.positions.includes(pos)) {
+              filterPositions.push(s);
+              break;
+            }
+          }
+        }
+        filtered = filterPositions;
+      }
       this.soldiers$.next(filtered);
   }
 

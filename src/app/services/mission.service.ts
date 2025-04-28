@@ -107,4 +107,18 @@ export class MissionService {
   acceptAutoAssignCandidate(id: string): Observable<Array<Mission>> {
     return this.http.post<Array<Mission>>(`${this.serverURL}/AcceptAssignCandidate?candidateId=${id}`, {});
   }
+
+  createInstanceToMissionNameDictionary(missions: Array<Mission>): Map<number, string> {
+    const ret = new Map<number, string>();
+    for (const mission of missions) {
+      for (const instance of mission.missionInstances) {
+        ret.set(instance.id, mission.name);
+      }
+    }
+    return ret;
+  }
+
+  removeSoldierFromMissionInstance(soldierId: number, missionInstanceId: number): Observable<Array<Mission>> {
+    return this.http.post<Array<Mission>>(`${this.serverURL}/RemoveSoldierFromMissionInstance?soldierId=${soldierId}&missionInstanceId=${missionInstanceId}`, {});
+  }
 }

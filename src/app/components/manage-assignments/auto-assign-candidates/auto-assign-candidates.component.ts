@@ -24,6 +24,7 @@ import { FlatTreeControl } from '@angular/cdk/tree';
 import { CandidateMissionInstance } from '../../../models/auto-assign/candidate-mission-instance.model';
 import { MatIconModule } from '@angular/material/icon';
 import { TreeViewComponent } from '../../../utils/tree-view/tree-view.component';
+import { Position } from '../../../models/position.enum';
 
 interface FlatNode {
   expandable: boolean;
@@ -119,6 +120,10 @@ export class AutoAssignCandidatesComponent extends BaseComponent{
           return ret;
       }));
     this.selectedCandidate$ = store.pipe(select(selectCandidateAssignment));
+  }
+
+  log(pos: any) {
+    console.log(`Position: ${pos.key}, type: ${typeof pos.key}`);
   }
 
   candidateIdSelected(id: string) {

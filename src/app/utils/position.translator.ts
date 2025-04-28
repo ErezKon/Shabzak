@@ -42,7 +42,7 @@ export const translatePosition = (position: Position): string => {
     }
 };
 
-export const getPositionsKeyValue = (): Array<KeyValue<string, string>>=> {
+export const getPositionsStringKeyValue = (): Array<KeyValue<string, string>>=> {
     const ret = new Array<KeyValue<string, string>>();
     const stringKeys = Object
         .values(Position)
@@ -52,6 +52,21 @@ export const getPositionsKeyValue = (): Array<KeyValue<string, string>>=> {
                 key: val.toString(),
                 value: translatePosition(Position[val as keyof typeof Position])
             } as KeyValue<string, string>)
+        })
+    return ret;
+};
+
+export const getPositionsEnumKeyValue = (): Array<KeyValue<Position, string>>=> {
+    const ret = new Array<KeyValue<Position, string>>();
+    const stringKeys = Object
+        .values(Position)
+        .filter((v) => !isNaN(Number(v)))
+        .map(val => {
+            const pos: Position = val as Position;
+            ret.push({
+                key: pos,
+                value: translatePosition(pos)
+            } as KeyValue<Position, string>)
         })
     return ret;
 };

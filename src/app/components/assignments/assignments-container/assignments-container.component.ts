@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { AssignmentsFilterComponent } from "../assignments-filter/assignments-filter.component";
 import { AssignmentMode } from '../models/show-assignment-mode.model';
 import { CommonModule } from '@angular/common';
@@ -28,7 +28,8 @@ import { AssignmentByMission } from '../models/assignment-by-mission.model';
   templateUrl: './assignments-container.component.html',
   styleUrl: './assignments-container.component.scss'
 })
-export class AssignmentsContainerComponent extends BaseComponent{
+export class AssignmentsContainerComponent extends BaseComponent {
+  @Input() canEdit: boolean = false;
   assignmentMode = AssignmentMode.ByDay;
   AssignmentMode = AssignmentMode;
 
@@ -37,7 +38,7 @@ export class AssignmentsContainerComponent extends BaseComponent{
 
   assignmentsByDayByMission?: Map<string, Array<AssignmentByMission>>;
 
-  constructor(store: Store<AppState>) {
+  constructor(private store: Store<AppState>) {
     super();
     
     let date = new Date();
@@ -162,6 +163,13 @@ export class AssignmentsContainerComponent extends BaseComponent{
   onModeSelected(mode: AssignmentMode) {
     this.filter.showMode = mode;
     this.filter$.next(this.filter);
+  }
+
+  onRemoveSoldierFromMissionInstance(soldierId: number, missionInstanceId: number) {
+    this.store.dispatch(missionActions.removeSoldierFromMissionInstance({
+      soldierId,
+      missionInstanceId
+    }));
   }
 
 }

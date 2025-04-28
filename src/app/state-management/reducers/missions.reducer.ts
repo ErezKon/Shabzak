@@ -48,4 +48,5 @@ export const missionsReducer = createReducer(
     on(missionActions.getAllCandidatesSuccess, (state, {candidates}) => ({ ...state, candidatesIds: candidates })),
     on(missionActions.getCandidateSuccess, (state, {candidate}) => ({ ...state, candidateAssignments: candidate, candidatesIds: [candidate.id] })),
     on(missionActions.acceptAutoAssignCandidateSuccess, (state, {missions}) => ({ ...state, missions: missions})),
+    on(missionActions.removeSoldierFromMissionInstanceSuccess, (state, {missions}) => ({ ...state, missions: missions })),
 );

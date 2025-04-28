@@ -7,7 +7,7 @@ import { AutoAssignCandidatesComponent } from '../auto-assign-candidates/auto-as
 import { AutoAssignComponent } from '../auto-assign/auto-assign.component';
 
 import * as missionActions from '../../../state-management/actions/missions.actions';
-import { selectMissions } from '../../../state-management/selectors/missions.selector';
+import { selectCandidateAssignments, selectMissions } from '../../../state-management/selectors/missions.selector';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,6 +15,12 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MissionsComponent } from '../../missions/missions/missions.component';
 import { InstanceViewComponent } from '../manually-assign/instance-view/instance-view.component';
 import { MissionInstance } from '../../../models/mission-instance.model';
+import { AssignmentValidation } from '../../../models/auto-assign/assignment-validation.model';
+import { FormsModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MissionService } from '../../../services/mission.service';
+import { AssignmentsContainerComponent } from '../../assignments/assignments-container/assignments-container.component';
 
 @Component({
   selector: 'app-manage-assignments-container',
@@ -23,8 +29,13 @@ import { MissionInstance } from '../../../models/mission-instance.model';
     CommonModule,
     MatIconModule, 
     MatButtonModule, 
+    CommonModule, 
+    MatCheckboxModule, 
+    FormsModule, 
+    MatFormFieldModule,
     MatProgressSpinnerModule,
-    InstanceViewComponent
+    InstanceViewComponent,
+    AssignmentsContainerComponent
   ],
   templateUrl: './manage-assignments-container.component.html',
   styleUrl: './manage-assignments-container.component.scss'
@@ -33,23 +44,35 @@ export class ManageAssignmentsContainerComponent extends BaseComponent {
 
   haveIncompleteInstances: boolean = false;
   incompleteInstances: Array<MissionInstance> = [];
+  allInstances: Array<MissionInstance> = [];
   selectedManagement: string = '';
+  candidates!: AssignmentValidation;
 
-  constructor(private store: Store<AppState>, public dialog: MatDialog) {
+  showOnlyFaulty = true;
+  instanceToMissionNameDictionary!: Map<number, string>;
+
+  constructor(private store: Store<AppState>, public dialog: MatDialog, private missionService: MissionService) {
     super();
+    this.store.dispatch(missionActions.getMissions());
     
     this.addSub(this.store.pipe(select(selectMissions))
     .subscribe(missions => {
+      this.instanceToMissionNameDictionary = missionService.createInstanceToMissionNameDictionary(missions);
       this.haveIncompleteInstances = false;
       this.incompleteInstances = [];
       for (const mission of missions) {
+        this.allInstances = [
+          ...this.allInstances,
+          ...mission.missionInstances
+        ]
         for (const instance of mission.missionInstances) {
-          if(!instance.isFilled) {
+          if(!instance.isFilled && (instance.soldierMissions?.length ?? 0) > 0) {
             this.haveIncompleteInstances = true;
             this.incompleteInstances.push(instance);
           }
         }
       }
+      console.log(this.incompleteInstances);
     }));
   }
 
@@ -90,6 +113,10 @@ export class ManageAssignmentsContainerComponent extends BaseComponent {
   onShowCandidates() {
     this.store.dispatch(missionActions.getAllCandidates());
     this.openShowCandidates();
+  }
+
+  onFixCandidates() {
+    this.selectedManagement = 'fix';
   }
 
   onInstanceSelect(instance: MissionInstance) {

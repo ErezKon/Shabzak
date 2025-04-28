@@ -32,6 +32,15 @@
                 }
             </mat-select>
         </mat-form-field>
+        <mat-form-field>
+            <mat-label>פק"ל</mat-label>
+            <mat-select [formControl]="positionFormControl" multiple>
+                <mat-option [value]="undefined">--</mat-option>
+                @for (p of positions; track p) {
+                    <mat-option [value]="p.key">{{p.value}}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
       </div>
     </mat-expansion-panel>
   </mat-accordion>

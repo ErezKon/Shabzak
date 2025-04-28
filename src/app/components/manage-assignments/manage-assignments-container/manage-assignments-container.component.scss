@@ -7,4 +7,30 @@
         flex-wrap: wrap;
         justify-content: space-evenly;
     }
+
+    .selected-management {
+        display: flex;
+        flex-direction: row-reverse;
+        flex-wrap: wrap;
+
+        .fix-assignments {
+            .show-only-faulty {
+                direction: rtl;
+
+                .full-width {
+                    width: 100% !important;
+
+                    ::ng-deep {
+                        .mat-internal-form-field {
+                            width: 100% !important;
+
+                            .mdc-label {
+                                width: 100% !important;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

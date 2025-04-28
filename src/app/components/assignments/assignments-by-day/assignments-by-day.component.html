@@ -34,12 +34,27 @@
                                             {{translatePosition(soldier.position)}}
                                         </div> 
                                     }
-                                    <div class="soldier">
+                                    <div class="soldier" 
+                                        [ngClass]="{'editable': canEdit}" 
+                                        [matMenuTriggerFor]="menu"
+                                        [matMenuTriggerData]="{'soldier': soldier, 'assignment': assignment}"
+                                        (click)="onAssignmentClicked(assignment, soldier)">
                                         {{soldier.soldierName}}
                                     </div>
                                     
                                 </div>
                             }
+                            @if(!assignment.isAssignmentFilled) {
+                                <div class="add-soldier" [matMenuTriggerFor]="menu">
+                                    +
+                                </div>
+                            }
+                            <mat-menu #menu="matMenu">
+                                <ng-template matMenuContent let-soldier="soldier" let-assignment="assignment">
+                                    <button mat-menu-item (click)="removeSoldier(soldier, assignment)">הסר חייל</button>
+                                    <button mat-menu-item (click)="replaceSoldier(soldier, assignment)">החלף חייל</button>
+                                </ng-template>
+                            </mat-menu>
                         </div>
                     }
                 </div>
