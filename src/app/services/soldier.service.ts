@@ -6,6 +6,7 @@ import { Soldier } from '../models/soldier.model';
 import { Vacation } from '../models/vacation.model';
 import { toServerString } from '../utils/date.util';
 import { VacationRequestStatus } from '../models/vacation-request-stats.enum';
+import { SoldierSummary } from '../models/soldier-summary.model';
 
 @Injectable({
   providedIn: 'root'
@@ -53,5 +54,9 @@ export class SoldierService {
       soldierId,
       vacationId
     });
+  }
+
+  getSummary(soldierId: number): Observable<SoldierSummary> {
+    return this.http.post<SoldierSummary>(`${this.serverURL}/GetSummary?soldierId=${soldierId}`, {});
   }
 }

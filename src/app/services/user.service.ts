@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { User } from '../models/user.model';
-import { GeneralResponse } from '../models/general-response.model';
+import { GeneralResponse, GeneralResponseBase } from '../models/general-response.model';
 import { decryptAES } from '../utils/aes';
 import { Store } from '@ngrx/store';
 import { AppState } from '../state-management/states/app.state';
@@ -55,5 +55,9 @@ export class UserService {
       }
     }
     return this.loggedUser;
+  }
+
+  resetPassword(username: string, password: string): Observable<GeneralResponseBase> {
+    return this.http.post<GeneralResponseBase>(`${this.serverURL}/ResetPassword`, {username, password, encrypted: true});
   }
 }

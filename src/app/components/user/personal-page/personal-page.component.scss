@@ -3,4 +3,34 @@
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
+
+    .title {
+        display: flex;
+        flex: 100%;
+        justify-content: center;
+        flex-direction: row-reverse;
+        flex-wrap: wrap;
+    }
+
+    .user-actions {
+        display: flex;
+        flex: 100%;
+        flex-direction: row-reverse;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+    }
+
+    .user-content {
+        display: flex;
+        flex: 100%;
+        flex-direction: row-reverse;
+        flex-wrap: wrap;
+        max-height: calc(100vh - 64px - 83px - 36px);
+        overflow: auto;
+        justify-content: center;
+
+        > div {
+            width: 100%;
+        }
+    }
 }

@@ -12,3 +12,7 @@ export const selectVacations = createSelector(
   selectSoldiersState,
   (state: SoldiersState) => state.vacations
 );
+export const selectSummary = createSelector(
+  selectSoldiersState,
+  (state: SoldiersState) => state.soldierSummary
+);

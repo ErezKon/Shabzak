@@ -1,0 +1,36 @@
+<div class="summary-container">
+    @if(summary) {
+        <div class="summary-row">
+            <div class="summary-data total-missions">
+                <div class="title">
+                    סה"כ משימות:
+                </div>
+                <div class="value">
+                    {{summary.totalMissions}}
+                </div>
+            </div>
+            <div class="summary-data total-hours">
+                <div class="title">
+                    סה"כ שעות:
+                </div>
+                <div class="value">
+                    {{summary.totalHours}}
+                </div>
+            </div>
+        </div>
+        
+        <div class="summary-row">
+            <div class="summary-data breakdown">
+                <div class="title">
+                    פירוט משימות:
+                </div>
+                <div class="value flex-row">
+                    <app-bar-chart [data]="barChartData" [dynamicWidth]="90" [dynamicHeight]="40"></app-bar-chart>
+                </div>
+                <div class="value flex-row">
+                    <app-pie-grid [data]="barChartData" [dynamicWidth]="90" [dynamicHeight]="30"></app-pie-grid>
+                </div>
+            </div>
+        </div>
+    }
+</div>

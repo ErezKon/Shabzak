@@ -22,6 +22,8 @@ export class BarChartComponent extends BaseComponent implements OnChanges{
   @Input() public xAxisLabel!: string;
   @Input() public yAxisLabel!: string;
   @Input() public showLegend = true;
+  @Input() public dynamicWidth?: number;
+  @Input() public dynamicHeight?: number;
 
   view!: [number, number];
 
@@ -44,9 +46,11 @@ export class BarChartComponent extends BaseComponent implements OnChanges{
 
   constructor(public windowSizeService: WindowSizeService) {
     super();
-    this.addSub(windowSizeService.getSize$.subscribe(size => {
-      this.view = [0.8 * size.width, 0.7 * size.height]
-    }));
+    // this.addSub(windowSizeService.getSize$.subscribe(size => {
+    //   if(!this.overrideView) {
+    //     this.view = [0.8 * size.width, 0.7 * size.height];
+    //   }
+    // }));
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -62,6 +66,10 @@ export class BarChartComponent extends BaseComponent implements OnChanges{
       colors.push(`#${this.generateRandomColor()}`);
     }
     this.colorScheme.domain = colors;
+
+    if(this.dynamicWidth || this.dynamicHeight) {
+      this.setDynamicView();
+    }
     
     if(window) {
       this.windowSizeService.changeSize(window.innerHeight, window.innerWidth);
@@ -75,5 +83,25 @@ export class BarChartComponent extends BaseComponent implements OnChanges{
   
   onSelect(event: any) {
     console.log(event);
+  }
+  
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    if(this.dynamicWidth || this.dynamicHeight) {
+      this.setDynamicView();
+    }
+  }
+
+  private setDynamicView() {
+    let width = this.view? this.view[0] : window.innerWidth;
+    let height = this.view ? this.view[1] : window.innerHeight;
+    if(this.dynamicWidth) {
+      width = (this.dynamicWidth / 100) * window.innerWidth;
+    }
+    if(this.dynamicHeight) {
+      height = (this.dynamicHeight / 100) * window.innerHeight;
+    }
+    this.view = [width, height];
   }
 }

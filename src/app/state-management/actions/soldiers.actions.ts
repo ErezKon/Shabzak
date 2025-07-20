@@ -2,6 +2,7 @@ import { createAction, props } from "@ngrx/store";
 import { Soldier } from "../../models/soldier.model";
 import { Vacation } from "../../models/vacation.model";
 import { VacationRequestStatus } from "../../models/vacation-request-stats.enum";
+import { SoldierSummary } from "../../models/soldier-summary.model";
 
 export const getSoldiers = createAction(
     '[Soldiers] Get Soldiers'
@@ -84,4 +85,16 @@ export const getVacationsSuccess = createAction(
 );
 export const getVacationsFailure = createAction(
     '[Soldiers] Get Vacations Failure'
+);
+
+export const getSummary = createAction(
+    '[Soldiers] Get Summary',
+    props<{ soldierId: number }>()
+);
+export const getSummarySuccess = createAction(
+    '[Soldiers] Get Summary Success',
+    props<{ summary: SoldierSummary }>()
+);
+export const getSummaryFailure = createAction(
+    '[Soldiers] Get Summary Failure'
 );

@@ -26,16 +26,24 @@ export class UserEffects {
     exhaustMap((action) => this.usersService.login(action.username, action.password)
       .pipe(
         map(res => {
-            if(res.success && res.value) {
+            if(res.success) {
+              if(res.value) {
                 this.usersService.setLoggeduser(res.value);
                 const json = JSON.stringify({...res.value, valid: addDays(new Date(), 7)});
                 const userJson = encryptAES(json);
                 localStorage.setItem('user', userJson);
                 this.router.navigateByUrl('personal-page');
                 return userActions.loginSuccess({ user: res.value });
+              } else {
+                this.snackbar.openSnackBar("Wrong credentials.");
+                return userActions.loginFailure();
+              }
+                
             }
             if(res.errorMessage) {
                 this.snackbar.openSnackBar(res.errorMessage);
+            } else {
+              this.snackbar.openSnackBar("Failed to login.");
             }
             return userActions.loginFailure();
         }),
@@ -65,6 +73,29 @@ export class UserEffects {
             console.error(err);
             this.snackbar.openSnackBar('שגיאה בהוספת משתמשים');
             return of(userActions.createUsersForSoldiersFailure());
+        })
+      ))
+  ));
+  
+
+  resetPassword$ = createEffect(() => this.actions$.pipe(
+    ofType(userActions.resetPassword),
+    exhaustMap((action) => this.usersService.resetPassword(action.username, action.password)
+      .pipe(
+        map(res => {
+            if(res.success) {
+                this.snackbar.openSnackBar(`הסיסמא שונתה בהצלחה`);
+                return userActions.resetPasswordSuccess();
+            }
+            if(res.errorMessage) {
+                this.snackbar.openSnackBar(res.errorMessage);
+            }
+            return userActions.resetPasswordFailure();
+        }),
+        catchError(err => {
+            console.error(err);
+            this.snackbar.openSnackBar('שגיאה בשינוי סיסמא');
+            return of(userActions.resetPasswordFailure());
         })
       ))
   ));

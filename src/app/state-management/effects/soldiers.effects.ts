@@ -114,4 +114,19 @@ export class SoldiersEffects {
         })
       ))
   ));
+
+  getSummary$ = createEffect(() => this.actions$.pipe(
+    ofType(soldierActions.getSummary),
+    exhaustMap((action) => this.soldiersService.getSummary(action.soldierId)
+      .pipe(
+        map(res => {
+          return soldierActions.getSummarySuccess({ summary: res });
+        }),
+        catchError(err => {
+          console.error(err);
+          this.snackbar.openSnackBar('שגיאה בהבאת נתונים.');
+          return of(soldierActions.getSummaryFailure());
+        })
+      ))
+  ));
 }

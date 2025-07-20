@@ -24,3 +24,14 @@ export const createUsersForSoldiersSuccess = createAction(
 export const createUsersForSoldiersFailure = createAction(
     '[User] Create Users For Soldiers Failure'
 );
+
+export const resetPassword = createAction(
+    '[User] Reset Password',
+    props<{ username: string, password: string }>()
+);
+export const resetPasswordSuccess = createAction(
+    '[User] Reset Password Success'
+);
+export const resetPasswordFailure = createAction(
+    '[User] Reset Password Failure'
+);

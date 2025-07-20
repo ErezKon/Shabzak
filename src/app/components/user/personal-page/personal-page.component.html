@@ -1,4 +1,74 @@
 <div class="personal-page-container">
     <h1 class="title">שלום {{user?.soldier?.name}}</h1>
-    
+    <div class="user-actions">
+        <button 
+            mat-raised-button 
+            cdkFocusInitial 
+            color="primary" 
+            type="submit" 
+            class="accept" 
+            (click)="onSummaryState()">
+                הצג סיכום
+        </button>
+        <button 
+            mat-raised-button 
+            cdkFocusInitial 
+            color="primary" 
+            type="submit" 
+            class="accept" 
+            (click)="onResetPasswordState()">
+                החלף סיסמא
+        </button>
+        <button 
+            mat-raised-button 
+            cdkFocusInitial 
+            color="primary" 
+            type="submit" 
+            class="accept" 
+            (click)="onShowDetailsState()">
+                הצג פרטים
+        </button>
+        <button 
+            mat-raised-button 
+            cdkFocusInitial 
+            color="primary" 
+            type="submit" 
+            class="accept" 
+            (click)="onVacationRequestState()">
+                בקש יציאה
+        </button>
+        <button 
+            mat-raised-button 
+            cdkFocusInitial 
+            color="primary" 
+            type="submit" 
+            class="accept" 
+            (click)="onShowVacationsState()">
+                בקשות יציאה
+        </button>
+    </div>
+    <div class="user-content">
+        @switch (selectedAction) {
+            @case ('summary') {
+                <div class="summary">
+                    <app-summary [summary]="summary$ | async"></app-summary>
+                </div>
+            }
+            @case ('reset-password') {
+                <div class="reset-password">
+                    <app-reset-password (resetPassword)="onResetPassword($event)"></app-reset-password>
+                </div>
+            }
+            @case ('request-vacation') {
+                <div class="request-vacation">
+                    <app-request-vacation></app-request-vacation>
+                </div>
+            }
+            @case ('show-vacations') {
+                <div class="show-vacations">
+                    <app-show-vacations></app-show-vacations>
+                </div>
+            }
+        }
+    </div>
 </div>

@@ -35,4 +35,5 @@ export const soldiersReducer = createReducer(
         return {...state, vacations: vacations};
     }),
     on(soldierActions.getVacationsSuccess, (state, {vacations}) => ({ ...state, vacations: vacations })),
+    on(soldierActions.getSummarySuccess, (state, {summary}) => ({ ...state, soldierSummary: summary })),
 );
