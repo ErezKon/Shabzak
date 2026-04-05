@@ -61,12 +61,12 @@
             }
             @case ('request-vacation') {
                 <div class="request-vacation">
-                    <app-request-vacation></app-request-vacation>
+                    <app-request-vacation [soldierId]="user?.soldierId"></app-request-vacation>
                 </div>
             }
             @case ('show-vacations') {
                 <div class="show-vacations">
-                    <app-show-vacations></app-show-vacations>
+                    <app-show-vacations [soldierId]="user?.soldierId"></app-show-vacations>
                 </div>
             }
         }

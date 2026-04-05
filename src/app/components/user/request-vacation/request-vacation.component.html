@@ -1,1 +1,24 @@
-<p>request-vacation works!</p>
+<div class="request-vacation">
+    <mat-form-field class="date-range">
+        <mat-label>בחר טווח תאריכים</mat-label>
+        <mat-date-range-input [rangePicker]="picker">
+            <input matStartDate placeholder="מתאריך" [formControl]="startDateForm">
+            <input matEndDate placeholder="עד תאריך" [formControl]="endDateForm">
+        </mat-date-range-input>
+        <mat-hint>DD/MM/YYYY – DD/MM/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field>
+    <div class="send">
+        <button 
+            mat-raised-button 
+            cdkFocusInitial 
+            color="primary" 
+            type="submit" 
+            class="accept"
+            [disabled]="startDateForm.invalid || endDateForm.invalid"
+            (click)="onSendRequest()">
+                שלח בקשה
+        </button>
+    </div>
+</div>
