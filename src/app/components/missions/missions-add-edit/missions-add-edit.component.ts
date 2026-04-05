@@ -295,13 +295,21 @@ export class MissionsAddEditComponent extends BaseComponent {
     let lastTime = this.startTimeForm.value ?? '';
     const finalEndTime = this.endTimeForm.value?.split(':')?.map((t: string) => +t)[0] ?? 0;
     const finalEndTimeMinutes = this.endTimeForm.value?.split(':')?.map((t: string) => +t)[1] ?? 0;
-    const finalInstanceEndTime = this.datesRange[this.datesRange.length - 1];
+    const finalInstanceEndTime = new Date(this.datesRange[this.datesRange.length - 1]);
     finalInstanceEndTime.setHours(finalEndTime);
     finalInstanceEndTime.setMinutes(finalEndTimeMinutes);
+    finalInstanceEndTime.setSeconds(0);
+    finalInstanceEndTime.setMilliseconds(0);
     let index = 0;
     this.mission.missionInstances = [];
     let id = 0;
+    let skipDays = 0;
     for (const date of this.datesRange) {
+      if(skipDays > 0) {
+        skipDays--;
+        index++;
+        continue;
+      }
       const key = date.toLocaleDateString('en-GB');
       const instances = new Array<AddMissionInstance>();
       let time = lastTime;
@@ -319,15 +327,27 @@ export class MissionsAddEditComponent extends BaseComponent {
       while(keepCreating) {
         const spl = time.split(":").map((s: string) => +s);
         const endTime = spl[0] + this.mission.duration;
-        if(index === this.datesRange.length - 1 && endTime >= finalEndTime) {
+        const instanceStart = new Date(date);
+        instanceStart.setHours(spl[0], spl[1], 0, 0);
+        const instanceEnd = new Date(instanceStart.getTime() + this.mission.duration * 60 * 60 * 1000);
+        if(instanceEnd >= finalInstanceEndTime) {
+          const startDateZero = new Date(date);
+          startDateZero.setHours(0, 0, 0, 0);
+          const endDateZero = new Date(finalInstanceEndTime);
+          endDateZero.setHours(0, 0, 0, 0);
+          const daysToAdd = Math.round((endDateZero.getTime() - startDateZero.getTime()) / (24 * 60 * 60 * 1000));
+          const endDateObj = new Date(date);
+          endDateObj.setDate(endDateObj.getDate() + daysToAdd);
           const instance: AddMissionInstance = {
             id: ++id,
             date: key,
+            endDate: daysToAdd > 0 ? endDateObj.toLocaleDateString('en-GB') : undefined,
             from: `${formatNumber(spl[0], 2)}:${formatNumber(spl[1], 2)}`,
-            to: `${formatNumber(finalEndTime,2)}:${formatNumber(spl[1], 2)}`
+            to: `${formatNumber(finalEndTime,2)}:${formatNumber(finalEndTimeMinutes, 2)}`
           }
           instances.push(instance);
-          this.mission.missionInstances.push(this.convertMissionInstancetoBEModel(instance));
+          this.mission.missionInstances.push(this.convertMissionInstancetoBEModel(instance, daysToAdd));
+          keepCreating = false;
           break;
         }
         if(endTime < 24) {
@@ -341,15 +361,20 @@ export class MissionsAddEditComponent extends BaseComponent {
           this.mission.missionInstances.push(this.convertMissionInstancetoBEModel(instance));
           time = `${formatNumber(endTime,2)}:${formatNumber(spl[1], 2)}`;
         } else {
+          const daysToAdd = Math.floor(endTime / 24);
+          const endDateObj = new Date(date);
+          endDateObj.setDate(endDateObj.getDate() + daysToAdd);
           const instance: AddMissionInstance = {
             id: ++id,
             date: key,
+            endDate: daysToAdd > 0 ? endDateObj.toLocaleDateString('en-GB') : undefined,
             from: `${formatNumber(spl[0], 2)}:${formatNumber(spl[1], 2)}`,
             to: `${formatNumber(endTime % 24,2)}:${formatNumber(spl[1], 2)}`
           }
           instances.push(instance);
-          this.mission.missionInstances.push(this.convertMissionInstancetoBEModel(instance));
+          this.mission.missionInstances.push(this.convertMissionInstancetoBEModel(instance, daysToAdd));
           lastTime = `${formatNumber(endTime % 24,2)}:${formatNumber(spl[1], 2)}`;
+          skipDays = daysToAdd - 1;
           keepCreating = false;
         }
       } 
@@ -439,7 +464,7 @@ export class MissionsAddEditComponent extends BaseComponent {
     return `${formatNumber(+spl[0], 2)}:${formatNumber(+spl[1], 2)}`;
   }
 
-  private convertMissionInstancetoBEModel(instance: AddMissionInstance): MissionInstance {
+  private convertMissionInstancetoBEModel(instance: AddMissionInstance, daysToAdd: number = 0): MissionInstance {
     const ret: MissionInstance = {
       id: instance.id,
       fromTime: `${instance.date} ${instance.from}`,
@@ -452,7 +477,10 @@ export class MissionsAddEditComponent extends BaseComponent {
     const toHour = +(instance.to.split(':')[0]);
 
     let date = new Date(instance.date.split('/').reverse().join('/'));
-    if(toHour <= fromHour) {
+    if(daysToAdd > 0) {
+      date = new Date(date.setDate(date.getDate() + daysToAdd));
+      ret.toTime = `${date.toLocaleDateString('en-GB')} ${instance.to}`
+    } else if(toHour <= fromHour) {
       date = new Date(date.setDate(date.getDate() + 1));
       ret.toTime = `${date.toLocaleDateString('en-GB')} ${instance.to}`
     }

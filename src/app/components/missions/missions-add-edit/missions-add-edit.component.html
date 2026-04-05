@@ -120,28 +120,34 @@
             @if(datesRange.length && mission.requiredInstances) {
                 <div class="dates-instances">
                     @for (date of datesRange; track date) {
-                        <div class="date-instance">
-                            <div class="date-string">
-                                {{date.toLocaleDateString('en-GB')}}
-                            </div>
-                            <div class="instance-chips">
-                                <mat-chip-set>
-                                    @for(instance of getInstances(date); track instance) {
-                                        <mat-chip [removable]="true" (removed)="onRemovedInstance(date, instance)">{{instance.from}}-{{instance.to}}
-                                            <button matChipRemove [attr.aria-label]="'remove ' + instance">
-                                                <mat-icon>cancel</mat-icon>
-                                            </button>
-                                            <mat-icon class="edit-action-icon" (click)="onEdtMissionInstance(instance)">edit</mat-icon>
-                                        </mat-chip>
+                        @if(getInstances(date).length > 0) {
+                            <div class="date-instance">
+                                <div class="date-string">
+                                    @if(getInstances(date)[0].endDate) {
+                                        {{date.toLocaleDateString('en-GB')}} - {{getInstances(date)[0].endDate}}
+                                    } @else {
+                                        {{date.toLocaleDateString('en-GB')}}
                                     }
-                                  </mat-chip-set>
+                                </div>
+                                <div class="instance-chips">
+                                    <mat-chip-set>
+                                        @for(instance of getInstances(date); track instance) {
+                                            <mat-chip [removable]="true" (removed)="onRemovedInstance(date, instance)">{{instance.from}}-{{instance.to}}
+                                                <button matChipRemove [attr.aria-label]="'remove ' + instance">
+                                                    <mat-icon>cancel</mat-icon>
+                                                </button>
+                                                <mat-icon class="edit-action-icon" (click)="onEdtMissionInstance(instance)">edit</mat-icon>
+                                            </mat-chip>
+                                        }
+                                      </mat-chip-set>
+                                </div>
+                                <div class="add-instance">
+                                    <button mat-mini-fab color="primary" (click)="onAddMissionInstance(date)">
+                                        <mat-icon>add</mat-icon>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="add-instance">
-                                <button mat-mini-fab color="primary" (click)="onAddMissionInstance(date)">
-                                    <mat-icon>add</mat-icon>
-                                </button>
-                            </div>
-                        </div>
+                        }
                     }
                 </div>
             }
