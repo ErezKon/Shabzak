@@ -15,11 +15,15 @@ import { SoldiersFilter } from '../soldiers-filter/soldiers-filter.model';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { BaseComponent } from '../../../utils/base-component/base-component.component';
+import { ConfirmationModule } from '../../../utils/confirmation/module/confirmation/confirmation.module';
+import { ConfirmationService } from '../../../utils/confirmation/service/confirmation.service';
+import { ConfirmationDialogResult } from '../../../utils/confirmation/models/dialog-result.model';
 
 @Component({
   selector: 'app-soldiers-container',
   standalone: true,
-  imports: [CommonModule, SoldiersComponent, SoldiersFilterComponent, MatIconModule, MatButtonModule, BaseComponent],
+  imports: [CommonModule, SoldiersComponent, SoldiersFilterComponent, MatIconModule, MatButtonModule, BaseComponent, ConfirmationModule],
+  providers: [ConfirmationService],
   templateUrl: './soldiers-container.component.html',
   styleUrl: './soldiers-container.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
@@ -29,7 +33,7 @@ export class SoldiersContainerComponent extends BaseComponent{
   soldiers$ = new BehaviorSubject<Array<Soldier>>([]);
   allSoldiers: Array<Soldier> = [];
 
-  constructor(private store: Store<AppState>, public dialog: MatDialog) {
+  constructor(private store: Store<AppState>, public dialog: MatDialog, private confirmationService: ConfirmationService) {
     super();
     this.store.dispatch(soldierActions.getSoldiers());
     this.addSub(this.store.pipe(select(selectSoldiers))
@@ -98,6 +102,15 @@ export class SoldiersContainerComponent extends BaseComponent{
   }
 
   onDeleteSoldier(soldierId: number) {
-    this.store.dispatch(soldierActions.deleteSoldier({soldierId: soldierId}));
+    this.addSub(this.confirmationService.showConfirmation({
+      title: 'מחיקה',
+      confirmationMessage: 'האם אתה בטוח שברצונך למחוק?',
+      yesButtonText: 'מחק',
+      noButtonText: 'בטל'
+    }).subscribe(res => {
+      if (res === ConfirmationDialogResult.Accept) {
+        this.store.dispatch(soldierActions.deleteSoldier({soldierId: soldierId}));
+      }
+    }));
   }
 }

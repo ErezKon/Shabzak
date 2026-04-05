@@ -16,6 +16,9 @@ import * as missionActions from '../../../state-management/actions/missions.acti
 import { ManuallyAssignContainerComponent } from '../../manage-assignments/manually-assign/manually-assign-container/manually-assign-container.component';
 import { MissionAddEditMode } from '../missions-add-edit/mission-add-edit-mode.enum';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ConfirmationModule } from '../../../utils/confirmation/module/confirmation/confirmation.module';
+import { ConfirmationService } from '../../../utils/confirmation/service/confirmation.service';
+import { ConfirmationDialogResult } from '../../../utils/confirmation/models/dialog-result.model';
 
 @Component({
   selector: 'app-missions-container',
@@ -25,8 +28,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MissionsComponent, 
     MatIconModule, 
     MatButtonModule, 
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    ConfirmationModule
     ],
+  providers: [ConfirmationService],
   templateUrl: './missions-container.component.html',
   styleUrl: './missions-container.component.scss'
 })
@@ -35,7 +40,7 @@ export class MissionsContainerComponent extends BaseComponent{
   loading$: Observable<boolean>;
   allMissions: Array<Mission> = [];
 
-  constructor(private store: Store<AppState>, public dialog: MatDialog) {
+  constructor(private store: Store<AppState>, public dialog: MatDialog, private confirmationService: ConfirmationService) {
     super();
     this.store.dispatch(missionActions.getMissions());
     this.addSub(this.store.pipe(select(selectMissions))
@@ -136,7 +141,16 @@ export class MissionsContainerComponent extends BaseComponent{
   }
 
   onDeleteMission(missionId: number) {
-    this.store.dispatch(missionActions.deleteMission({missionId: missionId}));
+    this.addSub(this.confirmationService.showConfirmation({
+      title: 'מחיקה',
+      confirmationMessage: 'האם אתה בטוח שברצונך למחוק?',
+      yesButtonText: 'מחק',
+      noButtonText: 'בטל'
+    }).subscribe(res => {
+      if (res === ConfirmationDialogResult.Accept) {
+        this.store.dispatch(missionActions.deleteMission({missionId: missionId}));
+      }
+    }));
   }
 }
 
