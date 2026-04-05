@@ -115,6 +115,21 @@ export class SoldiersEffects {
       ))
   ));
 
+  getVacations$ = createEffect(() => this.actions$.pipe(
+    ofType(soldierActions.getVacations),
+    exhaustMap((action) => this.soldiersService.getVacations(action.soldierId)
+      .pipe(
+        map(res => {
+          return soldierActions.getVacationsSuccess({ vacations: res });
+        }),
+        catchError(err => {
+          console.error(err);
+          this.snackbar.openSnackBar('שגיאה בקבלת בקשות היציאה');
+          return of(soldierActions.getVacationsFailure());
+        })
+      ))
+  ));
+
   getSummary$ = createEffect(() => this.actions$.pipe(
     ofType(soldierActions.getSummary),
     exhaustMap((action) => this.soldiersService.getSummary(action.soldierId)
