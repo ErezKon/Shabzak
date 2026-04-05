@@ -3,7 +3,8 @@
     <app-manually-assign 
         [missionInstances]="data.missionInstances ?? []"
         [soldiers]="(soldiers$ | async) ?? []"
-        [availableSoldiers]="(availableSoldiers$ | async) ?? []">
+        [availableSoldiers]="(availableSoldiers$ | async) ?? []"
+        (assignSoldiers)="onAssignSoldiers($event)">
     </app-manually-assign>
 </mat-dialog-content>
 <mat-dialog-actions>

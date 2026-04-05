@@ -1,11 +1,8 @@
-:host {
-    flex: 1 1 auto;
-}
+
 
 .soldiers-select {
-    max-height: calc(100vh - 66px - 60px - 111px) !important;    
-    height: calc(100vh - 66px - 60px - 111px) !important;
-    overflow-y: auto;
+    height: 100%;
+    //overflow-y: auto;
 
     .soldiers-filter {
         display: flex;

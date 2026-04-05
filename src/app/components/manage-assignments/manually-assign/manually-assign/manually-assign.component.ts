@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AvailableSoldiersComponent } from '../available-soldiers/available-soldiers.component';
 import { InstanceViewComponent } from '../instance-view/instance-view.component';
 import { SelectionSummaryComponent } from '../selection-summary/selection-summary.component';
@@ -6,7 +6,7 @@ import { SoldiersSelectComponent } from '../soldiers-select/soldiers-select.comp
 import { MissionInstance } from '../../../../models/mission-instance.model';
 import { Soldier } from '../../../../models/soldier.model';
 import { GetAvailableSoldiers } from '../../../../models/get-available-soldier.model';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { AppState } from '../../../../state-management/states/app.state';
 
 import * as missionActions from '../../../../state-management/actions/missions.actions';
@@ -14,6 +14,8 @@ import * as soldierActions from '../../../../state-management/actions/soldiers.a
 import { AssignedMissionPosition, MissionPosition } from '../../../../models/mission-position.model';
 import { Position } from '../../../../models/position.enum';
 import { SoldierMission } from '../../../../models/soldier-mission.model';
+import {Mission} from '../../../../models/mission.model';
+import {selectMissions} from '../../../../state-management/selectors/missions.selector';
 
 @Component({
   selector: 'app-manually-assign',
@@ -27,10 +29,12 @@ import { SoldierMission } from '../../../../models/soldier-mission.model';
   templateUrl: './manually-assign.component.html',
   styleUrl: './manually-assign.component.scss'
 })
-export class ManuallyAssignComponent {
+export class ManuallyAssignComponent implements OnInit {
   @Input() missionInstances!: Array<MissionInstance>;
   @Input() soldiers!: Array<Soldier>;
   @Input() availableSoldiers!: Array<GetAvailableSoldiers>;
+
+  @Output() assignSoldiers = new EventEmitter<SoldierMission[]>();
 
   
   selectedInstance?: MissionInstance;
@@ -48,8 +52,30 @@ export class ManuallyAssignComponent {
   errors = new Array<string>();
   private readonly assignedTooMuchError = 'שים לב, שיבצת יותר חיילים משנדרש לתפקיד.';
 
+  private instanceToMissionDic = new Map<number, Mission>();
+
   constructor(private store: Store<AppState>) {
 
+  }
+  ngOnInit(): void {
+    if(this.missionInstances?.length) {
+      const instance = this.missionInstances[0];
+      this.selectedInstance = instance;
+      this.store.dispatch(missionActions.getAvailableSoldiers({
+        missionInstanceId: instance.id, 
+        soldiersPool: this.soldiersSelected?.length ? this.soldiersSelected : undefined
+      }));
+    }
+    this.store.pipe(select(selectMissions))
+    .subscribe(missions => {
+      if(missions?.length) {
+        for (const mission of missions) {
+          for (const instance of mission.missionInstances ?? []) {
+            this.instanceToMissionDic.set(instance.id, mission);
+          }
+        }
+      }
+    })
   }
   
   onInstanceSelect(instance: MissionInstance) {
@@ -80,9 +106,25 @@ export class ManuallyAssignComponent {
   }
   
   onAvailableSoldiersSelected(soldiers: Array<Soldier>) {
+    const mission = this.instanceToMissionDic.get(this.selectedInstance?.id ?? 0);
+    this.soldiersMission = new Array<SoldierMission>();
+    if(mission && mission.positions && mission.positions.length === 1 && soldiers?.length === 1) {
+      const position: MissionPosition = mission.positions[0];
+      this.soldiersMission.push({
+        id: 0,
+        soldier: soldiers[0],
+        mission: this.selectedInstance,
+        missionPosition: {
+          id: position.id,
+          count: 1,
+          position: position.position
+        } as MissionPosition
+      } as SoldierMission);
+      this.assignSoldiers.emit(this.soldiersMission);
+      return;
+    }
     this.selectedAvailableSoldiers = soldiers;
     this.initAssigned();
-    this.soldiersMission = new Array<SoldierMission>();
     const simplePosition = this.assignedMisionPositions?.filter(ap => ap.position === Position.Simple) ?? [];
     const allMissionPositions = this.assignedMisionPositions?.map(amp => amp.position) ?? [];
     let candidatePosition: AssignedMissionPosition | undefined = undefined;
@@ -198,12 +240,14 @@ export class ManuallyAssignComponent {
     }
     this.assignedMisionPositions = this.assignedMisionPositions?.map(ap => { return {...ap}});
     this.checkIfAllPositionsAreFilled();
-
+    
     if(this.checkIfAssignedMoreThanNeeded()) {
       this.errors.push(this.assignedTooMuchError);
     } else {
       this.errors = this.errors.filter(e => e !== this.assignedTooMuchError);
     }
+
+    this.assignSoldiers.emit(this.soldiersMission);
   }
 
   checkIfAllPositionsAreFilled() {

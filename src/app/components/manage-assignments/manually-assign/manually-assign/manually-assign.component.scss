@@ -1,0 +1,22 @@
+.manually-assign {
+    display: flex;
+    flex-direction: row-reverse;
+    flex-wrap: nowrap;
+    flex: 1;
+    height: 100%;
+
+    .selection {
+        display: flex;
+        flex-direction: row-reverse;
+        flex-wrap: nowrap;
+        flex: 1;
+        height: 100%;
+        flex: 1 1 75%;
+    }
+    .selection-summary {
+        display: flex;
+        flex-direction: row-reverse;
+        flex-wrap: nowrap;
+        flex: 1 1 25%;
+    }
+}

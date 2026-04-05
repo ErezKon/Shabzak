@@ -120,9 +120,14 @@ export class ManuallyAssignContainerComponent extends BaseComponent{
     }))
   }
 
+  onAssignSoldiers(soldiers: Array<SoldierMission>) {
+    this.soldiersMission = soldiers;
+  }
+
   onOk() {
     this.store.dispatch(missionActions.assignSoldiersToMissionInstance({soldiers: this.soldiersMission}));
-    this.load();
+    //this.load();
+    this.dialogRef.close();
   }
 
   
