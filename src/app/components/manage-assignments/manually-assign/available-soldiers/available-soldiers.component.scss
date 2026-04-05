@@ -1,14 +1,20 @@
 :host {
     flex: 2 1 40%;
+    height: 100%;
+    overflow: hidden;
+}
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
 }
 
 .available-soldiers {
     display: flex;
     flex-direction: column;
-    flex-wrap: nowrap;    
-    //max-height: 100%;
-    max-height: calc(100vh - 66px - 60px - 85px) !important;    
-    height: calc(100vh - 66px - 60px - 85px) !important;
+    flex-wrap: nowrap;
+    height: 100%;
     overflow-y: auto;
 
     .soldier {
@@ -30,7 +36,7 @@
         }
 
         .name {
-            flex: 0 0 35%;
+            flex: 0 0 25%;
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
@@ -39,7 +45,7 @@
 
         }
         .positions {
-            flex: 0 0 35%;
+            flex: 0 0 15%;
             display: flex;
             flex-wrap: wrap;
             justify-content: center;

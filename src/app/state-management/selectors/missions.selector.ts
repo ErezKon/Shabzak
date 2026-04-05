@@ -24,6 +24,11 @@ export const selectAvalableSoldiers = createSelector(
   (state: MissionsState) => state.availableSoldiers
 );
 
+export const selectLoadingAvailableSoldiers = createSelector(
+  selectMissionsState,
+  (state: MissionsState) => state.fetchingAvailableSoldiers
+);
+
 export const selectAutoAssigning = createSelector(
   selectMissionsState,
   (state: MissionsState) => state.autoAssigning

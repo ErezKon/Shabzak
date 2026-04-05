@@ -13,6 +13,11 @@
             מנוחה אחרי
         </div>
     </div>
+    @if(loading$ | async) {
+        <div class="spinner-container">
+            <mat-spinner></mat-spinner>
+        </div>
+    } 
     <div class="soldiers">
         @for (soldier of availableSoldiers; track $index) {
             <div class="soldier separator-down" [ngClass]="{'unavailable': !soldier.isAssignedForQueriedInstance && soldier.restTimeBefore === 0, 'selected': soldiersDic.has(soldier.soldier.id)}" (click)="onSoldierSelected(soldier.soldier)">

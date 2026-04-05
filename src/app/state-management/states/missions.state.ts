@@ -8,6 +8,7 @@ export interface MissionsState {
     missions: Array<Mission>;
     missionInstances: Array<MissionInstance>;
     availableSoldiers: Array<GetAvailableSoldiers>;
+    fetchingAvailableSoldiers: boolean;
     autoAssigning: boolean;
     candidateAssignments: AssignmentValidation;
     candidatesIds: Array<string>;
@@ -18,6 +19,7 @@ export const initialMissionsState: MissionsState = {
     missions: [],
     missionInstances: [],
     availableSoldiers: [],
+    fetchingAvailableSoldiers: false,
     autoAssigning: false,
     candidateAssignments: {} as AssignmentValidation,
     candidatesIds: []

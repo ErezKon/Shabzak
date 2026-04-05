@@ -4,11 +4,16 @@ import { SoldierPositionComponent } from '../../../soldiers/soldier-position/sol
 import { CommonModule } from '@angular/common';
 import { Soldier } from '../../../../models/soldier.model';
 import { MissionInstance } from '../../../../models/mission-instance.model';
+import {Observable} from 'rxjs/internal/Observable';
+import {select, Store} from '@ngrx/store';
+import {AppState} from '../../../../state-management/states/app.state';
+import {selectLoadingAvailableSoldiers} from '../../../../state-management/selectors/missions.selector';
+import {MatProgressSpinner} from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-available-soldiers',
   standalone: true,
-  imports: [CommonModule, SoldierPositionComponent],
+  imports: [CommonModule, SoldierPositionComponent, MatProgressSpinner],
   templateUrl: './available-soldiers.component.html',
   styleUrl: './available-soldiers.component.scss'
 })
@@ -26,6 +31,11 @@ export class AvailableSoldiersComponent implements OnChanges {
   selectedSoldiers = new Array<Soldier>();
   soldiersDic = new Set<number>();
 
+  loading$: Observable<boolean>;
+
+  constructor(store: Store<AppState>) {
+    this.loading$ = store.pipe(select(selectLoadingAvailableSoldiers));
+  }
   
   ngOnChanges(changes: SimpleChanges): void {
     const newInstanceSelected = changes['selectedInstance']?.currentValue?.id !== changes['selectedInstance']?.previousValue?.id;
