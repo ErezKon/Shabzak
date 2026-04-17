@@ -12,4 +12,6 @@ export interface AssignmentValidation {
     startingMissionName?: string;
     evennessScore?: number;
     isBestCandidate?: boolean;
+    skippedInstances: Map<string, Array<CandidateMissionInstance>>;
+    skippedInstancesCount: number;
 }

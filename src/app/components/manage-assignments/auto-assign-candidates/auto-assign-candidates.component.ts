@@ -107,7 +107,9 @@ export class AutoAssignCandidatesComponent extends BaseComponent{
           const ret: Array<MyKeyValue<string>> = [];
           for (let i = 0; i < candidates.length; i++) {
             const c = candidates[i];
-            const label = `הצעה ${i + 1} – ${c.startingMissionName ?? '?'} (${c.validInstancesCount}/${c.totalInstancesCount})${c.isBestCandidate ? ' ★' : ''}`;
+            const skipped = c.skippedInstancesCount ?? 0;
+            const skippedSuffix = skipped > 0 ? `, ${skipped} כבר משובצים` : '';
+            const label = `הצעה ${i + 1} – ${c.startingMissionName ?? '?'} (${c.validInstancesCount}/${c.totalInstancesCount}${skippedSuffix})${c.isBestCandidate ? ' ★' : ''}`;
             ret.push({
               text: label,
               value: c.id

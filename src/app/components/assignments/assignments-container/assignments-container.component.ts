@@ -65,8 +65,8 @@ export class AssignmentsContainerComponent extends BaseComponent {
     const allDates = Array.from(new Set(missions.flatMap(m => m.missionInstances.map(mi => this.parseStrToDate(mi.fromTime)))));
     const tempMap = new Map<string, Map<string, Array<Assignment>>>();
 
-    const maxDate = allDates?.reduce(function (a, b) { return a > b ? a : b; });
-    const minDate = allDates?.reduce(function (a, b) { return a < b ? a : b; });
+    const maxDate = allDates.length > 0 ? allDates.reduce(function (a, b) { return a > b ? a : b; }) : new Date();
+    const minDate = allDates.length > 0 ? allDates.reduce(function (a, b) { return a < b ? a : b; }) : new Date();
     for (const mission of missions) {
       for (const missionInstance of mission.missionInstances) {
         const date = this.parseStrToDate(missionInstance.fromTime);

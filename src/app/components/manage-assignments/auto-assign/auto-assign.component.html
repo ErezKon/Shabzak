@@ -26,6 +26,9 @@
                     <input matInput [(ngModel)]="toHour">
                 </mat-form-field>
             </div>
+            <div class="interactive-toggle">
+                <mat-checkbox [(ngModel)]="interactiveMode">שיבוץ אינטראקטיבי</mat-checkbox>
+            </div>
         </div>
         @if(datesSelected) {
             <div class="instances-select">
@@ -45,9 +48,6 @@
     </div>
 </mat-dialog-content>
 <mat-dialog-actions>
-    <div class="interactive-toggle">
-        <mat-checkbox [(ngModel)]="interactiveMode">שיבוץ אינטראקטיבי</mat-checkbox>
-    </div>
     <button mat-button (click)="onCancelClick()" class="cancel">בטל</button>
     <button mat-raised-button (click)="onOk()" cdkFocusInitial color="primary" class="accept">אשר</button>
 </mat-dialog-actions>
