@@ -1,0 +1,26 @@
+<div class="candidate-breakdown" [class.selectable]="selectable" [class.selected]="selected" [class.disabled]="disabled && !selected">
+    @if(selectable) {
+        <div class="checkbox-container">
+            <mat-checkbox [checked]="selected" [disabled]="disabled && !selected" (change)="onToggle()"></mat-checkbox>
+        </div>
+    }
+    <div class="soldier">
+        <div class="title">שם החייל</div>
+        <div class="value">
+            {{candidate.soldier.name}}
+            <div class="positions">
+                @for (position of candidate.soldier.positions; track $index) {
+                    <app-soldier-position [position]="position"></app-soldier-position>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="missions-assigned">
+        <div class="title">משימות ששובץ עד כה</div>
+        <div class="value">{{candidate.missionsAssignedTo ?? 0}}</div>
+    </div>
+    <div class="rank" (click)="onRankClick()">
+        <div class="title">ציון</div>
+        <div class="value">{{candidate.rank | number:'1.2-2'}}</div>
+    </div>
+</div>

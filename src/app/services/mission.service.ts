@@ -8,6 +8,9 @@ import { GetAvailableSoldiers } from '../models/get-available-soldier.model';
 import { SoldierMission } from '../models/soldier-mission.model';
 import { toServerString } from '../utils/date.util';
 import { AssignmentValidation } from '../models/auto-assign/assignment-validation.model';
+import { InteractiveAutoAssignStep } from '../models/auto-assign/interactive-auto-assign-step.model';
+import { InteractivePauseOn } from '../models/auto-assign/interactive-auto-assign-status';
+import { CandidatePick } from '../models/auto-assign/candidate-pick.model';
 
 @Injectable({
   providedIn: 'root'
@@ -87,8 +90,8 @@ export class MissionService {
     });
   }
 
-  autoAssign(from: Date, to: Date, soldiers: number[], missions: number[]): Observable<AssignmentValidation> {
-    return this.http.post<AssignmentValidation>(`${this.serverURL}/AutoAssign`, {
+  autoAssign(from: Date, to: Date, soldiers: number[], missions: number[]): Observable<Array<AssignmentValidation>> {
+    return this.http.post<Array<AssignmentValidation>>(`${this.serverURL}/AutoAssign`, {
       startDate: toServerString(from), 
       endDate: toServerString(to), 
       soldiers,
@@ -120,5 +123,33 @@ export class MissionService {
 
   removeSoldierFromMissionInstance(soldierId: number, missionInstanceId: number): Observable<Array<Mission>> {
     return this.http.post<Array<Mission>>(`${this.serverURL}/RemoveSoldierFromMissionInstance?soldierId=${soldierId}&missionInstanceId=${missionInstanceId}`, {});
+  }
+
+  startInteractiveAutoAssign(
+    from: Date, to: Date, soldiers: number[], missions: number[],
+    pauseOn: InteractivePauseOn = 'FaultyOnly', showAllSoldiersOnPause: boolean = false
+  ): Observable<InteractiveAutoAssignStep> {
+    return this.http.post<InteractiveAutoAssignStep>(`${this.serverURL}/StartInteractiveAutoAssign`, {
+      startDate: toServerString(from),
+      endDate: toServerString(to),
+      soldiers,
+      missions,
+      pauseOn,
+      showAllSoldiersOnPause
+    });
+  }
+
+  continueInteractiveAutoAssign(
+    sessionId: string, picks: CandidatePick[], skipInstance: boolean
+  ): Observable<InteractiveAutoAssignStep> {
+    return this.http.post<InteractiveAutoAssignStep>(`${this.serverURL}/ContinueInteractiveAutoAssign`, {
+      sessionId,
+      picks,
+      skipInstance
+    });
+  }
+
+  cancelInteractiveAutoAssign(sessionId: string): Observable<void> {
+    return this.http.post<void>(`${this.serverURL}/CancelInteractiveAutoAssign?sessionId=${sessionId}`, {});
   }
 }

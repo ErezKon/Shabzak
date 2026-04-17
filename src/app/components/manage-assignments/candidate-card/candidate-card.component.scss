@@ -1,0 +1,60 @@
+@import '../../../../styles.scss';
+
+.candidate-breakdown {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex: 30%;
+    justify-content: space-between;
+    box-shadow: 0px 0 4px 1px $separator inset;
+    padding: 5px;
+
+    &.selectable {
+        cursor: pointer;
+    }
+
+    &.selected {
+        background-color: rgba(25, 118, 210, 0.08);
+        box-shadow: 0px 0 4px 2px rgba(25, 118, 210, 0.4) inset;
+    }
+
+    &.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .checkbox-container {
+        display: flex;
+        flex: 100%;
+        justify-content: flex-start;
+        padding-bottom: 4px;
+    }
+
+    .soldier, .missions-assigned, .rank {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .title {
+            font-weight: bold;
+        }
+    }
+
+    .soldier {
+        flex: 40%;
+
+        .positions {
+            display: flex;
+            justify-content: center;
+        }
+    }
+
+    .missions-assigned {
+        flex: 40%;
+    }
+
+    .rank {
+        flex: 20%;
+        cursor: pointer;
+    }
+}

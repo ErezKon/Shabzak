@@ -1,19 +1,21 @@
 @if(assignmentsByDayByMission) {
     <div class="assignments-by-day">
         <div class="day-selection">
-            <div class="prev">
-                <button mat-icon-button (click)="showPreviousDay()" matTooltip="הקודם">
-                    <mat-icon>arrow_forward_ios</mat-icon>
-                </button>
-            </div>
-            <h2 class="day">
-                {{displayDate}}
-            </h2>
-            <div class="next">
-                <button mat-icon-button (click)="showNextDay()" matTooltip="הבא">
-                    <mat-icon>arrow_back_ios</mat-icon>
-                </button>
-            </div>
+            @if(assignmentsDays.length > 1) {
+                <div class="prev">
+                    <button mat-icon-button (click)="showPreviousDay()" matTooltip="הקודם">
+                        <mat-icon>arrow_forward_ios</mat-icon>
+                    </button>
+                </div>
+                <h2 class="day">
+                    {{displayDate}}
+                </h2>
+                <div class="next">
+                    <button mat-icon-button (click)="showNextDay()" matTooltip="הבא">
+                        <mat-icon>arrow_back_ios</mat-icon>
+                    </button>
+                </div>
+            }
         </div>
         <div class="missions-breakdown">
             @for (missionAssignments of assignmentsByMission; track $index) {
@@ -45,12 +47,15 @@
                                 </div>
                             }
                             @if(!assignment.isAssignmentFilled) {
-                                <div class="add-soldier" [matMenuTriggerFor]="menu">
+                                <div class="add-soldier" 
+                                    [matMenuTriggerFor]="menu"
+                                    [matMenuTriggerData]="{'assignment': assignment}">
                                     +
                                 </div>
                             }
                             <mat-menu #menu="matMenu">
                                 <ng-template matMenuContent let-soldier="soldier" let-assignment="assignment">
+                                    <button mat-menu-item (click)="addSoldier(assignment)">הוסף חייל</button>
                                     <button mat-menu-item (click)="removeSoldier(soldier, assignment)">הסר חייל</button>
                                     <button mat-menu-item (click)="replaceSoldier(soldier, assignment)">החלף חייל</button>
                                 </ng-template>

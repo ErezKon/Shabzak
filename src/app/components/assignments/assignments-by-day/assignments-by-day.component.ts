@@ -9,6 +9,14 @@ import { AssignmentByMission } from '../models/assignment-by-mission.model';
 import { AssignmentSoldier } from '../models/assignment-soldier.model';
 import { MatMenuModule } from '@angular/material/menu';
 import { Soldier } from '../../../models/soldier.model';
+import {ManuallyAssignContainerComponent} from '../../manage-assignments/manually-assign/manually-assign-container/manually-assign-container.component';
+import { MatDialog } from '@angular/material/dialog';
+import {Mission} from '../../../models/mission.model';
+import {BaseComponent} from '../../../utils/base-component/base-component.component';
+import { select, Store } from '@ngrx/store';
+import * as missionActions from '../../../state-management/actions/missions.actions';
+import {AppState} from '../../../state-management/states/app.state';
+import {selectMissions} from '../../../state-management/selectors/missions.selector';
 
 @Component({
   selector: 'app-assignments-by-day',
@@ -17,7 +25,7 @@ import { Soldier } from '../../../models/soldier.model';
   templateUrl: './assignments-by-day.component.html',
   styleUrl: './assignments-by-day.component.scss'
 })
-export class AssignmentsByDayComponent implements OnInit, OnChanges {
+export class AssignmentsByDayComponent extends BaseComponent implements OnInit, OnChanges {
   @Input() canEdit: boolean = false;
   @Input() assignmentsByDayByMission?: Map<string, Array<AssignmentByMission>>;
   @Output() removeSoldierFromMissionInstance = new EventEmitter<{soldierId: number, missionInstanceId: number}>();
@@ -26,10 +34,19 @@ export class AssignmentsByDayComponent implements OnInit, OnChanges {
   displayDateIndex = 0;
   assignmentsByMission!: Array<AssignmentByMission>;
 
+  missions?: Array<Mission>;
+
   translatePosition = translatePosition;
 
   ngOnInit(): void {
     
+  }
+
+  constructor(private dialog: MatDialog, private store: Store<AppState>) {
+    super();
+    store.pipe(select(selectMissions)).subscribe(missions => {
+      this.missions = missions;
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -62,6 +79,25 @@ export class AssignmentsByDayComponent implements OnInit, OnChanges {
 
   onAssignmentClicked(assignment: Assignment, soldier: AssignmentSoldier) {
 
+  }
+
+  addSoldier(assignment: Assignment) {
+    let mission: Partial<Mission>;
+    mission = {
+      missionInstances: []
+    }
+    const dialogRef = this.dialog.open(ManuallyAssignContainerComponent, {
+      data: mission,
+      width: '98vw',
+      height: '97vh',
+      panelClass: ['lg-modal', 'no-body-scroll']
+    });
+
+    this.addSub(dialogRef.afterClosed().subscribe(result => {
+      if(result) {
+        this.store.dispatch(missionActions.assignSoldiersToMissionInstance({soldiers:result}));
+      }
+    }));
   }
 
   removeSoldier(soldier: AssignmentSoldier, assignment: Assignment) {

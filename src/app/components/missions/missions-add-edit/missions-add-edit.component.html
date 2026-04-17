@@ -26,6 +26,14 @@
                     <mat-error class="mat-error-rtl">הערך חייב להיות גדול מ-0</mat-error>
                 }
             </mat-form-field>
+
+            <mat-form-field class="actual-hours">
+                <mat-label>שעות בפועל</mat-label>
+                <input matInput type="number" [formControl]="actualHoursForm" min="0" step="0.5">
+                @if (actualHoursForm.hasError('min')) {
+                    <mat-error class="mat-error-rtl">הערך חייב להיות גדול או שווה ל-0</mat-error>
+                }
+            </mat-form-field>
         }
         
         <mat-form-field class="soldiers-required">
@@ -46,6 +54,14 @@
                 <mat-error class="mat-error-rtl">שדה חובה</mat-error>
             }
             @if (commandersRequiredForm.hasError('min')) {
+                <mat-error class="mat-error-rtl">הערך חייב להיות גדול או שווה ל-0</mat-error>
+            }
+        </mat-form-field>
+
+        <mat-form-field class="required-rest-after">
+            <mat-label>שעות מנוחה לאחר הפעילות</mat-label>
+            <input matInput type="number" [formControl]="requiredRestAfterForm" min="0">
+            @if (requiredRestAfterForm.hasError('min')) {
                 <mat-error class="mat-error-rtl">הערך חייב להיות גדול או שווה ל-0</mat-error>
             }
         </mat-form-field>

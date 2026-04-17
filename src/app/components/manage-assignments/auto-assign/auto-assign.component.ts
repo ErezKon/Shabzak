@@ -21,6 +21,7 @@ import { SoldiersSelectComponent } from '../manually-assign/soldiers-select/sold
 import { Soldier } from '../../../models/soldier.model';
 import { selectSoldiers } from '../../../state-management/selectors/soldiers.selector';
 import { CommonModule } from '@angular/common';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MissionsSelectComponent } from '../../missions/missions-select/missions-select.component';
 import { Mission } from '../../../models/mission.model';
 import { defaultStartEndTime } from '../../missions/missions-container/missions-container.component';
@@ -41,7 +42,8 @@ import { mergeDateTime } from '../../../utils/date.util';
     MatDatepickerModule,
     ReactiveFormsModule,
     MissionsSelectComponent,
-    SoldiersSelectComponent
+    SoldiersSelectComponent,
+    MatCheckboxModule
   ],
   providers: [provideNativeDateAdapter(), {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}],
   templateUrl: './auto-assign.component.html',
@@ -62,6 +64,7 @@ export class AutoAssignComponent extends BaseComponent {
   selectedInstances?: Array<MissionInstance>;
   selectedMissions?: Array<Mission>;
   selectedSoldiers?: Array<number>;
+  interactiveMode = false;
 
   fromHour!: string;
   toHour!: string;
@@ -103,7 +106,8 @@ export class AutoAssignComponent extends BaseComponent {
       from: mergeDateTime(this.startDateForm.value, this.fromHour),
       to: mergeDateTime(this.endDateForm.value, this.toHour),
       missions: this.selectedMissions?.map(m => m.id) ?? [],
-      soldiers: this.selectedSoldiers ?? []
+      soldiers: this.selectedSoldiers ?? [],
+      interactiveMode: this.interactiveMode
     });
   }
 

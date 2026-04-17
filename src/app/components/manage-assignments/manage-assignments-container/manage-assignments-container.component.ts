@@ -5,6 +5,7 @@ import { select, Store } from '@ngrx/store';
 import { AppState } from '../../../state-management/states/app.state';
 import { AutoAssignCandidatesComponent } from '../auto-assign-candidates/auto-assign-candidates.component';
 import { AutoAssignComponent } from '../auto-assign/auto-assign.component';
+import { InteractiveAutoAssignComponent, InteractiveAutoAssignDialogData } from '../interactive-auto-assign/interactive-auto-assign.component';
 
 import * as missionActions from '../../../state-management/actions/missions.actions';
 import { selectCandidateAssignments, selectMissions } from '../../../state-management/selectors/missions.selector';
@@ -85,12 +86,37 @@ export class ManageAssignmentsContainerComponent extends BaseComponent {
 
     this.addSub(dialogRef.afterClosed().subscribe(result => {
       if(result) {
-        this.store.dispatch(missionActions.autoAssign({
-          from: result.from,
-          to: result.to,
-          soldiers: result.soldiers,
-          missions: result.missions
-        }));
+        if (result.interactiveMode) {
+          this.openInteractiveAutoAssign(result);
+        } else {
+          this.store.dispatch(missionActions.autoAssign({
+            from: result.from,
+            to: result.to,
+            soldiers: result.soldiers,
+            missions: result.missions
+          }));
+          this.openShowCandidates();
+        }
+      }
+    }));
+  }
+
+  openInteractiveAutoAssign(params: { from: Date, to: Date, soldiers: number[], missions: number[] }) {
+    const dialogRef = this.dialog.open(InteractiveAutoAssignComponent, {
+      width: '95vw',
+      height: '95vh',
+      panelClass: ['lg-modal', 'no-body-scroll'],
+      disableClose: true,
+      data: {
+        from: params.from,
+        to: params.to,
+        soldiers: params.soldiers,
+        missions: params.missions
+      } as InteractiveAutoAssignDialogData
+    });
+
+    this.addSub(dialogRef.afterClosed().subscribe(result => {
+      if (result?.completed && result?.result) {
         this.openShowCandidates();
       }
     }));

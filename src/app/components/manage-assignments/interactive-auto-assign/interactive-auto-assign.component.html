@@ -1,0 +1,76 @@
+<h2 mat-dialog-title class="dialog-title">שיבוץ אינטראקטיבי</h2>
+<mat-dialog-content>
+    @if(loading$ | async) {
+        <div class="spinner-container">
+            <mat-spinner></mat-spinner>
+        </div>
+    }
+    @if(session$ | async; as session) {
+        <div class="interactive-container">
+            <div class="progress-section">
+                <mat-progress-bar mode="determinate" [value]="progressPercent"></mat-progress-bar>
+                <div class="progress-text">
+                    {{session.currentIndex}} מתוך {{session.totalInstancesCount}} שיבוצים
+                </div>
+            </div>
+
+            @if(session.status === 'Paused' && session.pending) {
+                <div class="pending-section">
+                    <div class="instance-header">
+                        <h3>
+                            {{session.pending.instance.fromTime}} → {{session.pending.instance.toTime}}
+                        </h3>
+                        <div class="requirements">
+                            נדרשים: {{session.pending.commandersRequired}} מפקדים, {{session.pending.soldiersRequired}} חיילים
+                        </div>
+                    </div>
+
+                    @if(session.pending.instance.missingPositions) {
+                        <div class="missing-positions">
+                            <h4>תפקידים חסרים:</h4>
+                            <div class="positions-list">
+                                @for (pos of session.pending.instance.missingPositions | keyvalue; track $index) {
+                                    <div class="missing-position">
+                                        <app-soldier-position [textualPosition]="pos.key"></app-soldier-position>
+                                        x{{pos.value}}
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    @if(session.pending.instance.candidates && session.pending.instance.candidates.length > 0) {
+                        <div class="candidates-section">
+                            <h4>מועמדים לשיבוץ</h4>
+                            <div class="selection-counter">
+                                נבחרו {{selectedSoldierIds.size}} מתוך {{maxSelections}} הנדרשים
+                            </div>
+                            <div class="candidates-grid">
+                                @for (c of session.pending.instance.candidates; track $index) {
+                                    <app-candidate-card
+                                        [candidate]="c"
+                                        [selectable]="true"
+                                        [selected]="isCandidateSelected(c.soldier.id)"
+                                        [disabled]="isSelectionDisabled(c.soldier.id)"
+                                        (toggleSelected)="onToggleCandidate(c.soldier.id)"
+                                        (rankClicked)="onRankClicked($event)">
+                                    </app-candidate-card>
+                                }
+                            </div>
+                        </div>
+                    } @else {
+                        <div class="no-candidates">
+                            <p>אין מועמדים זמינים — דלג או בטל</p>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    }
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button (click)="onCancel()" class="cancel">בטל</button>
+    <button mat-button (click)="onSkip()" class="skip" [disabled]="(loading$ | async) ?? false">דלג על משימה זו</button>
+    <button mat-raised-button (click)="onContinue()" color="primary" class="continue"
+        [disabled]="!canContinue || ((loading$ | async) ?? false)">המשך בשיבוץ</button>
+</mat-dialog-actions>

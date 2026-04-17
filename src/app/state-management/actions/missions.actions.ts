@@ -4,6 +4,9 @@ import { MissionInstance } from "../../models/mission-instance.model";
 import { GetAvailableSoldiers } from "../../models/get-available-soldier.model";
 import { SoldierMission } from "../../models/soldier-mission.model";
 import { AssignmentValidation } from "../../models/auto-assign/assignment-validation.model";
+import { InteractiveAutoAssignStep } from "../../models/auto-assign/interactive-auto-assign-step.model";
+import { InteractivePauseOn } from "../../models/auto-assign/interactive-auto-assign-status";
+import { CandidatePick } from "../../models/auto-assign/candidate-pick.model";
 
 export const getMissions = createAction(
     '[Missions] Get Missions'
@@ -105,7 +108,7 @@ export const autoAssign = createAction(
 );
 export const autoAssignSuccess = createAction(
     '[Missions] Auto Assign Success',
-    props<{ candidate: AssignmentValidation }>()
+    props<{ candidates: Array<AssignmentValidation> }>()
 );
 export const autoAssignFailure = createAction(
     '[Missions] Auto Assign Failure'
@@ -156,4 +159,39 @@ export const removeSoldierFromMissionInstanceSuccess = createAction(
 );
 export const removeSoldierFromMissionInstanceFailure = createAction(
     '[Missions] Remove Soldier From Mission Instance Failure'
+);
+
+export const startInteractiveAutoAssign = createAction(
+    '[Missions] Start Interactive Auto Assign',
+    props<{ from: Date, to: Date, soldiers: Array<number>, missions: Array<number>, pauseOn?: InteractivePauseOn, showAllSoldiersOnPause?: boolean }>()
+);
+export const startInteractiveAutoAssignSuccess = createAction(
+    '[Missions] Start Interactive Auto Assign Success',
+    props<{ step: InteractiveAutoAssignStep }>()
+);
+export const startInteractiveAutoAssignFailure = createAction(
+    '[Missions] Start Interactive Auto Assign Failure'
+);
+
+export const continueInteractiveAutoAssign = createAction(
+    '[Missions] Continue Interactive Auto Assign',
+    props<{ sessionId: string, picks: Array<CandidatePick>, skipInstance: boolean }>()
+);
+export const continueInteractiveAutoAssignSuccess = createAction(
+    '[Missions] Continue Interactive Auto Assign Success',
+    props<{ step: InteractiveAutoAssignStep }>()
+);
+export const continueInteractiveAutoAssignFailure = createAction(
+    '[Missions] Continue Interactive Auto Assign Failure'
+);
+
+export const cancelInteractiveAutoAssign = createAction(
+    '[Missions] Cancel Interactive Auto Assign',
+    props<{ sessionId: string }>()
+);
+export const cancelInteractiveAutoAssignSuccess = createAction(
+    '[Missions] Cancel Interactive Auto Assign Success'
+);
+export const cancelInteractiveAutoAssignFailure = createAction(
+    '[Missions] Cancel Interactive Auto Assign Failure'
 );

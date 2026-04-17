@@ -12,6 +12,8 @@ export interface Mission {
     toTime?: string;
     isSpecial: boolean;
     requiredInstances: boolean;
+    actualHours?: number;
+    requiredRestAfter?: number;
 
     missionInstances: Array<MissionInstance>;
     positions: Array<MissionPosition>;

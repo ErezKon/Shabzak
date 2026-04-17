@@ -8,4 +8,8 @@ export interface AssignmentValidation {
     totalInstancesCount: number;
     validInstances: Map<string, Array<CandidateMissionInstance>>;
     faultyInstances: Map<string, Array<CandidateMissionInstance>>;
+    startingMissionId?: number;
+    startingMissionName?: string;
+    evennessScore?: number;
+    isBestCandidate?: boolean;
 }

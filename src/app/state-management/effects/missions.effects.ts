@@ -143,7 +143,7 @@ export class MissionsEffects {
     exhaustMap((action) => this.missionsService.autoAssign(action.from, action.to, action.soldiers ?? [], action.missions ?? [])
       .pipe(
         map(res => {
-          return missionActions.autoAssignSuccess({ candidate: res });
+          return missionActions.autoAssignSuccess({ candidates: res });
         }),
         catchError(err => {
           console.error(err);
@@ -204,6 +204,53 @@ export class MissionsEffects {
         catchError(err => {
           console.error(err);
           return of(missionActions.removeSoldierFromMissionInstanceFailure());
+        })
+      ))
+  ));
+
+  startInteractiveAutoAssign$ = createEffect(() => this.actions$.pipe(
+    ofType(missionActions.startInteractiveAutoAssign),
+    exhaustMap((action) => this.missionsService.startInteractiveAutoAssign(
+      action.from, action.to, action.soldiers, action.missions,
+      action.pauseOn, action.showAllSoldiersOnPause
+    ).pipe(
+        map(res => {
+          return missionActions.startInteractiveAutoAssignSuccess({ step: res });
+        }),
+        catchError(err => {
+          console.error(err);
+          this.snackbar.openSnackBar('שגיאה בהפעלת שיבוץ אינטראקטיבי');
+          return of(missionActions.startInteractiveAutoAssignFailure());
+        })
+      ))
+  ));
+
+  continueInteractiveAutoAssign$ = createEffect(() => this.actions$.pipe(
+    ofType(missionActions.continueInteractiveAutoAssign),
+    exhaustMap((action) => this.missionsService.continueInteractiveAutoAssign(
+      action.sessionId, action.picks, action.skipInstance
+    ).pipe(
+        map(res => {
+          return missionActions.continueInteractiveAutoAssignSuccess({ step: res });
+        }),
+        catchError(err => {
+          console.error(err);
+          this.snackbar.openSnackBar('שגיאה בהמשך שיבוץ אינטראקטיבי');
+          return of(missionActions.continueInteractiveAutoAssignFailure());
+        })
+      ))
+  ));
+
+  cancelInteractiveAutoAssign$ = createEffect(() => this.actions$.pipe(
+    ofType(missionActions.cancelInteractiveAutoAssign),
+    exhaustMap((action) => this.missionsService.cancelInteractiveAutoAssign(action.sessionId)
+      .pipe(
+        map(() => {
+          return missionActions.cancelInteractiveAutoAssignSuccess();
+        }),
+        catchError(err => {
+          console.error(err);
+          return of(missionActions.cancelInteractiveAutoAssignFailure());
         })
       ))
   ));

@@ -70,7 +70,9 @@ export class MissionsAddEditComponent extends BaseComponent {
   durationForm!: FormControl;
   soldiersRequiredForm!: FormControl;
   commandersRequiredForm!: FormControl;
-  
+  actualHoursForm!: FormControl;
+  requiredRestAfterForm!: FormControl;
+  actualHoursTouched = false;
 
 
   datesRange: Array<Date> = [];
@@ -115,6 +117,8 @@ export class MissionsAddEditComponent extends BaseComponent {
         this.commandersRequiredForm = new FormControl(0, [Validators.required, Validators.min(0)]);
         this.startTimeForm = new FormControl(defaultStartEndTime, [Validators.required]);
         this.endTimeForm = new FormControl(defaultStartEndTime, [Validators.required]);
+        this.actualHoursForm = new FormControl(1, [Validators.min(0)]);
+        this.requiredRestAfterForm = new FormControl(8, [Validators.min(0)]);
       } else {
         this.nameForm = new FormControl(data.mission.name, [Validators.required]);
         this.durationForm = new FormControl(data.mission.duration, [Validators.required, Validators.min(1)]);
@@ -122,6 +126,9 @@ export class MissionsAddEditComponent extends BaseComponent {
         this.commandersRequiredForm = new FormControl(data.mission.commandersRequired, [Validators.required, Validators.min(0)]);
         this.startTimeForm = new FormControl(data.mission.fromTime, [Validators.required]);
         this.endTimeForm = new FormControl(data.mission.toTime, [Validators.required]);
+        this.actualHoursForm = new FormControl(data.mission.actualHours ?? data.mission.duration, [Validators.min(0)]);
+        this.requiredRestAfterForm = new FormControl(data.mission.requiredRestAfter ?? 8, [Validators.min(0)]);
+        this.actualHoursTouched = data.mission.actualHours != null;
 
         for (const instance of data.mission?.missionInstances ?? []) {
           const inst: AddMissionInstance = {
@@ -170,6 +177,10 @@ export class MissionsAddEditComponent extends BaseComponent {
       }));
       this.addSub(this.durationForm.valueChanges.subscribe(val => {
         this.mission.duration = val;
+        if (!this.actualHoursTouched) {
+          this.actualHoursForm.setValue(val, { emitEvent: false });
+          this.mission.actualHours = val;
+        }
       }));
       this.addSub(this.soldiersRequiredForm.valueChanges.subscribe(val => {
         this.mission.soldiersRequired = val;
@@ -186,6 +197,13 @@ export class MissionsAddEditComponent extends BaseComponent {
         if(val) {
           this.mission.toTime = val;
         }
+      }));
+      this.addSub(this.actualHoursForm.valueChanges.subscribe(val => {
+        this.actualHoursTouched = true;
+        this.mission.actualHours = val;
+      }));
+      this.addSub(this.requiredRestAfterForm.valueChanges.subscribe(val => {
+        this.mission.requiredRestAfter = val;
       }));
 
       this.mission = {

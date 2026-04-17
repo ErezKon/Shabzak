@@ -1,4 +1,5 @@
 import { AssignmentValidation } from "../../models/auto-assign/assignment-validation.model";
+import { InteractiveAutoAssignStep } from "../../models/auto-assign/interactive-auto-assign-step.model";
 import { GetAvailableSoldiers } from "../../models/get-available-soldier.model";
 import { MissionInstance } from "../../models/mission-instance.model";
 import { Mission } from "../../models/mission.model";
@@ -12,8 +13,11 @@ export interface MissionsState {
     autoAssigning: boolean;
     candidateAssignments: AssignmentValidation;
     candidatesIds: Array<string>;
+    candidatesList: Array<AssignmentValidation>;
+    interactiveSession: InteractiveAutoAssignStep | null;
+    interactiveLoading: boolean;
 }
-  
+
 export const initialMissionsState: MissionsState = {
     loading: false,
     missions: [],
@@ -22,5 +26,8 @@ export const initialMissionsState: MissionsState = {
     fetchingAvailableSoldiers: false,
     autoAssigning: false,
     candidateAssignments: {} as AssignmentValidation,
-    candidatesIds: []
+    candidatesIds: [],
+    candidatesList: [],
+    interactiveSession: null,
+    interactiveLoading: false
 };

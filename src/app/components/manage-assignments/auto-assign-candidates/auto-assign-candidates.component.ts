@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { map, Observable } from 'rxjs';
 import { AppState } from '../../../state-management/states/app.state';
-import { selectAutoAssigning, selectCandidateAssignments as selectCandidateAssignment, selectCandidatesIds } from '../../../state-management/selectors/missions.selector';
+import { selectAutoAssigning, selectCandidateAssignments as selectCandidateAssignment, selectCandidatesList } from '../../../state-management/selectors/missions.selector';
 import { CommonModule, KeyValue, KeyValuePipe } from '@angular/common';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogTitle, MatDialog } from '@angular/material/dialog';
@@ -65,11 +65,9 @@ interface InstanceNode {
 export class AutoAssignCandidatesComponent extends BaseComponent{
 
   loading$: Observable<boolean>;
-  candidatesIds$: Observable<Array<MyKeyValue<string>>>;
+  candidatesOptions$: Observable<Array<MyKeyValue<string>>>;
   selectedCandidate$: Observable<AssignmentValidation>;
   selectedCandidateId!: string;
-  //selectedCandidate$!: Observable<AssignmentValidation>;
-  selectedCandidate?: AssignmentValidation;
   selectedRank?: string;
 
   treeNodeExpanded = new Map<number,boolean>();
@@ -104,18 +102,22 @@ export class AutoAssignCandidatesComponent extends BaseComponent{
     private store: Store<AppState>) {
       super();
       this.loading$ = store.pipe(select(selectAutoAssigning));
-      this.candidatesIds$ = store.pipe(select(selectCandidatesIds))
-        .pipe(map(ids => {
+      this.candidatesOptions$ = store.pipe(select(selectCandidatesList))
+        .pipe(map(candidates => {
           const ret: Array<MyKeyValue<string>> = [];
-          for (let i = 0; i < ids.length; i++) {
-            const id = ids[i];
+          for (let i = 0; i < candidates.length; i++) {
+            const c = candidates[i];
+            const label = `הצעה ${i + 1} – ${c.startingMissionName ?? '?'} (${c.validInstancesCount}/${c.totalInstancesCount})${c.isBestCandidate ? ' ★' : ''}`;
             ret.push({
-              text: (i + 1).toString(),
-              value: id
+              text: label,
+              value: c.id
             });
           }
-          if(ids.length) {
-            this.updateSelectedCandidate(ids[0]);
+          const best = candidates.find(c => c.isBestCandidate);
+          if (best) {
+            this.updateSelectedCandidate(best.id);
+          } else if (candidates.length) {
+            this.updateSelectedCandidate(candidates[0].id);
           }
           return ret;
       }));

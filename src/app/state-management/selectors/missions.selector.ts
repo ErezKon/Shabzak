@@ -44,3 +44,17 @@ export const selectCandidatesIds = createSelector(
   (state: MissionsState) => state.candidatesIds
 );
 
+export const selectCandidatesList = createSelector(
+  selectMissionsState,
+  (state: MissionsState) => state.candidatesList
+);
+
+export const selectInteractiveSession = createSelector(
+  selectMissionsState,
+  (state: MissionsState) => state.interactiveSession
+);
+
+export const selectInteractiveLoading = createSelector(
+  selectMissionsState,
+  (state: MissionsState) => state.interactiveLoading
+);

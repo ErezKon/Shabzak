@@ -8,8 +8,10 @@ export interface AddEditMission {
     soldiersRequired: number;
     commandersRequired: number;
     fromTime?: string;
-    toTIme?: string;
+    toTime?: string;
     isSpecial: boolean;
+    actualHours?: number;
+    requiredRestAfter?: number;
     positions: Array<MissionPosition>;
     
 }

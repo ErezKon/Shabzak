@@ -11,8 +11,8 @@
                 <div class="candidate-select">
                     <mat-form-field>
                         <mat-label>בחר הצעה</mat-label>
-                        <mat-select [(value)]="selectedCandidate">
-                          @for (can of candidatesIds$ | async; track can) {
+                        <mat-select [(value)]="selectedCandidateId">
+                          @for (can of candidatesOptions$ | async; track can) {
                             <mat-option [value]="can.value" (onSelectionChange)="candidateIdSelected(can.value)">{{can.text}}</mat-option>
                           }
                         </mat-select>
