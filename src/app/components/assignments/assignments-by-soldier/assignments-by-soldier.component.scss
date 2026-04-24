@@ -1,0 +1,68 @@
+.assignments-by-soldier {
+    display: flex;
+    flex-direction: row-reverse;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+    gap: 1rem;
+
+    .soldier {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        align-content: center;
+        align-items: center;
+        justify-content: flex-start;
+        flex: 30%;
+        box-shadow: 0px 0px 8px 1px #a9a8a8;
+        border-radius: 5px;
+        padding: 5px;
+        margin: 5px;
+        
+        .soldier-name {
+            display: flex;
+            width: 100%;
+            justify-content: center;
+            flex-direction: row-reverse;
+            font-size: 1.5rem;
+            font-style: italic;
+            text-decoration: underline;
+            padding: 5px;
+        }
+        
+        .date {
+            display: flex;
+            width: 100%;
+            justify-content: center;
+            flex-direction: row-reverse;
+            text-decoration: underline;
+            font-weight: bold;
+            padding: 5px;  
+        }
+
+        .assignment {
+            display: flex;
+            width: 100%;
+            flex-direction: row-reverse;
+            justify-content: space-around;    
+            border-bottom: 1px solid #a9a8a8;
+            padding: 5px;
+
+            .range {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                padding: 5px;
+
+                .from-time {
+                    margin-right: 5px;
+                }
+                
+                .to-time {
+                    margin-left: 5px;
+                }
+            }
+            
+        }
+    }
+}

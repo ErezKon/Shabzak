@@ -1,0 +1,45 @@
+<h2 mat-dialog-title class="dialog-title">החלף חייל</h2>
+<mat-dialog-content class="replace-soldier-content">
+    <mat-form-field class="name-filter">
+        <mat-label>חיפוש לפי שם</mat-label>
+        <input matInput [formControl]="nameFilterControl" placeholder="שם החייל">
+    </mat-form-field>
+    @if(loading$ | async) {
+        <div class="spinner-container">
+            <mat-spinner></mat-spinner>
+        </div>
+    }
+    <div class="candidates-list">
+        <div class="candidate header">
+            <div class="name">שם</div>
+            <div class="score">ציון</div>
+            <div class="rest">מנוחה לפני</div>
+            <div class="rest">מנוחה אחרי</div>
+        </div>
+        @for (candidate of filteredCandidates; track candidate.soldier.id) {
+            <div class="candidate"
+                 [ngClass]="{'overlap': candidate.hasOverlap, 'assigned': candidate.isAssignedToThisInstance}"
+                 (click)="onCandidateSelected(candidate)">
+                <div class="name">{{candidate.soldier.name}}</div>
+                <div class="score">{{candidate.score | number:'1.2-2'}}</div>
+                <div class="rest">
+                    @if(candidate.restTimeBefore || candidate.restTimeBefore === 0) {
+                        {{candidate.restTimeBefore}}
+                    } @else {
+                        ∞
+                    }
+                </div>
+                <div class="rest">
+                    @if(candidate.restTimeAfter || candidate.restTimeAfter === 0) {
+                        {{candidate.restTimeAfter}}
+                    } @else {
+                        ∞
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button (click)="onCancel()">ביטול</button>
+</mat-dialog-actions>

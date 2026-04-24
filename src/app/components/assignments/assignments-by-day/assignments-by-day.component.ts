@@ -17,6 +17,7 @@ import { select, Store } from '@ngrx/store';
 import * as missionActions from '../../../state-management/actions/missions.actions';
 import {AppState} from '../../../state-management/states/app.state';
 import {selectMissions} from '../../../state-management/selectors/missions.selector';
+import {ReplaceSoldierDialogComponent} from '../replace-soldier-dialog/replace-soldier-dialog.component';
 
 @Component({
   selector: 'app-assignments-by-day',
@@ -78,7 +79,7 @@ export class AssignmentsByDayComponent extends BaseComponent implements OnInit, 
   }
 
   onAssignmentClicked(assignment: Assignment, soldier: AssignmentSoldier) {
-
+    console.log(assignment);
   }
 
   addSoldier(assignment: Assignment) {
@@ -108,6 +109,15 @@ export class AssignmentsByDayComponent extends BaseComponent implements OnInit, 
   }
 
   replaceSoldier(soldier: AssignmentSoldier, assignment: Assignment) {
-    
+    this.dialog.open(ReplaceSoldierDialogComponent, {
+      data: {
+        missionInstanceId: assignment.id,
+        excludeSoldierId: soldier.soldierId,
+        soldierPosition: soldier.position
+      },
+      width: '600px',
+      height: '80vh',
+      panelClass: ['lg-modal', 'no-body-scroll']
+    });
   }
 }

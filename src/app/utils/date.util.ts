@@ -36,3 +36,22 @@ export const mergeDateTime = (date: Date | null, time: string): Date | null  => 
     date.setMinutes(+timeSpl[1]);
     return date;
   }
+
+  export const parseStrToDate = (dateStr?: string): Date => {
+    if(!dateStr) {
+      return new Date();
+    }
+    // const spl = dateStr.split(' ')[0].split('/').reverse().join('-');
+    // var ret = new Date(spl);
+    // console.log(`Date ${dateStr} parsed to ${ret}`);
+    // return ret;
+    // format: DD/MM/YYYY HH:mm
+  const [datePart, timePart] = dateStr.split(' ');
+  const [day, month, year] = datePart.split('/').map(Number);
+  const [hours, minutes] = timePart.split(':').map(Number);
+
+  // month is 0-based in JS Date
+  var ret = new Date(year, month - 1, day, hours, minutes, 0, 0);
+  //console.log(`Date ${dateStr} parsed to ${ret}`);
+  return ret;
+  }

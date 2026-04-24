@@ -1,0 +1,57 @@
+.replace-soldier-content {
+    display: flex;
+    flex-direction: column;
+    direction: rtl;
+
+    .name-filter {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .spinner-container {
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .candidates-list {
+        max-height: 60vh;
+        overflow-y: auto;
+
+        .candidate {
+            display: flex;
+            flex-direction: row;
+            padding: 8px 5px;
+            border-bottom: 1px solid #e0e0e0;
+            cursor: pointer;
+            
+            &:hover:not(.header) {
+                background-color: #f0f0f0;
+            }
+
+            &.header {
+                font-weight: bold;
+                cursor: default;
+                background-color: #d7d7d7;
+                border-radius: 5px;
+            }
+
+            &.overlap {
+                color: red;
+            }
+
+            &.assigned {
+                color: #aaa;
+                pointer-events: none;
+            }
+
+            .name {
+                flex: 2;
+            }
+            .score, .rest {
+                flex: 1;
+                text-align: center;
+            }
+        }
+    }
+}

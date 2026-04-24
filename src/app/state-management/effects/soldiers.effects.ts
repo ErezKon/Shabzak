@@ -21,7 +21,7 @@ export class SoldiersEffects {
 
   getSoldiers$ = createEffect(() => this.actions$.pipe(
     ofType(soldierActions.getSoldiers),
-    exhaustMap(() => this.soldiersService.getSoldiers()
+    exhaustMap((action) => this.soldiersService.getSoldiers(action.reloadCache)
       .pipe(
         map(res => {
           return soldierActions.getSoldiersSuccess({ soldiers: res as Array<Soldier> });

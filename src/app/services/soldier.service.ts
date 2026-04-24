@@ -18,8 +18,9 @@ export class SoldierService {
     this.serverURL = `${environment.serverURL}/Soldiers`;
   }
 
-  getSoldiers(): Observable<Array<Soldier>> {
-    return this.http.get<Array<Soldier>>(`${this.serverURL}/GetSoldiers`)
+  getSoldiers(reloadCache?: boolean): Observable<Array<Soldier>> {
+    const url = reloadCache ? `${this.serverURL}/GetSoldiers?reloadCache=${reloadCache}` : `${this.serverURL}/GetSoldiers`; 
+    return this.http.get<Array<Soldier>>(url);
   }
   
   addSoldier(soldier: Soldier): Observable<Soldier> {

@@ -5,7 +5,8 @@ import { VacationRequestStatus } from "../../models/vacation-request-stats.enum"
 import { SoldierSummary } from "../../models/soldier-summary.model";
 
 export const getSoldiers = createAction(
-    '[Soldiers] Get Soldiers'
+    '[Soldiers] Get Soldiers',
+    (props?: { reloadCache?: boolean }) => ({ ...props })
 );
 export const getSoldiersSuccess = createAction(
     '[Soldiers] Get Soldiers Success',

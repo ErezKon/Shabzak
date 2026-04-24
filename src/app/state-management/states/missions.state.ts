@@ -3,6 +3,7 @@ import { InteractiveAutoAssignStep } from "../../models/auto-assign/interactive-
 import { GetAvailableSoldiers } from "../../models/get-available-soldier.model";
 import { MissionInstance } from "../../models/mission-instance.model";
 import { Mission } from "../../models/mission.model";
+import { ReplacementCandidate } from "../../models/replacement-candidate.model";
 
 export interface MissionsState {
     loading: boolean;
@@ -16,6 +17,8 @@ export interface MissionsState {
     candidatesList: Array<AssignmentValidation>;
     interactiveSession: InteractiveAutoAssignStep | null;
     interactiveLoading: boolean;
+    replacementCandidates: Array<ReplacementCandidate>;
+    fetchingReplacementCandidates: boolean;
 }
 
 export const initialMissionsState: MissionsState = {
@@ -29,5 +32,7 @@ export const initialMissionsState: MissionsState = {
     candidatesIds: [],
     candidatesList: [],
     interactiveSession: null,
-    interactiveLoading: false
+    interactiveLoading: false,
+    replacementCandidates: [],
+    fetchingReplacementCandidates: false
 };

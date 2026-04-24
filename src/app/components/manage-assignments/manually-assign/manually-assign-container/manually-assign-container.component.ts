@@ -183,7 +183,7 @@ export class ManuallyAssignContainerComponent extends BaseComponent{
               this.soldiersMission.push({
                 id: 0,
                 soldier: soldier,
-                mission: this.selectedInstance,
+                missionInstance: this.selectedInstance,
                 missionPosition: {
                   id: ap.id,
                   count: ap.count,
@@ -202,7 +202,7 @@ export class ManuallyAssignContainerComponent extends BaseComponent{
           this.soldiersMission.push({
             id: 0,
             soldier: soldier,
-            mission: this.selectedInstance,
+            missionInstance: this.selectedInstance,
             missionPosition: {
               id: candidatePosition.id,
               count: candidatePosition.count,
@@ -216,7 +216,7 @@ export class ManuallyAssignContainerComponent extends BaseComponent{
             this.soldiersMission.push({
               id: 0,
               soldier: soldier,
-              mission: this.selectedInstance,
+              missionInstance: this.selectedInstance,
               missionPosition: {
                 id: classCommander[0].id,
                 count: classCommander[0].count,
@@ -230,7 +230,7 @@ export class ManuallyAssignContainerComponent extends BaseComponent{
           this.soldiersMission.push({
             id: 0,
             soldier: soldier,
-            mission: this.selectedInstance,
+            missionInstance: this.selectedInstance,
             missionPosition: {
               id: sergant[0].id,
               count: sergant[0].count,
@@ -244,7 +244,7 @@ export class ManuallyAssignContainerComponent extends BaseComponent{
             this.soldiersMission.push({
               id: 0,
               soldier: soldier,
-              mission: this.selectedInstance,
+              missionInstance: this.selectedInstance,
               missionPosition: {
                 id: platoonCommander[0].id,
                 count: platoonCommander[0].count,
@@ -257,7 +257,7 @@ export class ManuallyAssignContainerComponent extends BaseComponent{
             this.soldiersMission.push({
               id: 0,
               soldier: soldier,
-              mission: this.selectedInstance,
+              missionInstance: this.selectedInstance,
               missionPosition: {
                 id: companyDeputy[0].id,
                 count: companyDeputy[0].count,
@@ -269,7 +269,7 @@ export class ManuallyAssignContainerComponent extends BaseComponent{
             this.soldiersMission.push({
               id: 0,
               soldier: soldier,
-              mission: this.selectedInstance,
+              missionInstance: this.selectedInstance,
               missionPosition: {
                 id: simplePosition[0].id,
                 count: simplePosition[0].count,

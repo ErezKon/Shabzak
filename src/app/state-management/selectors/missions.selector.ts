@@ -14,7 +14,7 @@ export const selectMissionInstances = createSelector(
   (state: MissionsState) => state.missionInstances
 );
 
-export const selectLoading = createSelector(
+export const selectMissionsLoading = createSelector(
   selectMissionsState,
   (state: MissionsState) => state.loading
 );
@@ -57,4 +57,14 @@ export const selectInteractiveSession = createSelector(
 export const selectInteractiveLoading = createSelector(
   selectMissionsState,
   (state: MissionsState) => state.interactiveLoading
+);
+
+export const selectReplacementCandidates = createSelector(
+  selectMissionsState,
+  (state: MissionsState) => state.replacementCandidates
+);
+
+export const selectFetchingReplacementCandidates = createSelector(
+  selectMissionsState,
+  (state: MissionsState) => state.fetchingReplacementCandidates
 );

@@ -8,6 +8,10 @@ export const selectSoldiers = createSelector(
   selectSoldiersState,
   (state: SoldiersState) => state.soldiers
 );
+export const selectSoldiersLoading = createSelector(
+  selectSoldiersState,
+  (state: SoldiersState) => state.loading
+);
 export const selectVacations = createSelector(
   selectSoldiersState,
   (state: SoldiersState) => state.vacations

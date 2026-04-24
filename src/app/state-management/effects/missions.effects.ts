@@ -254,4 +254,35 @@ export class MissionsEffects {
         })
       ))
   ));
+
+  getReplacementCandidates$ = createEffect(() => this.actions$.pipe(
+    ofType(missionActions.getReplacementCandidates),
+    exhaustMap((action) => this.missionsService.getReplacementCandidates(action.missionInstanceId, action.excludeSoldierId)
+      .pipe(
+        map(res => {
+          return missionActions.getReplacementCandidatesSuccess({ replacementCandidates: res });
+        }),
+        catchError(err => {
+          console.error(err);
+          return of(missionActions.getReplacementCandidatesFailure());
+        })
+      ))
+  ));
+
+  replaceSoldierInMissionInstance$ = createEffect(() => this.actions$.pipe(
+    ofType(missionActions.replaceSoldierInMissionInstance),
+    exhaustMap((action) => this.missionsService.replaceSoldierInMissionInstance(
+      action.missionInstanceId, action.oldSoldierId, action.newSoldierId, action.swap, action.swapMissionInstanceId
+    ).pipe(
+        map(res => {
+          this.snackbar.openSnackBar('החייל הוחלף בהצלחה');
+          return missionActions.replaceSoldierInMissionInstanceSuccess({ missions: res });
+        }),
+        catchError(err => {
+          console.error(err);
+          this.snackbar.openSnackBar('שגיאה בהחלפת חייל');
+          return of(missionActions.replaceSoldierInMissionInstanceFailure());
+        })
+      ))
+  ));
 }

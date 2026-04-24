@@ -1,4 +1,5 @@
 import { Position } from "./position.enum";
+import {SoldierMission} from './soldier-mission.model';
 import { Vacation } from "./vacation.model";
 
 export interface Soldier {
@@ -8,6 +9,7 @@ export interface Soldier {
     phone: string;
     platoon: string;
     company: string;
+    missions: Array<SoldierMission>;
     positions: Array<Position>;
     vacations: Array<Vacation>;
 }

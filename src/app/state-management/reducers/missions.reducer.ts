@@ -86,4 +86,22 @@ export const missionsReducer = createReducer(
     on(missionActions.continueInteractiveAutoAssignFailure, (state) => ({ ...state, interactiveLoading: false })),
     on(missionActions.cancelInteractiveAutoAssignSuccess, (state) => ({ ...state, interactiveSession: null, interactiveLoading: false })),
     on(missionActions.cancelInteractiveAutoAssignFailure, (state) => ({ ...state, interactiveLoading: false })),
+    on(missionActions.getReplacementCandidates, (state) => ({
+        ...state,
+        replacementCandidates: [],
+        fetchingReplacementCandidates: true
+    })),
+    on(missionActions.getReplacementCandidatesSuccess, (state, { replacementCandidates }) => ({
+        ...state,
+        replacementCandidates,
+        fetchingReplacementCandidates: false
+    })),
+    on(missionActions.getReplacementCandidatesFailure, (state) => ({
+        ...state,
+        fetchingReplacementCandidates: false
+    })),
+    on(missionActions.replaceSoldierInMissionInstanceSuccess, (state, { missions }) => ({
+        ...state,
+        missions
+    })),
 );

@@ -5,6 +5,6 @@ import { Soldier } from "./soldier.model";
 export interface SoldierMission {
     id: number;
     soldier: Soldier;
-    mission: MissionInstance;
+    missionInstance: MissionInstance;
     missionPosition: MissionPosition;
 }

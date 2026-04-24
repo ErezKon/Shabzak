@@ -7,6 +7,7 @@ import { AssignmentValidation } from "../../models/auto-assign/assignment-valida
 import { InteractiveAutoAssignStep } from "../../models/auto-assign/interactive-auto-assign-step.model";
 import { InteractivePauseOn } from "../../models/auto-assign/interactive-auto-assign-status";
 import { CandidatePick } from "../../models/auto-assign/candidate-pick.model";
+import { ReplacementCandidate } from "../../models/replacement-candidate.model";
 
 export const getMissions = createAction(
     '[Missions] Get Missions'
@@ -194,4 +195,28 @@ export const cancelInteractiveAutoAssignSuccess = createAction(
 );
 export const cancelInteractiveAutoAssignFailure = createAction(
     '[Missions] Cancel Interactive Auto Assign Failure'
+);
+
+export const getReplacementCandidates = createAction(
+    '[Missions] Get Replacement Candidates',
+    props<{ missionInstanceId: number, excludeSoldierId: number }>()
+);
+export const getReplacementCandidatesSuccess = createAction(
+    '[Missions] Get Replacement Candidates Success',
+    props<{ replacementCandidates: Array<ReplacementCandidate> }>()
+);
+export const getReplacementCandidatesFailure = createAction(
+    '[Missions] Get Replacement Candidates Failure'
+);
+
+export const replaceSoldierInMissionInstance = createAction(
+    '[Missions] Replace Soldier In Mission Instance',
+    props<{ missionInstanceId: number, oldSoldierId: number, newSoldierId: number, swap: boolean, swapMissionInstanceId?: number }>()
+);
+export const replaceSoldierInMissionInstanceSuccess = createAction(
+    '[Missions] Replace Soldier In Mission Instance Success',
+    props<{ missions: Array<Mission> }>()
+);
+export const replaceSoldierInMissionInstanceFailure = createAction(
+    '[Missions] Replace Soldier In Mission Instance Failure'
 );

@@ -11,6 +11,7 @@ import { AssignmentValidation } from '../models/auto-assign/assignment-validatio
 import { InteractiveAutoAssignStep } from '../models/auto-assign/interactive-auto-assign-step.model';
 import { InteractivePauseOn } from '../models/auto-assign/interactive-auto-assign-status';
 import { CandidatePick } from '../models/auto-assign/candidate-pick.model';
+import { ReplacementCandidate } from '../models/replacement-candidate.model';
 
 @Injectable({
   providedIn: 'root'
@@ -69,7 +70,7 @@ export class MissionService {
       return {
         id: s.id,
         missionInstance: {
-          ...s.mission,
+          ...s.missionInstance,
           soldierMissions: []
         },
         soldier: s.soldier,
@@ -151,5 +152,25 @@ export class MissionService {
 
   cancelInteractiveAutoAssign(sessionId: string): Observable<void> {
     return this.http.post<void>(`${this.serverURL}/CancelInteractiveAutoAssign?sessionId=${sessionId}`, {});
+  }
+
+  getReplacementCandidates(missionInstanceId: number, excludeSoldierId: number): Observable<Array<ReplacementCandidate>> {
+    return this.http.post<Array<ReplacementCandidate>>(
+      `${this.serverURL}/GetReplacementCandidates`,
+      { missionInstanceId, excludeSoldierId }
+    );
+  }
+
+  replaceSoldierInMissionInstance(
+    missionInstanceId: number,
+    oldSoldierId: number,
+    newSoldierId: number,
+    swap: boolean,
+    swapMissionInstanceId?: number
+  ): Observable<Array<Mission>> {
+    return this.http.post<Array<Mission>>(
+      `${this.serverURL}/ReplaceSoldierInMissionInstance`,
+      { missionInstanceId, oldSoldierId, newSoldierId, swap, swapMissionInstanceId }
+    );
   }
 }

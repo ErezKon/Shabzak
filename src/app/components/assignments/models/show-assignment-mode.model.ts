@@ -1,7 +1,7 @@
 export enum AssignmentMode {
-    ByDay,
-    BySoldier,
-    ByMission
+    ByDay = 1,
+    BySoldier = 2,
+    ByMission = 3
 }
 
 export const assignmentModeTextual = new Map<AssignmentMode, string>([
