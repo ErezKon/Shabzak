@@ -1,26 +1,36 @@
 <div class="assignments-by-soldier">
-    @for(soldier of soldierAssByDay!.keys(); track $index) {
-        <div class="soldier">
-            <div class="soldier-name">
-                {{soldier.name}}
-            </div>
-            @for (date of soldierAssByDay!.get(soldier)!.keys(); track $index) {
-                <div class="date">
-                    <div>{{date}}</div>
-                </div>
-                @for (assignment of soldierAssByDay!.get(soldier)!.get(date); track $index) {
-                    <div class="assignment">
-                        <div class="assignment-name">
-                            {{instanceToMissionDic?.get(assignment.missionInstance?.id!)?.name}}
-                        </div>
-                        <div class="range">
-                            <div class="from-time">{{parseStrToDate(assignment.missionInstance?.fromTime) | date: 'HH:mm'}}</div>
-                            <div>-</div>
-                            <div class="to-time">{{parseStrToDate(assignment.missionInstance?.toTime) | date: 'HH:mm'}}</div>
-                        </div>
+    <div class="filter">
+        <mat-form-field class="name-filter">
+            <mat-label>חיפוש לפי שם</mat-label>
+            <input matInput [formControl]="nameFilterControl" placeholder="שם החייל">
+        </mat-form-field>
+    </div>
+    <div class="soldiers">
+        @for(soldier of soldierAssByDay!.keys(); track $index) {
+            @if(!soldierFilter || soldier.name.indexOf(soldierFilter) !== -1) {
+                <div class="soldier">
+                    <div class="soldier-name">
+                        {{soldier.name}}
                     </div>
-                }
+                    @for (date of soldierAssByDay!.get(soldier)!.keys(); track $index) {
+                        <div class="date">
+                            <div>{{date}}</div>
+                        </div>
+                        @for (assignment of soldierAssByDay!.get(soldier)!.get(date); track $index) {
+                            <div class="assignment">
+                                <div class="assignment-name">
+                                    {{instanceToMissionDic?.get(assignment.missionInstance?.id!)?.name}}
+                                </div>
+                                <div class="range">
+                                    <div class="from-time">{{parseStrToDate(assignment.missionInstance?.fromTime) | date: 'HH:mm'}}</div>
+                                    <div>-</div>
+                                    <div class="to-time">{{parseStrToDate(assignment.missionInstance?.toTime) | date: 'HH:mm'}}</div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
             }
-        </div>
-    }
+        }
+    </div>
 </div>

@@ -45,9 +45,6 @@ export class AssignmentsFilterComponent extends BaseComponent {
       value: AssignmentMode.ByDay,
       text: assignmentModeTextual.get(AssignmentMode.ByDay)
     }, {
-      value: AssignmentMode.ByMission,
-      text: assignmentModeTextual.get(AssignmentMode.ByMission)
-    }, {
       value: AssignmentMode.BySoldier,
       text: assignmentModeTextual.get(AssignmentMode.BySoldier)
     }
