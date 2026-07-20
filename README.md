@@ -4,7 +4,7 @@
 
 The interface is **Hebrew / RTL**. "שבצ"ק" is short for *שיבוץ צבאי קל* ("easy military assignment").
 
-> **Security notice:** authentication and role checks are currently enforced only in the browser, and an encryption key is shipped in the client bundle. See [`CODE_ANALYSIS.md`](./CODE_ANALYSIS.md) before relying on them.
+> **Security refactored:** Authentication is now enforced server-side via JWT Bearer tokens. The client-side AES encryption key has been removed from the bundle. Guards provide UX-level gating; the backend is the authority.
 
 ---
 
@@ -35,7 +35,8 @@ The interface is **Hebrew / RTL**. "שבצ"ק" is short for *שיבוץ צבאי
 | State | NgRx Store, Effects, Router-Store |
 | Charts | `@swimlane/ngx-charts` |
 | Reactive | RxJS 7 |
-| Crypto (client) | `crypto-js` (AES), `js-sha512` (SHA-512) |
+| Crypto (client) | `js-sha512` (SHA-512 for pre-hashing credentials) |
+| Auth | JWT Bearer tokens (stored in localStorage, sent via HTTP interceptor) |
 | Styling | SCSS, RTL |
 
 ## Architecture
@@ -125,10 +126,12 @@ Each service wraps `HttpClient` and targets `environment.serverURL`:
 1. On the login page the user enters a personal number and phone.
 2. `LoginComponent.onLogin()` hashes both with **SHA-512** (`utils/sha256.ts`) and dispatches `login`.
 3. `UserEffects.login$` calls `UserService.login()` → `POST api/User/Login`.
-4. The backend verifies the hashed credentials and returns the `User` (with linked soldier + upcoming missions).
-5. The effect stores the user in memory and in `localStorage` as an **AES-encrypted** blob with a 7-day `valid` expiry (`utils/aes.ts`), then routes to `/personal-page`.
-6. On reload, `UserService.getLoggeduser()` decrypts the blob, checks expiry, and rehydrates the store.
-7. Route guards gate navigation on `enabled` / `activated` / `role`.
+4. The backend verifies the hashed credentials and returns a `LoginResponse` containing the `User` profile and a signed **JWT token**.
+5. The effect stores the JWT token and user data separately in `localStorage` (plain JSON — no client-side AES), then routes to `/personal-page`.
+6. On reload, `UserService.getLoggeduser()` reads the JWT, checks its `exp` claim, and rehydrates the store if still valid.
+7. An **HTTP interceptor** (`interceptors/auth.interceptor.ts`) attaches `Authorization: Bearer <token>` to all outgoing API requests.
+8. Route guards gate navigation on `enabled` / `activated` / `role` (SSR-safe with `isPlatformBrowser` checks).
+9. The backend enforces authorization on every endpoint — guards are a UX convenience, not a security boundary.
 
 ## Feature Modules
 
@@ -159,16 +162,18 @@ Environment files live in `src/environments/`:
 export const environment = {
     production: false,
     serverURL: 'https://localhost:7170/api',   // backend base URL
-    key: 'b4815f36-bab2-4542-bdca-4c276880b045' // AES key for localStorage (see analysis)
 };
 ```
 
-> `environment.prod.ts` currently also points at `localhost` — update `serverURL` for real deployments. The `key` is used to encrypt the cached user; note it ships inside the browser bundle.
+- **`environment.ts`** — development, points to `localhost:7170`.
+- **`environment.prod.ts`** — production, uses relative `/api` path (proxied by nginx to the backend container).
+- The AES key has been **removed** from the environment — session management now uses JWT tokens from the backend.
+- The NgRx logger meta-reducer is **gated to development only** and does not run in production builds.
 
 ## Build & Deploy
 
 ```bash
-npm run build                 # ng build → dist/shabzak
+npm run build                 # ng build → dist/shabzak/browser
 npm run serve:ssr:Shabzak     # run the SSR Express server (node dist/shabzak/server/server.mjs)
 ```
 

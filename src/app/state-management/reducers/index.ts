@@ -5,6 +5,7 @@ import { soldiersReducer } from "./soldiers.reducer";
 import { missionsReducer } from "./missions.reducer";
 import { metadataReducer } from "./metadata.reducer";
 import { usersReducer } from "./user.reducer";
+import { environment } from "../../../environments/environment";
 
 export const appReducers: ActionReducerMap<AppState> = {
   router: routerReducer,
@@ -26,4 +27,6 @@ export function logger(reducer: ActionReducer<any>): ActionReducer<any> {
   };
 }
 
-export const metaReducers = [logger];
+// SECURITY: Only enable the NgRx logger meta-reducer in development.
+// In production it leaked every action and full state tree to the browser console.
+export const metaReducers = environment.production ? [] : [logger];

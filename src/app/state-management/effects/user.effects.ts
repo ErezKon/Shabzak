@@ -8,8 +8,6 @@ import { AppState } from '../states/app.state';
 import * as userActions from '../actions/user.actions';
 import { exhaustMap, map, catchError, of } from 'rxjs';
 import { SnackbarService } from '../../services/snackbar.service';
-import { addDays } from '../../utils/date.util';
-import { encryptAES } from '../../utils/aes';
 
 @Injectable()
 export class UserEffects {
@@ -28,12 +26,16 @@ export class UserEffects {
         map(res => {
             if(res.success) {
               if(res.value) {
-                this.usersService.setLoggeduser(res.value);
-                const json = JSON.stringify({...res.value, valid: addDays(new Date(), 7)});
-                const userJson = encryptAES(json);
-                localStorage.setItem('user', userJson);
+                // SECURITY: Store JWT token and user data separately.
+                // - Token is stored as-is (it's signed by the server).
+                // - User data stored as plain JSON (no client-side AES — the key was bundled).
+                // - Session validity is now determined by JWT expiry, not a custom 7-day field.
+                const { user, token } = res.value;
+                this.usersService.setLoggeduser(user);
+                localStorage.setItem('token', token);
+                localStorage.setItem('user', JSON.stringify(user));
                 this.router.navigateByUrl('personal-page');
-                return userActions.loginSuccess({ user: res.value });
+                return userActions.loginSuccess({ user });
               } else {
                 this.snackbar.openSnackBar("Wrong credentials.");
                 return userActions.loginFailure();
