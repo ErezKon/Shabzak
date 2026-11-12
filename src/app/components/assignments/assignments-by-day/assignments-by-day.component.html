@@ -46,7 +46,7 @@
                                     
                                 </div>
                             }
-                            @if(!assignment.isAssignmentFilled) {
+                            @if(!assignment.isAssignmentFilled && isAdmin) {
                                 <div class="add-soldier" 
                                     [matMenuTriggerFor]="menu"
                                     [matMenuTriggerData]="{'assignment': assignment}">
@@ -56,12 +56,14 @@
                             <mat-menu #menu="matMenu">
                                 <ng-template matMenuContent let-soldier="soldier" let-assignment="assignment">
                                     <button mat-menu-item (click)="onAssignmentClicked(assignment, soldier)">הצג פרטי משימה</button>
-                                    @if(!assignment.isAssignmentFilled) {
-                                        <button mat-menu-item (click)="addSoldier(assignment)">הוסף חייל</button>
-                                    }
-                                    @if(assignment.soldiers?.length > 0) {
-                                        <button mat-menu-item (click)="removeSoldier(soldier, assignment)">הסר חייל</button>
-                                        <button mat-menu-item (click)="replaceSoldier(soldier, assignment)">החלף חייל</button>
+                                    @if(isAdmin) {
+                                        @if(!assignment.isAssignmentFilled) {
+                                            <button mat-menu-item (click)="addSoldier(assignment)">הוסף חייל</button>
+                                        }
+                                        @if(assignment.soldiers?.length > 0) {
+                                            <button mat-menu-item (click)="removeSoldier(soldier, assignment)">הסר חייל</button>
+                                            <button mat-menu-item (click)="replaceSoldier(soldier, assignment)">החלף חייל</button>
+                                        }
                                     }
                                 </ng-template>
                             </mat-menu>

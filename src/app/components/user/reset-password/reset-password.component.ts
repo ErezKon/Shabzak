@@ -34,10 +34,12 @@ export const matchValidator = (otherControl: FormControl): ValidatorFn => {
   styleUrl: './reset-password.component.scss'
 })
 export class ResetPasswordComponent extends BaseComponent {
-  @Output() resetPassword = new EventEmitter<{username: string, password: string}>();
+  // usernameHashed: true when the username was taken from the logged-in user (already SHA-512 hashed by the server).
+  @Output() resetPassword = new EventEmitter<{username: string, password: string, usernameHashed: boolean}>();
   username?: string;
   password?: string;
   repassword?: string;
+  private usernameFromStore = false;
 
   passwordControl = new FormControl('', [Validators.required]);
   repasswordControl = new FormControl('', [Validators.required]);
@@ -52,6 +54,7 @@ export class ResetPasswordComponent extends BaseComponent {
     .subscribe(user => {
       if(user?.name) {
         this.username = user.name;
+        this.usernameFromStore = true;
       }
     }));
     this.addSub(this.passwordControl.valueChanges
@@ -89,7 +92,8 @@ export class ResetPasswordComponent extends BaseComponent {
       this.resetPassword.emit(
           {
             username: this.username ?? '',
-            password: this.password ?? ''
+            password: this.passwordControl.value ?? '',
+            usernameHashed: this.usernameFromStore
           }
         );
     }

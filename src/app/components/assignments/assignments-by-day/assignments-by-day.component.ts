@@ -18,6 +18,8 @@ import * as missionActions from '../../../state-management/actions/missions.acti
 import {AppState} from '../../../state-management/states/app.state';
 import {selectMissions} from '../../../state-management/selectors/missions.selector';
 import {ReplaceSoldierDialogComponent} from '../replace-soldier-dialog/replace-soldier-dialog.component';
+import {selectUser} from '../../../state-management/selectors/user.selector';
+import {UserRole} from '../../../models/user-role.enum';
 
 @Component({
   selector: 'app-assignments-by-day',
@@ -36,6 +38,8 @@ export class AssignmentsByDayComponent extends BaseComponent implements OnInit, 
   assignmentsByMission!: Array<AssignmentByMission>;
 
   missions?: Array<Mission>;
+  // Assignment editing (add / remove / replace) is shown only to Admin and SuperAdmin; the API enforces the same rule.
+  isAdmin = false;
 
   translatePosition = translatePosition;
 
@@ -48,6 +52,9 @@ export class AssignmentsByDayComponent extends BaseComponent implements OnInit, 
     store.pipe(select(selectMissions)).subscribe(missions => {
       this.missions = missions;
     });
+    this.addSub(store.pipe(select(selectUser)).subscribe(user => {
+      this.isAdmin = (user?.role ?? UserRole.Regular) >= UserRole.Admin;
+    }));
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -83,6 +90,9 @@ export class AssignmentsByDayComponent extends BaseComponent implements OnInit, 
   }
 
   addSoldier(assignment: Assignment) {
+    if (!this.isAdmin) {
+      return;
+    }
     let mission: Partial<Mission>;
     mission = {
       missionInstances: []
@@ -102,6 +112,9 @@ export class AssignmentsByDayComponent extends BaseComponent implements OnInit, 
   }
 
   removeSoldier(soldier: AssignmentSoldier, assignment: Assignment) {
+    if (!this.isAdmin) {
+      return;
+    }
     this.removeSoldierFromMissionInstance.emit({
       soldierId: soldier.soldierId,
       missionInstanceId: assignment.id
@@ -109,6 +122,9 @@ export class AssignmentsByDayComponent extends BaseComponent implements OnInit, 
   }
 
   replaceSoldier(soldier: AssignmentSoldier, assignment: Assignment) {
+    if (!this.isAdmin) {
+      return;
+    }
     this.dialog.open(ReplaceSoldierDialogComponent, {
       data: {
         missionInstanceId: assignment.id,

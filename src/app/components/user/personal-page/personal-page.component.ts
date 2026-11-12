@@ -65,8 +65,9 @@ export class PersonalPageComponent {
     this.selectedAction = 'show-vacations';
   }
 
-  onResetPassword(data: {username: string, password: string}) {
-    const username = encryptSHA(data.username);
+  onResetPassword(data: {username: string, password: string, usernameHashed: boolean}) {
+    // The logged-in user's name is already the SHA-512 hashed username; only a manually typed one needs hashing.
+    const username = data.usernameHashed ? data.username : encryptSHA(data.username);
     const password = encryptSHA(data.password);
     this.store.dispatch(userActions.resetPassword({
       username,

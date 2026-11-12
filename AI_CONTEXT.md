@@ -2,6 +2,8 @@
 
 > **AI Instruction:** Every time you make a change to any file in the Shabzak project, you **MUST** update this document to reflect that change — including new files, renamed files, new methods, changed architectures, new models, deleted items, etc. This file must always be accurate and up-to-date so future AI sessions can rely on it without re-analyzing the codebase. Also apply sthe same updates to the unified md document at the root folder UNIFIED_AI_CONTEXT.md
 
+> **Active initiative — AI Chat Assistant:** see `CHAT_AGENT_PLAN.md` in the workspace root (next to `UNIFIED_AI_CONTEXT.md`) for the phased plan, shared contracts (§4) and progress tracker. Work happens on branch `feature/ai-chat` (from `opus-refactor`); P0–P4 are committed and merged into `opus-refactor` (both branches point at the same commit). JWT support exists only on `opus-refactor` / `feature/ai-chat`; `master` is pre-JWT and incompatible with the JWT API.
+
 ---
 
 ## 1. Project Overview
@@ -28,7 +30,8 @@ The monorepo contains three components orchestrated by `docker-compose.yml`:
 - **Angular Material 17** for UI components
 - **NgRx** (Store, Effects, Router-Store) for state management
 - **ngx-charts** for data visualization (metadata/charts)
-- **crypto-js** + **js-sha512** for client-side encryption
+- **js-sha512** for credential hashing (crypto-js is still a dependency but client-side AES is no longer used)
+- **JWT Bearer** auth via an HTTP interceptor
 - **RxJS** for reactive programming
 - **SCSS** for styling
 - **Hebrew (RTL)** locale
@@ -48,10 +51,14 @@ Shabzak/src/
 │   │   ├── soldiers/                # Soldier CRUD, vacation management
 │   │   ├── metadata/                # Statistics: charts, tables, breakdowns
 │   │   └── user/                    # Login, personal page
-│   ├── guards/
-│   │   ├── logged-in.guard.ts       # Requires authenticated user
-│   │   └── admin.guard.ts           # Requires admin role
+│   ├── guards/                      # UX-only gating (SSR-safe: return false on the server)
+│   │   ├── logged-in.guard.ts       # Requires enabled + activated user
+│   │   ├── admin.guard.ts           # Requires role > Regular
+│   │   └── super-admin.guard.ts     # Requires role SuperAdmin (not used by routes yet)
+│   ├── interceptors/
+│   │   └── auth.interceptor.ts      # Adds Authorization: Bearer <localStorage.token> to every HttpClient request
 │   ├── models/                      # TypeScript interfaces/enums
+│   │   ├── login-response.model.ts  # { user: User, token: string }
 │   │   ├── soldier.model.ts
 │   │   ├── mission.model.ts
 │   │   ├── mission-instance.model.ts
@@ -95,8 +102,8 @@ Shabzak/src/
 │   └── material/                    # Material module configuration
 ├── assets/                          # SVG icons (military position icons, logo)
 ├── environments/
-│   ├── environment.ts               # Dev: https://localhost:7170/api
-│   ├── environment.prod.ts          # Prod: same URL (should be updated for deployment)
+│   ├── environment.ts               # Dev: serverURL https://localhost:7170/api (no AES key anymore)
+│   ├── environment.prod.ts          # Prod: serverURL '/api' (reverse-proxied)
 │   └── environment.development.ts
 ├── styles.scss                      # Global styles
 └── index.html
@@ -111,7 +118,7 @@ Shabzak/src/
 | `/soldiers` | `SoldiersContainerComponent` | `adminGuard` | Soldier management (CRUD) |
 | `/missions` | `MissionsContainerComponent` | `adminGuard` | Mission management (CRUD) |
 | `/assignments` | `AssignmentsContainerComponent` | `loggedInGuard` | View assignment schedule |
-| `/assignments-management` | `ManageAssignmentsContainerComponent` | `loggedInGuard` | Auto-assign, interactive assign, replacements |
+| `/assignments-management` | `ManageAssignmentsContainerComponent` | `adminGuard` | Auto-assign, interactive assign, replacements |
 | `/justice` | `MetadataContainerComponent` | `adminGuard` | Fairness statistics & charts |
 
 ### 2.4 NgRx State Management
@@ -127,19 +134,31 @@ Shabzak/src/
 
 ### 2.5 Authentication Flow
 
-1. User enters personalNumber + phone on login page.
-2. Frontend hashes both with SHA-512 (`js-sha512`).
-3. Sends to `POST api/User/Login`.
-4. Backend looks up user by hashed username, verifies `SHA-512(password + salt)`.
-5. On success, returns `User` object (password/salt cleared).
-6. Frontend stores AES-encrypted user in `localStorage` with expiry.
-7. On reload, `UserService.getLoggeduser()` checks localStorage, decrypts, validates expiry.
-8. Guards check `user.enabled && user.activated`.
+1. User enters personalNumber + phone on the login page.
+2. Frontend hashes both with SHA-512 (`js-sha512`, `utils/sha256.ts → encryptSHA`).
+3. `UserEffects.login$` sends them to `POST api/User/Login` (anonymous).
+4. Backend looks up the user by hashed username and verifies the password (PBKDF2, or legacy SHA-512 + salt with transparent upgrade).
+5. On success it returns `GeneralResponse<LoginResponse>` = `{ user, token }` (password/salt blanked; `token` is a signed JWT).
+6. The effect stores `localStorage['token']` (raw JWT) and `localStorage['user']` (plain JSON), calls `UserService.setLoggeduser`, and navigates to `/personal-page`.
+7. `interceptors/auth.interceptor.ts` (registered via `provideHttpClient(withFetch(), withInterceptors([authInterceptor]))`) adds `Authorization: Bearer <token>` to every HttpClient request. `UserService.getToken()` returns the token (null under SSR).
+8. On reload, `UserService.getLoggeduser()` reads token + user from localStorage, decodes the JWT `exp`, clears both if expired/corrupt, otherwise dispatches `loginSuccess`.
+9. Guards (SSR-safe) check `user.enabled && user.activated` (+ role for `adminGuard`/`superAdminGuard`). They are UX only — the API is the security boundary.
+10. There is currently no logout action in the UI (stored token/user remain until JWT expiry).
+
+### 2.5.1 Authorization Matrix (enforced by the API)
+
+The API (not the UI) is the security boundary — see the "Authorization Matrix" in `UNIFIED_AI_CONTEXT.md` §2.4.2. What it means for the UI:
+- **Regular users** may call: `User/Me`, `Mission/GetMissions`, `GetMissionInstances`, `GetMissionInstancesInRange`, `GetMissionsSummary`, `Schedule/GetAssignments`, `Soldiers/GetSoldiersLite`, `Soldiers/GetSoldiers` (phone/personal number arrive **blank**, and only their own soldier carries vacations), and the self-scoped `Soldiers/GetSoldierById`, `GetSummary`, `GetVacations`, `RequestVacation`, `User/ResetPassword` (403 for anyone else).
+- **Everything else** (soldier/mission CRUD, assignment edits, auto-assign, candidates, replacement candidates, available soldiers, `Schedule/ValidateAssignments`, metadata, user accounts) is **Admin+** and returns 403 for Regular users. Role changes and SuperAdmin accounts are SuperAdmin-only.
+- The compact agent-facing endpoints (`Schedule/*`, `GetMissionsSummary`, `GetSoldiersLite`, `GetSoldierById`) are not used by the UI yet; they use ISO local datetimes (`yyyy-MM-ddTHH:mm:ss`) instead of the `dd/MM/yyyy HH:mm` strings of `GetMissions`. The same holds for the agent-facing writes (all Admin+, `GeneralResponse` with 200/400/404/409): `Schedule/AssignSoldier`, `UnassignSoldier`, `ReplaceSoldier`, `MoveSoldier`, `Mission/CreateMission`, `UpdateMissionDetails`, `GenerateMissionInstances`, `AddMissionInstances`, `UpdateMissionInstance`, `DeleteMissionInstance`, and `Soldiers/SetSoldierActive`. The UI keeps using the legacy endpoints; its mission edit dialog calls the destructive `Mission/UpdateMission` (recreates every instance and drops their assignments).
+- Disabled or deleted accounts get 401 on every call (the API re-checks the account on each request), and role changes apply immediately.
+- The `/assignments` page therefore hides its editing controls for non-admins (see §3, Assignments Module).
 
 ### 2.6 Client-Side Encryption
 
-- **AES encryption** for localStorage user storage (using `crypto-js` with key from `environment.key`).
+- **No client-side AES anymore:** `utils/aes.ts` is a deprecated stub that throws if called; the AES key was removed from the environments.
 - **SHA-512** for credential hashing before sending to server.
+- NgRx `logger` meta-reducer is enabled only when `environment.production` is false.
 
 ---
 
@@ -160,9 +179,11 @@ Shabzak/src/
   - Mission instances timeline
 
 ### Assignments Module (`/assignments`)
-- `AssignmentsContainerComponent` — Main container
+- `AssignmentsContainerComponent` — Main container (also embedded in `/assignments-management` with `[canEdit]="true"`)
   - Calendar/timeline view of assignments
   - Soldier assignment cards
+  - `AssignmentsByDayComponent` — editing controls (the `+` add trigger and the "הוסף חייל" / "הסר חייל" / "החלף חייל" menu items, which open `ManuallyAssignContainerComponent` / `ReplaceSoldierDialogComponent`) are rendered only when `isAdmin` (`selectUser` role ≥ `UserRole.Admin`); the handlers also no-op for non-admins. Regular users see the schedule read-only (menu keeps only "הצג פרטי משימה").
+  - "הסר חייל" calls `Mission/RemoveSoldierFromMissionInstance`, which failed with 500 on every call until the API fix in P3 (missing `Mission.MissionPositions` include).
 
 ### Manage Assignments Module (`/assignments-management`)
 - `ManageAssignmentsContainerComponent` — Main container
@@ -182,7 +203,8 @@ Shabzak/src/
 
 ### User Module
 - `LoginComponent` — Login form
-- `PersonalPageComponent` — Soldier's personal view (upcoming missions, summary)
+- `PersonalPageComponent` — Soldier's personal view (summary, change password, vacation request, own vacations). Calls only self-scoped endpoints (`GetSummary`, `GetVacations`, `RequestVacation`, `ResetPassword`).
+  - `ResetPasswordComponent` emits `{ username, password, usernameHashed }`: the username is pre-filled from the logged-in user (already the SHA-512 hash, so `usernameHashed=true` and it is not hashed again) and the password comes from `passwordControl`. `PersonalPageComponent.onResetPassword` hashes the password (and the username only when typed manually).
 
 ---
 
@@ -225,7 +247,9 @@ Shabzak/src/
 | `src/app/app.component.ts` | Root component, sidenav, icons |
 | `src/app/services/mission.service.ts` | Mission API calls |
 | `src/app/services/soldier.service.ts` | Soldier API calls |
-| `src/app/services/user.service.ts` | Auth & user API calls |
+| `src/app/services/user.service.ts` | Auth & user API calls, `getToken()`, session rehydration |
+| `src/app/interceptors/auth.interceptor.ts` | Attaches the JWT Bearer header |
+| `src/app/guards/*.guard.ts` | `loggedInGuard`, `adminGuard`, `superAdminGuard` |
 | `src/app/services/metadata.service.ts` | Statistics API calls |
 | `src/app/state-management/states/app.state.ts` | Root NgRx state |
 | `src/app/state-management/states/missions.state.ts` | Mission state shape |
