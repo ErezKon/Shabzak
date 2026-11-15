@@ -1,0 +1,12 @@
+# Keep the build context small and platform-neutral: the image runs `npm ci` itself, and a host's node_modules
+# (e.g. Windows binaries of esbuild) must not overwrite the container's in `COPY . .`.
+node_modules/
+dist/
+.angular/
+coverage/
+.git/
+.vscode/
+.idea/
+.env
+.env.*
+*.log

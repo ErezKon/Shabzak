@@ -50,7 +50,14 @@ export const missionsReducer = createReducer(
         };
     }),
     on(missionActions.autoAssignFailure, (state) => ({ ...state, autoAssigning: false })),
-    on(missionActions.getAllCandidatesSuccess, (state, {candidates}) => ({ ...state, candidatesIds: candidates })),
+    on(missionActions.getAllCandidatesSuccess, (state, {candidates}) => ({
+        ...state,
+        candidatesIds: candidates,
+        candidatesList: state.candidatesList.filter(c => candidates.includes(c.id)),
+        candidateAssignments: state.candidateAssignments?.id && !candidates.includes(state.candidateAssignments.id)
+            ? initialMissionsState.candidateAssignments
+            : state.candidateAssignments
+    })),
     on(missionActions.getCandidateSuccess, (state, {candidate}) => ({ ...state, candidateAssignments: candidate })),
     on(missionActions.acceptAutoAssignCandidateSuccess, (state, {missions}) => ({ ...state, missions: missions})),
     on(missionActions.removeSoldierFromMissionInstanceSuccess, (state, {missions}) => ({ ...state, missions: missions })),

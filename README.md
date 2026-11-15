@@ -37,6 +37,7 @@ The interface is **Hebrew / RTL**. "שבצ"ק" is short for *שיבוץ צבאי
 | Reactive | RxJS 7 |
 | Crypto (client) | `js-sha512` (SHA-512 for pre-hashing credentials) |
 | Auth | JWT Bearer tokens (stored in localStorage, sent via HTTP interceptor) |
+| AI assistant | Chat widget for [`ShabzakAgent`](../ShabzakAgent) (`fetch` + SSE), `marked` for markdown |
 | Styling | SCSS, RTL |
 
 ## Architecture
@@ -58,7 +59,8 @@ Feature domains each have their own actions / effects / reducer / selectors / st
 Shabzak/
 ├── server.ts                       # Express SSR entry
 ├── angular.json / tsconfig*.json
-├── Dockerfile / nginx.conf         # build → static assets served by nginx
+├── Dockerfile / nginx.conf         # build → static assets served by nginx, which also proxies /api/ and /agent/
+├── .dockerignore                   # keeps node_modules, dist and .angular out of the image build
 ├── src/
 │   ├── main.ts / main.server.ts    # browser & server bootstrap
 │   ├── index.html / styles.scss
@@ -68,6 +70,7 @@ Shabzak/
 │       ├── app.config.ts            # providers: router, http, store, effects, hydration
 │       ├── app.routes.ts            # route table + guards
 │       ├── components/
+│       │   ├── chat/                # AI assistant: launcher, panel, messages, approval cards
 │       │   ├── soldiers/            # soldier CRUD, vacations, user creation
 │       │   ├── missions/            # mission CRUD, instances, positions
 │       │   ├── assignments/         # read-only schedule board
@@ -76,9 +79,9 @@ Shabzak/
 │       │   └── user/                # login, personal page
 │       ├── guards/                  # loggedInGuard, adminGuard, superAdminGuard
 │       ├── models/                  # interfaces & enums (soldier, mission, user, ...)
-│       ├── services/                # HTTP clients + snackbar + window-size
+│       ├── services/                # HTTP clients + snackbar + window-size; chat/ (agent client and chat state)
 │       ├── state-management/        # actions / effects / reducers / selectors / states
-│       └── utils/                   # aes, sha512, date utils, position translator, dialogs
+│       └── utils/                   # aes, sha512, date utils, position translator, dialogs, SSE parser, markdown
 └── assets/                          # SVG military-position icons, logo
 ```
 
@@ -132,6 +135,7 @@ Each service wraps `HttpClient` and targets `environment.serverURL`:
 7. An **HTTP interceptor** (`interceptors/auth.interceptor.ts`) attaches `Authorization: Bearer <token>` to all outgoing API requests.
 8. Route guards gate navigation on `enabled` / `activated` / `role` (SSR-safe with `isPlatformBrowser` checks).
 9. The backend enforces authorization on every endpoint — guards are a UX convenience, not a security boundary.
+10. The toolbar's logout button clears the token, the user, the store data and the chat conversation, and returns to `/login`.
 
 ## Feature Modules
 
@@ -141,10 +145,11 @@ Each service wraps `HttpClient` and targets `environment.serverURL`:
 - **Manage Assignments** (`/assignments-management`) — date-range + mission/soldier pickers; **batch auto-assign** with candidate comparison/acceptance; **interactive** step-by-step assign; **replacement** (with swap).
 - **Metadata / "Justice"** (`/justice`) — assignments-per-soldier and hours-per-soldier bar charts and per-mission breakdown, filterable by soldier type (all / non-commanders / commanders / officers).
 - **User** — login and a personal dashboard (upcoming missions + summary).
+- **AI assistant** (every page except `/login`) — a chat button at the bottom right opens an RTL panel that talks to [`ShabzakAgent`](../ShabzakAgent): answers about the schedule, missions, soldiers, vacations and your own data stream in as they are written. Admins can ask for changes; each one shows up as an approval card (approve / reject, optional reason) and runs only after approval, and the pages reload the changed data. The conversation survives a page reload (per user, in `sessionStorage`) and is cleared on logout or "new chat".
 
 ## Getting Started
 
-Prerequisites: **Node 18+** and npm.
+Prerequisites: **Node 20+** (`marked` requires it; the image and the verification use 22.23.4) and npm.
 
 ```bash
 # from Shabzak/
@@ -152,7 +157,7 @@ npm install
 npm start          # ng serve on http://localhost:5555 (opens browser)
 ```
 
-The dev server expects the backend at `environment.serverURL` (default `https://localhost:7170/api`). Run [`ShabzakAPI`](../ShabzakAPI) first, or use the root `docker-compose.yml` to run the whole stack.
+The dev server expects the backend at `environment.serverURL` (`http://localhost:5165/api`): run [`ShabzakAPI`](../ShabzakAPI) with `dotnet run --launch-profile http` (the `https` profile redirects that URL to https, which the AI agent can't follow). For the assistant, also run [`ShabzakAgent`](../ShabzakAgent) (`npm run dev`, port 3001, with `CORS_ORIGINS=http://localhost:5555`). Or use the root `docker-compose.yml` to run the whole stack.
 
 ## Configuration
 
@@ -161,12 +166,14 @@ Environment files live in `src/environments/`:
 ```ts
 export const environment = {
     production: false,
-    serverURL: 'https://localhost:7170/api',   // backend base URL
+    serverURL: 'http://localhost:5165/api',   // backend base URL
+    agentURL: 'http://localhost:3001/api'     // AI chat agent base URL
 };
 ```
 
-- **`environment.ts`** — development, points to `localhost:7170`.
-- **`environment.prod.ts`** — production, uses relative `/api` path (proxied by nginx to the backend container).
+- **`environment.development.ts`** — used by `ng serve`: the API's `http` profile and the agent on port 3001.
+- **`environment.ts`** — the base file (used by `ng test`), same URLs.
+- **`environment.prod.ts`** — production, uses the relative `/api` and `/agent/api` paths: the container's nginx serves the app and proxies both on the same origin (see [Build & Deploy](#build--deploy)).
 - The AES key has been **removed** from the environment — session management now uses JWT tokens from the backend.
 - The NgRx logger meta-reducer is **gated to development only** and does not run in production builds.
 
@@ -177,9 +184,21 @@ npm run build                 # ng build → dist/shabzak/browser
 npm run serve:ssr:Shabzak     # run the SSR Express server (node dist/shabzak/server/server.mjs)
 ```
 
-The provided `Dockerfile` builds the app and serves the static output with **nginx** (`nginx.conf`, container port 80). In the root `docker-compose.yml` the UI is published on host port **5230**.
+The provided `Dockerfile` builds the app on `node:22.23.4-alpine` and serves the static output with **nginx 1.30.6** (`nginx.conf`, container port 80). In the root `docker-compose.yml` the UI is published on host port **5230**, and its nginx is the single entry point of the stack:
 
-Testing is configured with **Karma + Jasmine** (`npm test`); most spec files are still the generated stubs.
+| Path | Goes to |
+|---|---|
+| `/api/…` | `shabzak-api:8080` (ShabzakAPI), path unchanged; 15-minute read timeout for auto-assign |
+| `/agent/…` | `shabzak-agent:3000` (the AI chat assistant) without the `/agent` prefix; no buffering (Server-Sent Events); a JSON 502 when the agent is down |
+| anything else | the file, a prerendered route's `index.html`, or the app shell |
+
+So the browser only ever talks to the UI's origin (no CORS), and the upstreams are looked up through Docker's DNS per request (nginx starts even while the API or the agent is down). `.dockerignore` keeps `node_modules`, `dist` and `.angular` out of the build context. To run the stack: `cp .env.example .env` in the workspace root, fill it in, then `docker compose up --build` (see `ShabzakAPI/README.md`).
+
+Testing is configured with **Karma + Jasmine** (`npm test`). Most component spec files are still the generated stubs (many fail without their providers); the chat assistant's specs are real. Run only them with:
+
+```bash
+npx ng test --watch=false --browsers=ChromeHeadless --include="src/app/services/chat/**/*.spec.ts" --include="src/app/components/chat/**/*.spec.ts" --include="src/app/utils/*.spec.ts" --include="src/app/state-management/reducers/*.spec.ts"
+```
 
 ## Conventions
 

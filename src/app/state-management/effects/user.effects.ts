@@ -6,7 +6,7 @@ import { UserService } from '../../services/user.service';
 import { AppState } from '../states/app.state';
 
 import * as userActions from '../actions/user.actions';
-import { exhaustMap, map, catchError, of } from 'rxjs';
+import { exhaustMap, map, catchError, of, tap } from 'rxjs';
 import { SnackbarService } from '../../services/snackbar.service';
 
 @Injectable()
@@ -56,6 +56,14 @@ export class UserEffects {
         })
       ))
   ));
+
+  logout$ = createEffect(() => this.actions$.pipe(
+    ofType(userActions.logout),
+    tap(() => {
+      this.usersService.logout();
+      this.router.navigateByUrl('login');
+    })
+  ), { dispatch: false });
 
   createUsersForSoldiers$ = createEffect(() => this.actions$.pipe(
     ofType(userActions.createUsersForSoldiers),

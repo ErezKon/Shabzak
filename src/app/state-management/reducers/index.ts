@@ -1,11 +1,12 @@
 import { routerReducer } from "@ngrx/router-store";
-import { ActionReducerMap, ActionReducer } from "@ngrx/store";
+import { ActionReducerMap, ActionReducer, MetaReducer } from "@ngrx/store";
 import { AppState } from "../states/app.state";
 import { soldiersReducer } from "./soldiers.reducer";
 import { missionsReducer } from "./missions.reducer";
 import { metadataReducer } from "./metadata.reducer";
 import { usersReducer } from "./user.reducer";
 import { environment } from "../../../environments/environment";
+import * as userActions from '../actions/user.actions';
 
 export const appReducers: ActionReducerMap<AppState> = {
   router: routerReducer,
@@ -27,6 +28,13 @@ export function logger(reducer: ActionReducer<any>): ActionReducer<any> {
   };
 }
 
+export function resetOnLogout(reducer: ActionReducer<AppState>): ActionReducer<AppState> {
+  return function (state, action) {
+    const next = action.type === userActions.logout.type && state ? { router: state.router } as AppState : state;
+    return reducer(next, action);
+  };
+}
+
 // SECURITY: Only enable the NgRx logger meta-reducer in development.
 // In production it leaked every action and full state tree to the browser console.
-export const metaReducers = environment.production ? [] : [logger];
+export const metaReducers: MetaReducer<AppState>[] = environment.production ? [resetOnLogout] : [resetOnLogout, logger];

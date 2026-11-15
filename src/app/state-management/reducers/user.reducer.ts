@@ -5,5 +5,6 @@ import * as userActions from '../actions/user.actions';
 export const usersReducer = createReducer(
     initialUsersState,
     on(userActions.login, (state) => ({ ...state, user: initialUsersState.user })),
-    on(userActions.loginSuccess, (state, {user}) => ({ ...state, user: user }))
+    on(userActions.loginSuccess, (state, {user}) => ({ ...state, user: user })),
+    on(userActions.logout, (state) => ({ ...state, user: initialUsersState.user }))
 );

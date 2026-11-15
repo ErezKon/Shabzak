@@ -1,0 +1,105 @@
+@if (visible && state.open) {
+  <section class="chat-panel" dir="rtl" role="dialog" aria-modal="false" aria-labelledby="chat-panel-title" (keydown.escape)="close()">
+    <header class="chat-header">
+      <mat-icon class="chat-header-icon" aria-hidden="true">forum</mat-icon>
+      <h2 id="chat-panel-title" class="chat-title">העוזר של שבצ"ק</h2>
+      <span class="spacer"></span>
+      <button mat-icon-button type="button" class="new-chat" matTooltip="שיחה חדשה" aria-label="שיחה חדשה" (click)="newChat()">
+        <mat-icon>add_comment</mat-icon>
+      </button>
+      <button mat-icon-button type="button" class="close-chat" matTooltip="סגור" aria-label="סגור את העוזר" (click)="close()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </header>
+
+    <div
+      #scroller
+      class="chat-body"
+      role="log"
+      aria-live="polite"
+      aria-relevant="additions text"
+      [attr.aria-busy]="state.streaming"
+      (scroll)="onScroll()">
+      @if (state.messages.length === 0) {
+        <div class="chat-empty">
+          <mat-icon class="chat-empty-icon" aria-hidden="true">forum</mat-icon>
+          <p class="chat-empty-text">{{ emptyText }}</p>
+          <div class="chat-suggestions">
+            @for (suggestion of suggestions; track suggestion) {
+              <button type="button" class="chat-suggestion" [disabled]="state.streaming" (click)="useSuggestion(suggestion)">{{ suggestion }}</button>
+            }
+          </div>
+        </div>
+      }
+      @for (message of state.messages; track message.id) {
+        @if (message.role === 'approval' && message.approval) {
+          <app-chat-approval-card
+            [approval]="message.approval"
+            [highlight]="state.highlightApproval && state.pendingApproval?.messageId === message.id"
+            [busy]="state.streaming"
+            (decide)="decide($event)">
+          </app-chat-approval-card>
+        } @else {
+          <app-chat-message [message]="message"></app-chat-message>
+        }
+      }
+    </div>
+
+    @if (state.streaming && state.statusLabel) {
+      <div class="chat-status" role="status">
+        <mat-spinner diameter="16" strokeWidth="2"></mat-spinner>
+        <span>{{ state.statusLabel }}</span>
+      </div>
+    }
+
+    @if (state.error; as error) {
+      <div class="chat-error" role="alert">
+        <mat-icon class="chat-error-icon" aria-hidden="true">error_outline</mat-icon>
+        <div class="chat-error-text">
+          <div>{{ error.message }}</div>
+          @if (error.detail) {
+            <div class="chat-error-detail" dir="auto">{{ error.detail }}</div>
+          }
+        </div>
+        @if (error.action === 'retry') {
+          <button mat-button color="primary" type="button" class="retry" (click)="retry()">נסה שוב</button>
+        }
+        @if (error.action === 'new_chat') {
+          <button mat-button color="primary" type="button" class="error-new-chat" (click)="newChat()">שיחה חדשה</button>
+        }
+        <button mat-icon-button type="button" class="dismiss-error" aria-label="סגור את ההודעה" (click)="dismissError()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    }
+
+    <footer class="chat-input">
+      <textarea
+        #input
+        class="chat-textarea"
+        dir="auto"
+        rows="1"
+        cdkTextareaAutosize
+        cdkAutosizeMinRows="1"
+        cdkAutosizeMaxRows="5"
+        aria-label="הודעה לעוזר"
+        [placeholder]="placeholder"
+        [disabled]="!!state.pendingApproval"
+        [(ngModel)]="draft"
+        (keydown.enter)="onEnter($event)">
+      </textarea>
+      <div class="chat-input-actions">
+        <span class="chat-counter" [class.over]="length > maxChars" aria-live="off">{{ length }}/{{ maxChars }}</span>
+        @if (state.streaming) {
+          <button mat-icon-button type="button" color="warn" class="stop" matTooltip="עצור" aria-label="עצור את התשובה" (click)="stop()">
+            <mat-icon>stop_circle</mat-icon>
+          </button>
+        } @else {
+          <button mat-icon-button type="button" color="primary" class="send" matTooltip="שלח" aria-label="שלח" [disabled]="!canSend" (click)="send()">
+            <mat-icon class="send-icon">send</mat-icon>
+          </button>
+        }
+      </div>
+    </footer>
+  </section>
+}

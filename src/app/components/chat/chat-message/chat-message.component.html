@@ -1,0 +1,23 @@
+@switch (message.role) {
+  @case ('user') {
+    <div class="bubble user" [class.failed]="message.failed">
+      <div class="text" dir="auto">{{ message.text }}</div>
+      @if (message.failed) {
+        <div class="meta">לא נשלחה</div>
+      }
+    </div>
+  }
+  @case ('assistant') {
+    <div class="bubble assistant" [class.streaming]="message.streaming">
+      <div class="markdown" dir="auto" [innerHTML]="message.text | chatMarkdown"></div>
+      @if (message.interrupted) {
+        <div class="meta">התשובה נקטעה</div>
+      }
+    </div>
+  }
+  @case ('note') {
+    <div class="note" role="note">
+      <span dir="auto">{{ message.text }}</span>
+    </div>
+  }
+}

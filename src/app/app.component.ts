@@ -14,12 +14,15 @@ import { AppState } from './state-management/states/app.state';
 import { selectUser } from './state-management/selectors/user.selector';
 
 import { selectUrl } from './state-management/selectors/router.selector';
+import * as userActions from './state-management/actions/user.actions';
+import { ChatLauncherComponent } from './components/chat/chat-launcher/chat-launcher.component';
+import { ChatPanelComponent } from './components/chat/chat-panel/chat-panel.component';
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, RouterModule, MatToolbarModule, MatIconModule, MatSidenavModule, MatNavList, MatListItem],
+  imports: [RouterOutlet, CommonModule, RouterModule, MatToolbarModule, MatIconModule, MatSidenavModule, MatNavList, MatListItem, ChatLauncherComponent, ChatPanelComponent],
   providers: [WindowSizeService],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
@@ -76,7 +79,7 @@ export class AppComponent {
       iconRegistry: MatIconRegistry, 
       sanitizer: DomSanitizer, 
       public windowSizeService: WindowSizeService, 
-      store: Store<AppState>,
+      private store: Store<AppState>,
       @Inject(DOCUMENT) private document: Document) {
     iconRegistry.addSvgIcon('bat-logo', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/9213-logo-no-text.svg'));
     iconRegistry.addSvgIcon('simple', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/simple.svg'));
@@ -127,6 +130,10 @@ export class AppComponent {
     this.sidenavOpened = !this.sidenavOpened;
   }
   
+  onLogout() {
+    this.store.dispatch(userActions.logout());
+  }
+
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     const width = event.target.innerWidth;

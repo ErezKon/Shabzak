@@ -1,0 +1,16 @@
+@import '../../material/palletes/primary.scss';
+@import '../../material/palletes/secondary.scss';
+
+$chat-primary: map-get($olive-green-palette, 900);
+$chat-primary-light: map-get($olive-green-palette, 50);
+$chat-primary-soft: map-get($olive-green-palette, 100);
+$chat-accent: map-get($brown-palette, 900);
+$chat-warn: #c62828;
+$chat-warn-light: #fdecea;
+$chat-caution: #b26a00;
+$chat-caution-light: #fff4e5;
+$chat-ok: #2e7d32;
+$chat-ok-light: #e8f5e9;
+$chat-border: #d6d6d6;
+$chat-muted: #6b6b6b;
+$chat-z-index: 900;

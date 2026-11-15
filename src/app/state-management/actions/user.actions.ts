@@ -14,6 +14,10 @@ export const loginFailure = createAction(
     '[User] Login Failure'
 );
 
+export const logout = createAction(
+    '[User] Logout'
+);
+
 export const createUsersForSoldiers = createAction(
     '[User] Create Users For Soldiers',
     props<{ soldierIds: Array<number> }>()

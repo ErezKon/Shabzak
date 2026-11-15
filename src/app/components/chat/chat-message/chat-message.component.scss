@@ -1,0 +1,167 @@
+@import '../chat-theme.scss';
+
+:host {
+    display: flex;
+    flex-direction: column;
+}
+
+.bubble {
+    max-width: 85%;
+    padding: 8px 12px;
+    border-radius: 12px;
+    line-height: 1.5;
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+.user {
+    align-self: flex-end;
+    background-color: $chat-primary;
+    color: white;
+    border-start-end-radius: 4px;
+
+    .text {
+        white-space: pre-wrap;
+    }
+
+    &.failed {
+        opacity: 0.75;
+    }
+}
+
+.assistant {
+    align-self: flex-start;
+    background-color: #f1f1ee;
+    color: rgba(0, 0, 0, 0.87);
+    border-start-start-radius: 4px;
+
+    &.streaming .markdown::after {
+        content: '▍';
+        margin-inline-start: 2px;
+        animation: chat-cursor 1s steps(2, start) infinite;
+    }
+}
+
+.meta {
+    margin-top: 4px;
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.note {
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: $chat-muted;
+    font-size: 12px;
+    text-align: center;
+
+    &::before,
+    &::after {
+        content: '';
+        flex: 1;
+        border-top: 1px solid $chat-border;
+    }
+
+    span {
+        max-width: 80%;
+    }
+}
+
+.markdown ::ng-deep {
+    p,
+    ul,
+    ol,
+    pre,
+    blockquote,
+    table {
+        margin: 0 0 8px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    ul,
+    ol {
+        padding-inline-start: 20px;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-size: 15px;
+        margin: 8px 0 4px;
+
+        &:first-child {
+            margin-top: 0;
+        }
+    }
+
+    code {
+        direction: ltr;
+        unicode-bidi: isolate;
+        background-color: rgba(0, 0, 0, 0.06);
+        border-radius: 3px;
+        padding: 0 3px;
+        font-size: 13px;
+    }
+
+    pre {
+        direction: ltr;
+        text-align: left;
+        overflow-x: auto;
+        background-color: rgba(0, 0, 0, 0.06);
+        padding: 8px;
+        border-radius: 6px;
+
+        code {
+            background: none;
+            padding: 0;
+        }
+    }
+
+    blockquote {
+        padding-inline-start: 8px;
+        border-inline-start: 3px solid $chat-border;
+        color: $chat-muted;
+    }
+
+    table {
+        direction: rtl;
+        border-collapse: collapse;
+        font-size: 13px;
+        display: block;
+        overflow-x: auto;
+        max-width: 100%;
+    }
+
+    th,
+    td {
+        border: 1px solid $chat-border;
+        padding: 4px 8px;
+        text-align: right;
+        vertical-align: top;
+    }
+
+    th {
+        background-color: $chat-primary;
+        color: white;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+
+    tbody tr:nth-child(2n) {
+        background-color: rgba(0, 0, 0, 0.03);
+    }
+}
+
+@keyframes chat-cursor {
+    to {
+        visibility: hidden;
+    }
+}

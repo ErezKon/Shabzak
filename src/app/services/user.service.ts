@@ -39,6 +39,13 @@ export class UserService {
     this.loggedUser = user;
   }
 
+  logout() {
+    this.loggedUser = undefined;
+    if (typeof localStorage === 'undefined') return;
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+  }
+
   // SECURITY: Retrieve the JWT token for the Authorization header.
   getToken(): string | null {
     if (typeof localStorage === 'undefined') return null; // SSR safety

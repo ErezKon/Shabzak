@@ -1,0 +1,73 @@
+<div class="approval" [class.highlight]="highlight" [class.resolved]="!pending" role="group" [attr.aria-label]="header">
+  <div class="approval-header">
+    <mat-icon aria-hidden="true">{{ pending ? 'gpp_maybe' : approval.status === 'expired' ? 'gpp_bad' : 'verified_user' }}</mat-icon>
+    <span>{{ header }}</span>
+  </div>
+
+  @for (action of approval.actions; track action.index; let i = $index) {
+    <div class="action" [ngClass]="'risk-' + action.risk">
+      <div class="action-title-row">
+        <span class="action-title" dir="auto">{{ action.title }}</span>
+        <span class="risk-chip" [ngClass]="'risk-' + action.risk">{{ riskLabel(action.risk) }}</span>
+      </div>
+
+      @if (action.details.length) {
+        <ul class="details">
+          @for (detail of action.details; track $index) {
+            <li dir="auto">{{ detail }}</li>
+          }
+        </ul>
+      }
+
+      @if (action.warnings.length) {
+        <ul class="warnings">
+          @for (warning of action.warnings; track $index) {
+            <li>
+              <mat-icon aria-hidden="true">warning_amber</mat-icon>
+              <span dir="auto">{{ warning }}</span>
+            </li>
+          }
+        </ul>
+      }
+
+      @if (pending) {
+        <div class="decision-row">
+          <mat-button-toggle-group
+            class="decision-toggle"
+            [value]="choices[i].choice"
+            [disabled]="busy"
+            [attr.aria-label]="'החלטה: ' + action.title"
+            (change)="choose(i, $event.value)">
+            <mat-button-toggle value="approve" class="approve-toggle">אשר</mat-button-toggle>
+            <mat-button-toggle value="reject" class="reject-toggle">דחה</mat-button-toggle>
+          </mat-button-toggle-group>
+          @if (choices[i].choice === 'reject') {
+            <input
+              class="reason"
+              type="text"
+              dir="auto"
+              placeholder="סיבת הדחייה (לא חובה)"
+              aria-label="סיבת הדחייה"
+              [maxlength]="maxReason"
+              [disabled]="busy"
+              [ngModel]="choices[i].reason"
+              (ngModelChange)="setReason(i, $event)">
+          }
+        </div>
+      } @else {
+        <div class="outcome" [ngClass]="outcomeKind(i)">{{ outcome(i) }}</div>
+      }
+    </div>
+  }
+
+  @if (pending) {
+    <div class="approval-actions">
+      @if (approval.actions.length > 1) {
+        <button mat-stroked-button type="button" class="approve-all" [disabled]="busy" (click)="setAll('approve')">אשר הכל</button>
+        <button mat-stroked-button type="button" class="reject-all" [disabled]="busy" (click)="setAll('reject')">דחה הכל</button>
+      }
+      <span class="spacer"></span>
+      <button mat-flat-button color="primary" type="button" class="submit-decisions" [disabled]="!canSubmit" (click)="submit()">שלח</button>
+    </div>
+  }
+</div>

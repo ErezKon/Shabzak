@@ -1,0 +1,23 @@
+@if ((visible$ | async) && (state$ | async); as state) {
+  <div class="chat-launcher" [class.open]="state.open">
+    <button
+      mat-fab
+      color="primary"
+      type="button"
+      class="chat-launcher-button"
+      [attr.aria-label]="label(state)"
+      [attr.aria-expanded]="state.open"
+      [matTooltip]="label(state)"
+      matTooltipPosition="left"
+      [matBadge]="state.pendingApproval?.actions?.length ?? 0"
+      [matBadgeHidden]="!state.pendingApproval || state.open"
+      matBadgeColor="warn"
+      matBadgePosition="above before"
+      (click)="toggle()">
+      <mat-icon>{{ state.open ? 'close' : 'forum' }}</mat-icon>
+    </button>
+    @if (state.unread && !state.pendingApproval && !state.open) {
+      <span class="unread-dot" aria-hidden="true"></span>
+    }
+  </div>
+}
